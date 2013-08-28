@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+        
+<html>
+	<head>
+		<title>{% block title %}GCMRC - Sandbar{% endblock %}</title>
+	
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<meta name="description" content="{% block page_description %}{% endblock %}" />
+
+    	{% block page_style %}{% endblock %}
+           
+    	{% block page_script %}{% endblock %}
+
+	</head>
+	
+	<body>
+		<div id="page-header">
+			{% block page_header %}{% endblock %}
+		</div>
+		<div id="page-content">
+			{% block page_content %}{% endblock %}
+		</div>
+		<div id="page-footer">
+			{% block page_footer %}{% endblock %} 
+		</div>
+	</body>
+
+</html> 
