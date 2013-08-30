@@ -1,5 +1,5 @@
 # Django settings for sandbar project.
-
+#from django.db import connections
 import os
 
 PROJECT_HOME = os.path.dirname(__file__)
@@ -25,6 +25,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+
+#DATABASE_ROUTERS = ['routers.SandbarRouter']
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -127,7 +129,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'south'
+    'south',
+    'surveys',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -159,9 +162,14 @@ LOGGING = {
     }
 }
 
+LOCAL_APPS = None
+
 try:
     from local_settings import *
 except ImportError:
     # add apps to this variable for this specific server configuration
     pass
+
+if LOCAL_APPS:
+    INSTALLED_APPS += LOCAL_APPS
 
