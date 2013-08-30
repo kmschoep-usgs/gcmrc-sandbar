@@ -1,4 +1,5 @@
 Django==1.5.2
 South==0.8.2
 cx-Oracle==5.1.2
+django.js==0.8.0
 wsgiref==0.1.2

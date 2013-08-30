@@ -1,12 +1,28 @@
 <!DOCTYPE html>
         
 <html>
+	{% load js %}
+	{% load static %}
 	<head>
 		<title>{% block title %}GCMRC - Sandbar{% endblock %}</title>
-	
+
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>	
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     	<meta name="description" content="{% block page_description %}{% endblock %}" />
+    	<meta name="author" content="{% block author %}{% endblock %}" />
+       	<meta name="keywords" content="{% block keywords %}{% endblock %}" />
+     	<meta name="publisher" content="{% block publisher %}{% endblock %}" />
+     	<meta name="country" content="USA" />
+     	<meta name="language" content="EN" />
+     	<meta name="revised" content="{% block revised %}{% endblock %}" />
+     	<meta name="review" content="{% block review %}{% endblock %}" />
+    	
+		{% css "usgs_style/common.css" %}
+		{% css "usgs_style/custom.css" %}
+		<link rel="alternate stylesheet" media="screen" type="text/css" href="{% static 'usgs_style/none.css' %}" title="no_style" />
+		<link rel="stylesheet" media="print" type="text/css" href="{% static 'usgs_style/print.css' %}" />
 
+		<link rel="shortcut icon" type="image/ico" href="{% static 'images/favicon.ico' %}">
     	{% block page_style %}{% endblock %}
            
     	{% block page_script %}{% endblock %}
@@ -14,14 +30,185 @@
 	</head>
 	
 	<body>
-		<div id="page-header">
-			{% block page_header %}{% endblock %}
-		</div>
-		<div id="page-content">
-			{% block page_content %}{% endblock %}
-		</div>
-		<div id="page-footer">
-			{% block page_footer %}{% endblock %} 
+		<div class="container-fluid">
+			{% block page_header %}
+				<div id="usgscolorband">
+					<div id="usgsbanner">
+						<div id="usgsidentifier">
+							<a href="http://www.usgs.gov/">
+								<img alt="USGS - science for a changing world" title="U.S. Geological Survey Home Page" src="{% static 'images/usgs_logo.jpg' %}" width="178" height="72" />
+							</a>
+						</div>
+						<div id="usgsccsabox">
+							<div id="usgsccsa">
+								<br />
+								<a href="http://www.usgs.gov/">USGS Home</a><br />
+								<a href="http://www.usgs.gov/ask/">Contact USGS</a><br />
+								<a href="http://search.usgs.gov/">Search USGS</a><br />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="usgstitle"><span><a href="http://www.gcmrc.gov/gcmrc.aspx">Grand Canyon Monitoring and Research Center</a></span></div>
+				<div id="topnav2">
+					<div class="menu">
+						<ul>
+							<li><a class="hide" href="http://www.gcmrc.gov/about/about_default.aspx" title="About GCMRC">
+									About GCMRC</a>
+								<!--[if lte IE 6]>
+								<a href="../menu/index.html">About GCMRC
+								<table><tr><td>
+								<![endif]-->
+								<ul>
+									<li class="drop"><a href="http://www.gcmrc.gov/about/contact.aspx" title="Contact Us">
+											Contact Us</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/about/newsrelease.aspx" title="News Releases">
+											News Releases</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/about/staff.aspx" title="Staff">Staff</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/about/links.aspx" title="Links">Links</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/jobs/Riparian%20Vegetation%20Post_advertisment12_3.pdf" title="Job Openings">Job Openings</a></li>
+								</ul>
+								<!--[if lte IE 6]>
+								</td></tr></table>
+								</a>
+								<![endif]-->
+							</li>
+							<li><a class="hide" href="http://www.gcmrc.gov/research_areas/research_areas_default.aspx"
+								   title="Science Areas">Science Activities</a>
+								<!--[if lte IE 6]>
+								<a href="../menu/index.html">Science Activities
+								<table><tr><td>
+								<![endif]-->
+								<ul>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/adaptive_management/adaptive_management_default.aspx"
+														title="Adaptive Management">Adaptive Management</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/food_base/food_base_default.aspx"
+														title="Aquatic Food Base">Aquatic Food Base</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/cultural_resources/cultural_resources_default.aspx"
+														title="Cultural Resources">Cultural Resources</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/extirpated_species/extirpated_species_default.aspx"
+														title="Extirpated Species">Extirpated Species</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/humpback_chub/humpback_chub_default.aspx"
+														title="Humpback Chub">Humpback Chub</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/kanab_ambersnail/kanab_ambersnail_default.aspx"
+														title="Kanab Ambersnail">Kanab Ambersnail</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/power_production/power_production_default.aspx"
+														title="Power Production">Power Production</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/rainbow_trout/rainbow_trout_default.aspx"
+														title="Rainbow Trout">Rainbow Trout</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/recreation/recreation_default.aspx"
+														title="Recreation">Recreation</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/riparian_plant_communities/riparian_plant_communities_default.aspx"
+														title="Riparian Plant Communities">Riparian Plant Communities</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/sediment_sandbars/sediment_sandbars_default.aspx"
+														title="Sediment and Sandbars">Sediment and Sandbars</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/research_areas/water_quality/water_quality_default.aspx"
+														title="Water Quality">Water Quality</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/high_flow/high_flow_default.aspx"
+														title="2008 High-Flow Experiment">2008 High-Flow Experiment</a></li>
+								</ul>
+								<!--[if lte IE 6]>
+								</td></tr></table>
+								</a>
+								<![endif]-->
+							</li>
+							<li><a class="hide" href="http://www.gcmrc.gov/publications/library.aspx" title="Library and Publications">
+									Library and Publications</a>
+								<!--[if lte IE 6]>
+								<a href="index.html">Publications
+								<table><tr><td>
+								<![endif]-->
+								<!--[if lte IE 6]>
+								</td></tr></table>
+								</a>
+								<![endif]-->
+							</li>
+							<li><a class="hide" href="http://www.gcmrc.gov/dasa/default.aspx" title="Maps and Data Portal">
+									Maps and Data Portal</a>
+								<!--[if lte IE 6]>
+								<a href="../layouts/index.html">Maps and Data Portal
+								<table><tr><td>
+								<![endif]-->
+				<!--				<ul>
+									<li class="drop"><a href="http://www.gcmrc.gov/gis/silvermap1.aspx" title="Maps">Maps</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/gis/silverimage1.aspx" title="Photo Viewer">Photo Viewer</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/gis/silverimage1.aspx" title="Imagery">Imagery</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/dasa/tabdata" title="Tabular Data">Tabular Data</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/discharge_qw_sediment/" title="Discharge, QW and Sediment Data">Discharge, QW and Sediment Data</a></li>
+								</ul>-->
+								<!--[if lte IE 6]>
+								</td></tr></table>
+								</a>
+								<![endif]-->
+							</li>
+							<li><a class="hide" href="http://www.gcmrc.gov/education.aspx" title="Education">Education</a></li>
+							<li><a class="hide" href="http://www.gcmrc.gov/events/calendar.aspx" title="Meetings and Events">
+									Meetings and Events</a>
+								<ul>
+									<li class="drop"><a href="http://www.gcmrc.gov/KnowledgeAssessment.aspx" title="Knowledge Assessment Meetings">
+											Knowledge Assessment Meetings</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/TechnicalWorkingGroup.aspx" title="Technical Work Group Presentations">
+											Technical Work Group Presentations</a></li>
+									<li class="drop"><a href="http://www.gcmrc.gov/AnnualReportingMeeting.aspx">Annual Reporting Meetings</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			{% endblock %}
+			
+			<div id="page-content">
+				{% block page_content %}{% endblock %}
+			</div>
+			
+			{% block page_footer %}
+				<div id="contactInfo"><span>Grand Canyon Monitoring &amp; Research Center | 2255 North Gemini Drive Flagstaff, AZ 86001 | Phone: 928.556.7380 Fax: 928.556.7100</span></div>
+				<div id="usgsfooter">
+					<p id="usgsfooterbar">
+						<a href="http://www.usgs.gov/laws/accessibility.html" title="Accessibility Policy (Section 508)">Accessibility</a>
+						<a href="http://www.usgs.gov/foia/" title="Freedom of Information Act">FOIA</a>
+						<a href="http://www.usgs.gov/laws/privacy.html" title="Privacy policies of the U.S. Geological Survey.">Privacy</a>
+						<a href="http://www.usgs.gov/laws/policies_notices.html" title="Policies and notices that govern information posted on USGS Web sites.">Policies and Notices</a>
+					</p>
+				
+					<div id="usgsfootertext">
+				
+						<a href="http://www.takepride.gov/"><img src="{% static 'images/footer_graphic_takePride.jpg' %}" alt="Take Pride in America logo" title="Take Pride in America Home Page" width="60" height="58" /></a>
+						<a href="http://usa.gov/"><img src="{% static 'images/footer_graphic_usagov.jpg' %}" alt="USA.gov logo" title="USAGov: Government Made Easy" width="90" height="26" /></a>
+				
+						<a href="http://www.doi.gov/">U.S. Department of the Interior</a> |
+						<a href="http://www.usgs.gov/">U.S. Geological Survey</a> |
+				        <a href="http://www.gcmrc.gov/gcmrc.aspx">Grand Canyon Monitoring and Research Center</a>
+				        <br />
+				        <script type="text/javascript" src="http://www.gcmrc.gov/scripts/url.js"></script><br />
+				
+				        <div>
+							<noscript>
+							<p>Please enable Javascript to view the URL of this page.</p>
+							</noscript>
+				        </div>
+				
+						Website Questions: 
+						<script type="text/javascript">
+							<!--
+							var sbscml = ["usgs.gov","cida_gcmrc","Email the GCMRC webmaster"];
+							document.write("<a href=" + "mail" + "to:" + sbscml[1] +
+							"@" + sbscml[0] + ">" + sbscml[2] + "</a>")
+							//-->
+						</script><br />
+				<!--		Maps, Imagery and Data Questions: 
+						<script type="text/javascript">
+							
+							var dataml = ["usgs.gov","tgushue","Email the GCMRC datamaster"];
+							document.write("<a href=" + "mail" + "to:" + dataml[1] +
+							"@" + dataml[0] + ">" + dataml[2] + "</a>")
+							//
+						</script><br />-->
+				        Last Update: <script type="text/javascript">document.write(document.lastModified);</script><br />
+					</div>
+				</div>
+			{% endblock %} 
+
 		</div>
 	</body>
 
