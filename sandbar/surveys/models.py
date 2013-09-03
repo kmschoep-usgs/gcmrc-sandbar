@@ -1,8 +1,10 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.gis.db import models
+#from django.contrib.gis.geos import GEOSGeometry, fromstr, fromfile,  Point
 
 # Create your models here.
-    
+
 class Site(models.Model):
     YES_NO = (
         ('YES','Yes'),
@@ -17,10 +19,13 @@ class Site(models.Model):
     stage_change = models.DecimalField(max_digits=5, decimal_places=2)
     sed_budget_reach = models.CharField(max_length=100)
     campsite = models.CharField(max_length=3, choices=YES_NO)
+    geom = models.PointField()
     class Meta:
         db_table = 'sites'
         unique_together = ('river_mile', 'site_name')
-
+        
+    objects = models.GeoManager()
+    
 class Survey(models.Model):
     site = models.ForeignKey(Site)
     survey_date = models.DateField()
@@ -28,3 +33,4 @@ class Survey(models.Model):
     class Meta:
         db_table = 'surveys'
     
+
