@@ -8,7 +8,6 @@ class Site(models.Model):
         ('YES','Yes'),
         ('NO', 'No')
     )
-    site_id = models.AutoField(primary_key=True)
     river_mile = models.DecimalField(max_digits=5, decimal_places=2)
     site_name = models.CharField(max_length=128)
     deposit_type = models.CharField(max_length=100)
@@ -23,7 +22,6 @@ class Site(models.Model):
         unique_together = ('river_mile', 'site_name')
 
 class Survey(models.Model):
-    survey_id = models.AutoField(primary_key=True)
     site = models.ForeignKey(Site)
     survey_date = models.DateField()
     survey_method = models.CharField(max_length=100)
