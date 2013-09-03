@@ -3,14 +3,14 @@ from django.conf import settings
 
 # Create your models here.
     
-class Sites(models.Model):
+class Site(models.Model):
     YES_NO = (
         ('YES','Yes'),
         ('NO', 'No')
     )
     site_id = models.AutoField(primary_key=True)
     river_mile = models.DecimalField(max_digits=5, decimal_places=2)
-    site_name = models.CharField(max_length=200)
+    site_name = models.CharField(max_length=128)
     deposit_type = models.CharField(max_length=100)
     eddy_size = models.DecimalField(max_digits=6, decimal_places=2)
     exp_ratio_8000 = models.DecimalField(max_digits=5, decimal_places=2)
@@ -22,9 +22,9 @@ class Sites(models.Model):
         db_table = 'sites'
         unique_together = ('river_mile', 'site_name')
 
-class Surveys(models.Model):
+class Survey(models.Model):
     survey_id = models.AutoField(primary_key=True)
-    site = models.ForeignKey(Sites)
+    site = models.ForeignKey(Site)
     survey_date = models.DateField()
     survey_method = models.CharField(max_length=100)
     class Meta:
