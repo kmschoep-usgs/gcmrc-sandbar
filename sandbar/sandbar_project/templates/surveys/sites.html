@@ -10,19 +10,47 @@ Lists and maps all sandbar monitoring sites.
 
 {% block page_style %}
 	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
+	{% css "lib/leaflet-0.6.4/leaflet.css" %}
 	<style type="text/css">
-
+		#sites-map {
+			height: 400px;
+			width: 100%;
+		}
 	</style>
 {% endblock %}
 
 {% block page_script %}
 	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
+	{% js "lib/leaflet-0.6.4/leaflet.js" %}
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#sites-table-div table').fixedHeaderTable({
 				'height' : 400
 			});
+			
+			var map = L.map('sites-map', {
+				center: [36.0, -112.0],
+				zoom : 7
+			});
+			
+			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
+			map.addLayer(baseLayer);
+			
+			var site_markers = [];
+			{% for site in site_list %}
+				var thisMarker = new L.Marker([{{ site.site.geom.y }}, {{ site.site.geom.x }}],{
+					'title' : '{{ site.site.id }}',
+					'riseOnHover' : true
+				});
+				thisMarker.on('mouseover', function(e) {
+					
+				});
+				site_markers.push(thisMarker);
+				
+			{% endfor %}
+			
+			L.layerGroup(site_markers).addTo(map);
 		});
 	</script>	
 {% endblock %}
