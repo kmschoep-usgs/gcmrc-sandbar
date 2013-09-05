@@ -117,11 +117,11 @@ body {
     top: 19px;
     width: 190px;
 }
-.menu ul li:hover ul li a.hide {
+.menu ul li:hover ul li a.top-button {
     background-color: #FFBD00;
     color: #000000;
 }
-.menu ul li:hover ul li:hover a.hide {
+.menu ul li:hover ul li:hover a.top-button {
     background: none repeat scroll 0 0 #FFE2AA;
     color: #000000;
 }

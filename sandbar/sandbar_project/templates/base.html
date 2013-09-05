@@ -16,15 +16,22 @@
      	<meta name="language" content="EN" />
      	<meta name="revised" content="{% block revised %}{% endblock %}" />
      	<meta name="review" content="{% block review %}{% endblock %}" />
+     	
+     	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     	
 		{% css "usgs_style/common.css" %}
 		{% css "usgs_style/custom.css" %}
 		<link rel="alternate stylesheet" media="screen" type="text/css" href="{% static 'usgs_style/none.css' %}" title="no_style" />
 		<link rel="stylesheet" media="print" type="text/css" href="{% static 'usgs_style/print.css' %}" />
 
+		{% css "lib/bootstrap_3.0.0/css/bootstrap.min.css" %}
 		<link rel="shortcut icon" type="image/ico" href="{% static 'images/favicon.ico' %}">
+		
     	{% block page_style %}{% endblock %}
            
+        {% jquery_js %}
+        {% js "lib/bootstrap_3.0.0/js/bootstrap.min.js" %}
+        
     	{% block page_script %}{% endblock %}
 
 	</head>
@@ -53,7 +60,7 @@
 				<div id="topnav2">
 					<div class="menu">
 						<ul>
-							<li><a class="hide" href="http://www.gcmrc.gov/about/about_default.aspx" title="About GCMRC">
+							<li><a class="top-button" href="http://www.gcmrc.gov/about/about_default.aspx" title="About GCMRC">
 									About GCMRC</a>
 								<!--[if lte IE 6]>
 								<a href="../menu/index.html">About GCMRC
@@ -73,7 +80,7 @@
 								</a>
 								<![endif]-->
 							</li>
-							<li><a class="hide" href="http://www.gcmrc.gov/research_areas/research_areas_default.aspx"
+							<li><a class="top-button" href="http://www.gcmrc.gov/research_areas/research_areas_default.aspx"
 								   title="Science Areas">Science Activities</a>
 								<!--[if lte IE 6]>
 								<a href="../menu/index.html">Science Activities
@@ -112,7 +119,7 @@
 								</a>
 								<![endif]-->
 							</li>
-							<li><a class="hide" href="http://www.gcmrc.gov/publications/library.aspx" title="Library and Publications">
+							<li><a class="top-button" href="http://www.gcmrc.gov/publications/library.aspx" title="Library and Publications">
 									Library and Publications</a>
 								<!--[if lte IE 6]>
 								<a href="index.html">Publications
@@ -123,7 +130,7 @@
 								</a>
 								<![endif]-->
 							</li>
-							<li><a class="hide" href="http://www.gcmrc.gov/dasa/default.aspx" title="Maps and Data Portal">
+							<li><a class="top-button" href="http://www.gcmrc.gov/dasa/default.aspx" title="Maps and Data Portal">
 									Maps and Data Portal</a>
 								<!--[if lte IE 6]>
 								<a href="../layouts/index.html">Maps and Data Portal
@@ -141,8 +148,8 @@
 								</a>
 								<![endif]-->
 							</li>
-							<li><a class="hide" href="http://www.gcmrc.gov/education.aspx" title="Education">Education</a></li>
-							<li><a class="hide" href="http://www.gcmrc.gov/events/calendar.aspx" title="Meetings and Events">
+							<li><a class="top-button" href="http://www.gcmrc.gov/education.aspx" title="Education">Education</a></li>
+							<li><a class="top-button" href="http://www.gcmrc.gov/events/calendar.aspx" title="Meetings and Events">
 									Meetings and Events</a>
 								<ul>
 									<li class="drop"><a href="http://www.gcmrc.gov/KnowledgeAssessment.aspx" title="Knowledge Assessment Meetings">
@@ -157,7 +164,7 @@
 				</div>
 			{% endblock %}
 			
-			<div id="page-content">
+			<div id="page-content" class="container">
 				{% block page_content %}{% endblock %}
 			</div>
 			
