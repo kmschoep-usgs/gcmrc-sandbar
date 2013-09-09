@@ -40,7 +40,7 @@ Lists and maps all sandbar monitoring sites.
 			var site_markers = [];
 			{% for site in site_list %}
 				var thisMarker = new SiteMarker([{{ site.site.geom.y }}, {{ site.site.geom.x }}],{
-					'title' : '{{ site.site.id }}',
+					'title' : '{{ site.site.site_name }}',
 					'siteId' : '{{ site.site.id }}',
 					'url' : '{% url "surveys-site" pk=site.site.id %}',
 					'riseOnHover' : true
