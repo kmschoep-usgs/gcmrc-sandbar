@@ -1,5 +1,5 @@
 # Django settings for sandbar project.
-#from django.db import connections
+from sys import argv
 import os
 
 PROJECT_HOME = os.path.dirname(__file__)
@@ -14,17 +14,37 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(SITE_HOME, 'sqlite.db'),                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+# This checks to see if django tests are running (i.e. manage.py test)
+if argv and 1 < len(argv):  
+    RUNNING_TESTS = 'test' in argv
+else:  
+    RUNNING_TESTS= False  
+
+if RUNNING_TESTS:
+    DATABASES = { 
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'test_geodjango_db',                      # Or path to database file if using sqlite3.
+            'USER': 'postgres',                     # Not used with sqlite3.
+            'PASSWORD': '',                  # Not used with sqlite3.
+            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        }
+    }    
+
+else:
+    # Default engine. Should be overridden in local_settings.py to connect to sandbar databases
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': os.path.join(SITE_HOME, 'sqlite.db'),                      # Or path to database file if using sqlite3.
+            # The following settings are not used with sqlite3:
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+            'PORT': '',                      # Set to empty string for default.
+        }
     }
-}
 
 #DATABASE_ROUTERS = ['routers.SandbarRouter']
 
@@ -138,6 +158,8 @@ INSTALLED_APPS = (
     'surveys',
 )
 
+SOUTH_TESTS_MIGRATE = False 
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -177,4 +199,17 @@ except ImportError:
 
 if LOCAL_APPS:
     INSTALLED_APPS += LOCAL_APPS
+
+if os.getenv('JENKINS_URL', False):
+    JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
+#    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
+    INSTALLED_APPS += ('django_jenkins', 'jasmine')
+    PROJECT_APPS = ('jasmine',) # This is where you would add the apps that you would like tested
+    DATABASES['default'].update(dict(
+          ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
+          USER=os.getenv('DBA_SQL_ADMIN'),
+          PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
+          HOST=os.getenv('DBA_SQL_HOST'),
+          PORT=os.getenv('DBA_SQL_PORT')
+    )) # This allows you to define your database to be used for tests using environment variables
 

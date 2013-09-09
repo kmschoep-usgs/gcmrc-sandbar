@@ -11,17 +11,16 @@ Lists and maps all sandbar monitoring sites.
 {% block page_style %}
 	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
 	{% css "lib/leaflet-0.6.4/leaflet.css" %}
+	{% css "css/sandbar_custom.css" %}
 	<style type="text/css">
-		#sites-map {
-			height: 400px;
-			width: 100%;
-		}
+
 	</style>
 {% endblock %}
 
 {% block page_script %}
 	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
 	{% js "lib/leaflet-0.6.4/leaflet.js" %}
+	{% js "js/SiteMarker.js" %}
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -30,8 +29,9 @@ Lists and maps all sandbar monitoring sites.
 			});
 			
 			var map = L.map('sites-map', {
-				center: [36.0, -112.0],
-				zoom : 7
+				center: [36.5, -112.0],
+				zoom : 7,
+				attributionControl: false
 			});
 			
 			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
@@ -39,12 +39,14 @@ Lists and maps all sandbar monitoring sites.
 			
 			var site_markers = [];
 			{% for site in site_list %}
-				var thisMarker = new L.Marker([{{ site.site.geom.y }}, {{ site.site.geom.x }}],{
+				var thisMarker = new SiteMarker([{{ site.site.geom.y }}, {{ site.site.geom.x }}],{
 					'title' : '{{ site.site.id }}',
+					'siteId' : '{{ site.site.id }}',
 					'riseOnHover' : true
 				});
 				thisMarker.on('mouseover', function(e) {
-					
+					var siteRowEl = $('#site-' + this.getSiteId());
+					// Go to site page.
 				});
 				site_markers.push(thisMarker);
 				
@@ -57,8 +59,9 @@ Lists and maps all sandbar monitoring sites.
 
 {% block page_content %}
 	<h2>Sandbar Monitoring Sites</h2>
-	
-	<div id="sites-map">
+	<div id="sites-map-div">
+		<div id="sites-map" class="well">
+		</div>
 	</div>
 	<div id="sites-table-div" class=".table-responsive">
 		<table class="table table-striped table-fixed-header">
@@ -73,7 +76,7 @@ Lists and maps all sandbar monitoring sites.
 			</thead>
 			<tbody>
 				{% for site in site_list %}
-					<tr>
+					<tr id="site-{{ site.site.id }}">
 						<td></td><!-- This will be for the site thumbnail -->
 						<td>{{ site.site.river_mile }}</td>
 						<td>{{ site.site.site_name }}</td>
