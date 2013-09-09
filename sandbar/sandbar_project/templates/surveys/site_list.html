@@ -18,7 +18,6 @@ Lists and maps all sandbar monitoring sites.
 {% endblock %}
 
 {% block page_script %}
-	{% django_js %}
 	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
 	{% js "lib/leaflet-0.6.4/leaflet.js" %}
 	{% js "js/SiteMarker.js" %}
@@ -43,10 +42,11 @@ Lists and maps all sandbar monitoring sites.
 				var thisMarker = new SiteMarker([{{ site.site.geom.y }}, {{ site.site.geom.x }}],{
 					'title' : '{{ site.site.id }}',
 					'siteId' : '{{ site.site.id }}',
+					'url' : '{% url "surveys-site" pk=site.site.id %}',
 					'riseOnHover' : true
 				});
 				thisMarker.on('click', function(e) {
-					location.href = Django.url('surveys-site', {'pk' : this.getSiteId()})
+					location.href = this.getUrl();
 				});
 				site_markers.push(thisMarker);
 				

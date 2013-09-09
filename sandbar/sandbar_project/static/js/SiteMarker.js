@@ -1,10 +1,15 @@
 SiteMarker = L.Marker.extend({
 	options: {
-		siteId : ''
+		siteId : '',
+		url: '',
 	},
 
 	getSiteId: function() {
 		return this.options.siteId;
+	},
+	
+	getUrl: function() {
+		return this.options.url;
 	}
 });
 
