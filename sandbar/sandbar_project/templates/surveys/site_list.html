@@ -18,6 +18,7 @@ Lists and maps all sandbar monitoring sites.
 {% endblock %}
 
 {% block page_script %}
+	{% django_js %}
 	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
 	{% js "lib/leaflet-0.6.4/leaflet.js" %}
 	{% js "js/SiteMarker.js" %}
@@ -44,9 +45,8 @@ Lists and maps all sandbar monitoring sites.
 					'siteId' : '{{ site.site.id }}',
 					'riseOnHover' : true
 				});
-				thisMarker.on('mouseover', function(e) {
-					var siteRowEl = $('#site-' + this.getSiteId());
-					// Go to site page.
+				thisMarker.on('click', function(e) {
+					location.href = Django.url('surveys-site', {'pk' : this.getSiteId()})
 				});
 				site_markers.push(thisMarker);
 				
@@ -79,7 +79,7 @@ Lists and maps all sandbar monitoring sites.
 					<tr id="site-{{ site.site.id }}">
 						<td></td><!-- This will be for the site thumbnail -->
 						<td>{{ site.site.river_mile }}</td>
-						<td>{{ site.site.site_name }}</td>
+						<td><a href="{% url 'surveys-site' pk=site.site.id %}">{{ site.site.site_name }}</a></td>
 						<td>{{ site.survey.min_date }} - {{site.survey.max_date }}</td>
 						<td></td>
 					</tr>

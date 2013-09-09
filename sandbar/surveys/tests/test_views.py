@@ -5,7 +5,7 @@ from django.contrib.gis.geos import Point
 from django.test import TestCase
 
 from ..models import Site, Survey
-from ..views import SitesView
+from ..views import SitesListView
 
 class SitesViewTestCase(TestCase):
     
@@ -59,7 +59,7 @@ class SitesViewTestCase(TestCase):
                                         survey_date=datetime.date(2013, 7, 1),
                                         survey_method='method1')
         
-        self.test_view = SitesView()
+        self.test_view = SitesListView()
        
     def test_get_query_set(self):
         result = self.test_view.get_queryset()

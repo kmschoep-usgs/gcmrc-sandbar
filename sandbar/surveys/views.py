@@ -1,15 +1,15 @@
 
 from django.db.models import Min, Max
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .models import Site, Survey
 
-class SitesView(ListView):
+class SitesListView(ListView):
     '''
     Extends ListView to serve site data including the min and max survey date. 
     '''
     
-    template_name = 'surveys/sites.html'
+    template_name = 'surveys/site_list.html'
     model = Site
     
     context_object_name = 'site_list'
@@ -31,3 +31,11 @@ class SitesView(ListView):
                            'survey' : Survey.objects.filter(site=site).aggregate(min_date=Min('survey_date'),
                                                                                  max_date=Max('survey_date'))})
         return result    
+
+class SiteDetailView(DetailView):
+
+    template_name = 'surveys/site.html'
+    model = Site
+    
+    context_object_name = 'site'
+    

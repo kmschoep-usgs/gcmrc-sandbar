@@ -1,10 +1,13 @@
 
 from django.conf.urls import patterns, url
 
-from .views import SitesView
+from .views import SitesListView, SiteDetailView
 
 urlpatterns = patterns('',
     url(r'^sites/$',
-        SitesView.as_view(),
-        name='surveys-sites')
+        SitesListView.as_view(),
+        name='surveys-site_list'),
+    url(r'^site/(?P<pk>\d+)/$',
+        SiteDetailView.as_view(),
+        name='surveys-site'),
 )
