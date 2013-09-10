@@ -161,10 +161,9 @@ INSTALLED_APPS = (
 
 SOUTH_TESTS_MIGRATE = False 
 
-# Check to see if log directory is present. If not use /tmp.
 LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
 if not os.path.exists(LOG_FILE_DIR):
-    LOG_FILE_DIR='/tmp/'
+    LOG_FILE_DIR = SITE_HOME + '/'
 
 LOGGING = {
     'version': 1,
@@ -209,6 +208,19 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'common': {
+            'handlers': ['file'],
+            'level' : 'DEBUG',
+            'propogate' : True,
+            'filters' : ['require_debug_true']
+        },
+        'surveys': {
+            'handlers': ['file'],
+            'level' : 'DEBUG',
+            'propogate' : True,
+            'filters' : ['require_debug_true']
+        },                
+
     }
 }
 
