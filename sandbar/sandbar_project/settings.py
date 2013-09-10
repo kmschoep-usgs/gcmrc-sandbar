@@ -156,21 +156,31 @@ INSTALLED_APPS = (
     'south',
     #CIDA apps
     'surveys',
+    'common'
 )
 
 SOUTH_TESTS_MIGRATE = False 
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+# Check to see if log directory is present. If not use /tmp.
+LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
+if not os.path.exists(LOG_FILE_DIR):
+    LOG_FILE_DIR='/tmp/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'standard' : {
+            'format': '%(levelname)s %(asctime)s %(module)s: %(message)s'
+        }
+    },
+
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'require_debug_true' : {
+            '()' : 'django.utils.log.RequireDebugTrue'
         }
     },
     'handlers': {
@@ -178,7 +188,20 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'file': {
+           'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FILE_DIR + 'server_logs',
+            'maxBytes': 1024000,
+            'backupCount': 10,
+            'formatter': 'standard'                 
+        },
+       'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'standard'  
+        }               
     },
     'loggers': {
         'django.request': {
@@ -189,6 +212,9 @@ LOGGING = {
     }
 }
 
+GDAWS_SERVICE_URL = 'http://www.gcmrc.gov/discharge_qw_sediment/services/agg/'
+
+LOCAL_LOGGERS = None
 LOCAL_APPS = None
 
 try:
@@ -196,6 +222,9 @@ try:
 except ImportError:
     # add apps to this variable for this specific server configuration
     pass
+
+if LOCAL_LOGGERS:
+    LOGGING['loggers'].update(LOCAL_LOGGERS)
 
 if LOCAL_APPS:
     INSTALLED_APPS += LOCAL_APPS

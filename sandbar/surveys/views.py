@@ -1,7 +1,9 @@
 
+from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView
 
+from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey
 
 class SitesListView(ListView):
@@ -38,4 +40,11 @@ class SiteDetailView(DetailView):
     model = Site
     
     context_object_name = 'site'
+    
+class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
+    ''' 
+    Extends the SimpleWebServiceProxyView to implement the GDAWS service
+    '''
+    service_url = settings.GDAWS_SERVICE_URL
+    
     
