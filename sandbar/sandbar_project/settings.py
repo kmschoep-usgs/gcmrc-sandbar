@@ -248,6 +248,7 @@ if os.getenv('JENKINS_URL', False):
     PROJECT_APPS = ('common', 'surveys',) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
           ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
+          NAME=os.getenv('DBA_SQL_DB_NAME'),
           USER=os.getenv('DBA_SQL_ADMIN'),
           PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
           HOST=os.getenv('DBA_SQL_HOST'),
