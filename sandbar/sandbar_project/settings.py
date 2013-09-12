@@ -25,7 +25,7 @@ if RUNNING_TESTS:
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'test_geodjango_db',                      # Or path to database file if using sqlite3.
-            'USER': 'postgres',                     # Not used with sqlite3.
+            'USER': 'djangotest',                     # Not used with sqlite3.
             'PASSWORD': '',                  # Not used with sqlite3.
             'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
@@ -244,8 +244,8 @@ if LOCAL_APPS:
 if os.getenv('JENKINS_URL', False):
     JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
-    INSTALLED_APPS += ('django_jenkins', 'jasmine')
-    PROJECT_APPS = ('jasmine',) # This is where you would add the apps that you would like tested
+    INSTALLED_APPS += ('django_jenkins', )
+    PROJECT_APPS = ('common', 'surveys',) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
           ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
           USER=os.getenv('DBA_SQL_ADMIN'),
