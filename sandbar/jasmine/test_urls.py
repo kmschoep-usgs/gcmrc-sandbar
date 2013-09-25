@@ -7,6 +7,7 @@ class ProjectJasmineView(JasmineView):
     template_name = 'jasmine_test_runner.html'
     js_files = (
         'js/SiteMarker.js',
+        'js/DateRange.js',
         'js/tests/*.spec.js'
     )
     

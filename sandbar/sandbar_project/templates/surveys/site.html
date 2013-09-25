@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load js %}
+
 {% block title %}Sandbar - {{ site.site_name }}{% endblock %}
 
 {% block page_description %}
@@ -7,6 +9,77 @@
 	river mile {{ site.river_mile }}
 {% endblock %}
 
+{% block page_style %}
+	{% css "css/sandbar_custom.css" %}
+{% endblock %}
+
+{% block page_script %}
+	{% js "lib/modernizr.custom.45705.js" %}
+	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
+	{% js "lib/dygraph-combined.js" %}
+	
+	{% js "js/DateRange.js" %}
+	{% js "js/FlowPlot.js" %}
+	
+	<script type="text/javascript">
+		$.webshims.polyfill();
+		
+		
+		$(document).ready(function() {
+			var dateRange = new DateRange($('#start-date'), $('#end-date'));
+			var flowplot1 = new FlowPlot('flow-plot-1');
+			var flowplot2 = new FlowPlot('flow-plot-2');
+		});
+	</script>
+{% endblock %}
+
 {% block page_content %}
-	<h2>{{ site.site_name }} - {{ site.river_mile }}</h2>
+	<h2>{{ site.site_name }} - {{ site.river_mile }} {{ site.river_side }}</h2>
+	<div class="col-md-3">
+		<div id="parameter-selection-div" class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">Parameters</h4>
+			</div>
+			<div class="panel-body">
+				<div class="parameter-group">
+					<input id="sand-cumul-load-checkbox" type="checkbox" value="Sand Cumul Load" />
+					<label for="sand-cumul-load-checkbox">Cumulative Sand Load</label>			
+				</div>
+				<div class="parameter-group">
+					<input id="discharge-checkbox"type="checkbox" value="Discharge" />
+					<label for="discharge-checkbox">Discharge</label>			
+				</div>
+				<div class="parameter-group">
+					<label for="start-date">Start&nbsp;</label>
+					<input type="date" id="start-date" />
+				</div>
+				 <div class="parameter-group">
+					<label for="end-date">End&nbsp;</label>
+					<input type="date" id="end-date"/>
+				</div>
+				<button type="button" class="btn btn-primary btn-block">Update Plots</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div id="flow-plot-1-div" class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">Flow Plot 1</h4>
+			</div>
+			<div class="panel-body">
+				<div id="flow-plot-1">
+				</div>
+			</div>
+		</div>
+		<div id="flow-plot-2-div" class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">Flow Plot 2</h4>
+			</div>
+			<div class="panel-body">
+				<div id="flow-plot-2">
+				</div>
+			</div>
+		</div>
+		
+	</div>
 {% endblock %}
