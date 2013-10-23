@@ -3,7 +3,7 @@ from sys import argv
 import os
 
 PROJECT_HOME = os.path.dirname(__file__)
-SITE_HOME = PROJECT_HOME.rsplit('/', 1)[0]
+SITE_HOME = os.path.split(PROJECT_HOME)[0]
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
