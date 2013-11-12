@@ -14,21 +14,43 @@
 {% endblock %}
 
 {% block page_script %}
-	{% js "lib/modernizr.custom.45705.js" %}
+	<script type="text/javascript">
+		var SB = {};
+		SB.GDAWS_SERVICE = '{% url "surveys-gdaws" op="" %}';
+		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
+	</script>
+	
+ 	{% js "lib/modernizr.custom.45705.js" %}
 	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
 	{% js "lib/dygraph-combined.js" %}
+	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}"
 	
+	{% js "js/Config.js" %}
 	{% js "js/DateRange.js" %}
-	{% js "js/FlowPlot.js" %}
+	{% js "js/GDAWSFormatUtils.js" %}
+	{% js "js/SitePlots.js" %}
 	
 	<script type="text/javascript">
-		$.webshims.polyfill();
-		
-		
+		$.webshims.polyfill();		
+				
 		$(document).ready(function() {
-			var dateRange = new DateRange($('#start-date'), $('#end-date'));
-			var flowplot1 = new FlowPlot('flow-plot-1');
-			var flowplot2 = new FlowPlot('flow-plot-2');
+			var dateRange = new SB.DateRange($('#start-date'), $('#end-date'));
+						
+			// Initialize dygraphs
+			var sitePlots = new SB.SitePlots('graphs-div', '09382000'); // NOTE need to change this back to "{{ site.gdaws_site_id }}");
+			
+			// Click hander for update plots
+			$('#update-plots-button').click(function(event) {
+				$('form').validate({
+					submitHandler: function(form) {
+						var params = [];
+						$('#parameter-selection-div input:checked').each(function() {
+							params.push($(this).attr('name'));
+						});
+						sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
+					}
+				});
+			});
 		});
 	</script>
 {% endblock %}
@@ -40,13 +62,14 @@
 			<div class="panel-heading">
 				<h4 class="panel-title">Parameters</h4>
 			</div>
+			<form>
 			<div class="panel-body">
 				<div class="parameter-group">
-					<input id="sand-cumul-load-checkbox" type="checkbox" value="Sand Cumul Load" />
+					<input id="sand-cumul-load-checkbox" name="cumulSandLoad" type="checkbox" value="Sand Cumul Load" />
 					<label for="sand-cumul-load-checkbox">Cumulative Sand Load</label>			
 				</div>
 				<div class="parameter-group">
-					<input id="discharge-checkbox"type="checkbox" value="Discharge" />
+					<input id="discharge-checkbox"type="checkbox" name="discharge" value="Discharge" />
 					<label for="discharge-checkbox">Discharge</label>			
 				</div>
 				<div class="parameter-group">
@@ -57,29 +80,21 @@
 					<label for="end-date">End&nbsp;</label>
 					<input type="date" id="end-date"/>
 				</div>
-				<button type="button" class="btn btn-primary btn-block">Update Plots</button>
+				<button id="update-plots-button" type="submit" class="btn btn-primary btn-block">Update Plots</button>
 			</div>
+			</form>
 		</div>
 	</div>
 	<div class="col-md-9">
-		<div id="flow-plot-1-div" class="panel panel-default">
+		<div id="graphs-panel-div" class="panel panel-default">
 			<div class="panel-heading">
-				<h4 class="panel-title">Flow Plot 1</h4>
+				<h4 class="panel-title">Plots</h4>
 			</div>
-			<div class="panel-body">
-				<div id="flow-plot-1">
-				</div>
+			<div id="graphs-div" class="panel-body">
+				<div id="loading-div" style="display: none;">Loading ...</div>
+				<div id="cumulSandLoad-graph-div" class="graph-div"></div>
+				<div id="discharge-graph-div" class="graph-div"></div>
 			</div>
-		</div>
-		<div id="flow-plot-2-div" class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">Flow Plot 2</h4>
-			</div>
-			<div class="panel-body">
-				<div id="flow-plot-2">
-				</div>
-			</div>
-		</div>
-		
+		</div>		
 	</div>
 {% endblock %}

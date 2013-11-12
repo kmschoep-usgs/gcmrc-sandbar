@@ -13,7 +13,11 @@ class SimpleWebServiceProxyView(View):
     service_url = '' # Web service url ending in slash
     
     def get(self, request, *args, **kwargs):
-        target_url = '%s?%s' % (self.service_url, request.META.get('QUERY_STRING', ''))
+        if  'op' in kwargs:
+            kwargs['op'] = kwargs['op'] + '/'
+        else:
+            kwargs['op'] = '';
+        target_url = '%s%s?%s' % (self.service_url, kwargs['op'], request.META.get('QUERY_STRING', ''))
         
         logger.debug('Proxy url is ' + target_url)
         

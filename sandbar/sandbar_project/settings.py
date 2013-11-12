@@ -224,7 +224,7 @@ LOGGING = {
     }
 }
 
-GDAWS_SERVICE_URL = 'http://www.gcmrc.gov/discharge_qw_sediment/services/agg/'
+GDAWS_SERVICE_URL = 'http://www.gcmrc.gov/discharge_qw_sediment/services/'
 
 LOCAL_LOGGERS = None
 LOCAL_APPS = None

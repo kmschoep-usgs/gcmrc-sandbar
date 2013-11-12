@@ -8,6 +8,10 @@ class ProjectJasmineView(JasmineView):
     js_files = (
         'js/SiteMarker.js',
         'js/DateRange.js',
+        'js/GDAWSService.js',
+        'js/GDAWSFormatUtils.js',
+        'js/SitePlots.js',
+        'js/tests/lib/sinon-1.7.3.js',
         'js/tests/*.spec.js'
     )
     

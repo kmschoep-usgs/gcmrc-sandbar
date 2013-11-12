@@ -5,3 +5,15 @@
 .parameter-group {
 	margin: 4px;
 }
+#graphs-div {
+	position: relative;
+}
+#loading-div {
+
+}
+.dygraph-legend {
+	text-align: left!important;
+}
+.graph-div {
+	width: 100%!important;
+}

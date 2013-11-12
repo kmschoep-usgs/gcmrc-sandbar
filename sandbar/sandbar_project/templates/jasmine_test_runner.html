@@ -5,7 +5,12 @@
 {% block js_init %}
     {{ block.super }}
     {% jquery_js "1.10.2" %}
-    {% js "lib/leaflet-0.6.4/leaflet.js" %} 
+    {% js "lib/leaflet-0.6.4/leaflet.js" %}
+    {% js "lib/dygraph-combined.js" %}
+    <script type="text/javascript">
+    	var SB = {};
+    </script>
+     
 {% endblock %}
 
 {% block js_content %}
