@@ -6,16 +6,18 @@ SB.DateRange = function(startEl, endEl) {
 	this.endEl.val(SB.Config.SITE_INITIAL_END_DATE).prop('min', SB.Config.SITE_MIN_DATE).prop('max', SB.Config.SITE_MAX_DATE);
 	
 	this.startEl.bind('blur', $.proxy(function() {
-		if (this.startEl.get(0).checkValidity()) {
-			this.endEl.prop('min', $(this.startEl).val());
+		var startVal = $(this.startEl).val();
+		if (this.startEl.prop('max') >= startVal) {
+			this.endEl.prop('min', startVal);
 			return false;
 		}
 		
 	}, this));
 	
 	this.endEl.bind('blur', $.proxy(function() {
-		if (this.endEl.get(0).checkValidity()) {
-			this.startEl.prop('max', $(this.endEl).val());
+		var endVal = $(this.endEl).val();
+		if(this.endEl.prop('min') <= endVal) {
+			this.startEl.prop('max', endVal);
 			return false;
 		}
 	}, this));
