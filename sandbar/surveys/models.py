@@ -13,7 +13,7 @@ class Site(models.Model):
     river_mile = models.DecimalField(max_digits=5, decimal_places=2)
     river_side = models.CharField(max_length=1)
     site_name = models.CharField(max_length=128)
-    gdaws_site_id = models.IntegerField(max_length=10, null=True)
+    gdaws_site_id = models.CharField(max_length=40, null=True)
     gcmrc_site_id = models.CharField(max_length=5, blank=True)
     deposit_type = models.CharField(max_length=100)
     eddy_size = models.DecimalField(max_digits=6, decimal_places=2)

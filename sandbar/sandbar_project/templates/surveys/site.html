@@ -37,7 +37,7 @@
 			var dateRange = new SB.DateRange($('#start-date'), $('#end-date'));
 						
 			// Initialize dygraphs
-			var sitePlots = new SB.SitePlots('graphs-div', '09382000'); // NOTE need to change this back to "{{ site.gdaws_site_id }}");
+			var sitePlots = new SB.SitePlots('graphs-div', "{{ site.gdaws_site_id }}");
 			
 			$('#update-plots-button').click(function(event) {
 				if ($('form').valid()) {
@@ -48,7 +48,9 @@
 					sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
 				}
 			});
-			$('form').validate();
+			$('form').validate({
+				onsubmit: false
+			});
 		});
 	</script>
 {% endblock %}
