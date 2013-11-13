@@ -27,3 +27,6 @@ input[type=date] {
 .error {
 	color: red;
 }
+.graph-div {
+	margin-bottom: 1em;
+}
