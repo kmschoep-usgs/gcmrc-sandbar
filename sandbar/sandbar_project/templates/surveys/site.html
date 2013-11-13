@@ -39,18 +39,16 @@
 			// Initialize dygraphs
 			var sitePlots = new SB.SitePlots('graphs-div', '09382000'); // NOTE need to change this back to "{{ site.gdaws_site_id }}");
 			
-			// Click hander for update plots
 			$('#update-plots-button').click(function(event) {
-				$('form').validate({
-					submitHandler: function(form) {
-						var params = [];
-						$('#parameter-selection-div input:checked').each(function() {
-							params.push($(this).attr('name'));
-						});
-						sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
-					}
-				});
+				if ($('form').valid()) {
+					var params = [];
+					$('#parameter-selection-div input:checked').each(function() {
+						params.push($(this).attr('name'));
+					});
+					sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
+				}
 			});
+			$('form').validate();
 		});
 	</script>
 {% endblock %}
@@ -80,7 +78,7 @@
 					<label for="end-date">End&nbsp;</label>
 					<input type="date" id="end-date"/>
 				</div>
-				<button id="update-plots-button" type="submit" class="btn btn-primary btn-block">Update Plots</button>
+				<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 			</div>
 			</form>
 		</div>

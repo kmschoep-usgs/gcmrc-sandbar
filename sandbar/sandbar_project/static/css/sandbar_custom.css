@@ -17,3 +17,6 @@
 .graph-div {
 	width: 100%!important;
 }
+input[type=date] {
+	width: 160px;
+}
