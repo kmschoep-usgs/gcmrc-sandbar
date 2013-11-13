@@ -1,9 +1,9 @@
 SB.Config = {};
 SB.Config.SITE_PARAMETERS = {
 	cumulSandLoad : {
-		param : 'Sand Cumul Load',
+		param : 'S Sand Cumul Load',
 		colName : 'cumulLoad',
-		graphYLabel : 'Cumulative Sand Load',
+		graphYLabel : 'Cumulative Sand Load (metric tons)',
 		shortLabel : 'Cumul Sand Load'
 	},
 	discharge : {

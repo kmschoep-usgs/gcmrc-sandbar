@@ -11,13 +11,7 @@ describe('Test SB.DateRange object', function() {
 		
 		testDivEl = $('#test-div');
 		
-		SB.Config = {};
-		SB.Config.SITE_INITIAL_START_DATE = '2013-08-15';
-		SB.Config.SITE_INITIAL_END_DATE = '2013-09-14';
-		SB.Config.SITE_MIN_DATE = '1996-01-01';
-		SB.Config.SITE_MAX_DATE = SB.Config.SITE_INITIAL_END_DATE;
-		
-		dateRange = new SB.DateRange($('#start-date'), $('#end-date'));
+		dateRange = new SB.DateRange($('#start-date'), $('#end-date'), '2013-08-15', '2013-09-14', '1996-01-01', '2013-09-14');
 	});
 	
 	afterEach(function() {
@@ -51,15 +45,21 @@ describe('Test SB.DateRange object', function() {
 	
 	it('Expects the min property on end date to be unchanged if the start date entered value is not valid', function() {
 		dateRange.startEl.val('2013-10-14');
-		dateRange.startEl.blur();
+		dateRange.startEl.blur();		
+		expect(dateRange.endEl.prop('min')).toEqual('1996-01-01');
 		
+		dateRange.startEl.val('1995-01-01');
+		dateRange.startEl.blur();
 		expect(dateRange.endEl.prop('min')).toEqual('1996-01-01');
 	});
 	
 	it('Expects the max property on start date to be unchanged if the end date entered is not valid', function() {
 		dateRange.endEl.val('1995-01-01');
-		dateRange.endEl.blur();
+		dateRange.endEl.blur();		
+		expect(dateRange.startEl.prop('max')).toEqual('2013-09-14');
 		
+		dateRange.endEl.val('2013-10-14');
+		dateRange.endEl.blur90;
 		expect(dateRange.startEl.prop('max')).toEqual('2013-09-14');
 	});
 

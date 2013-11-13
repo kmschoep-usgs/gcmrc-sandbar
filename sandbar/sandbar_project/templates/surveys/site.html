@@ -23,7 +23,7 @@
  	{% js "lib/modernizr.custom.45705.js" %}
 	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
 	{% js "lib/dygraph-combined.js" %}
-	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}"
+	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}
 	
 	{% js "js/Config.js" %}
 	{% js "js/DateRange.js" %}
@@ -34,7 +34,7 @@
 		$.webshims.polyfill();		
 				
 		$(document).ready(function() {
-			var dateRange = new SB.DateRange($('#start-date'), $('#end-date'));
+			var dateRange = new SB.DateRange($('#start-date'), $('#end-date'), SB.Config.SITE_INITIAL_START_DATE, SB.Config.SITE_INITIAL_END_DATE, SB.Config.SITE_MIN_DATE, SB.Config.SITE_MAX_DATE);
 						
 			// Initialize dygraphs
 			var sitePlots = new SB.SitePlots('graphs-div', "{{ site.gdaws_site_id }}");
