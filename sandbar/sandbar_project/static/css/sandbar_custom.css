@@ -9,7 +9,8 @@
 	position: relative;
 }
 #loading-div {
-
+	text-align: center;
+	font-size: 2em;
 }
 .dygraph-legend {
 	text-align: left!important;
@@ -17,9 +18,12 @@
 .graph-div {
 	width: 100%!important;
 }
+label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
+	width: 3em;
+}
 input[type=date] {
 	width: 160px;
 }
-.error, .user-error {
+.error {
 	color: red;
 }
