@@ -29,15 +29,15 @@ describe('Tests for GDAWSFormatUtils', function() {
 			SB.Config = {
 				SITE_PARAMETERS : {
 					P1 : {
-						param: 'parameter 1',
+						groupName: 'parameter 1',
 						colName: 'Param1'
 					},
 					P2 : {
-						param: 'parameter 2',
+						groupName: 'parameter 2',
 						colName: 'Param2'
 					},
 					P3 : {
-						param: 'parameter 3',
+						groupName: 'parameter 3',
 						colName: 'Param3'
 					}
 				}

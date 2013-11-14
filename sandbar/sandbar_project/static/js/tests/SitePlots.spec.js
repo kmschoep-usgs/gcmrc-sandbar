@@ -2,7 +2,7 @@ describe('Test SitePlots', function() {
 	
 	beforeEach(function() {
 		var html = '<div id="graphs-div">' + 
-			'<div id="loading-div"></div>' +
+			'<div id="graphs-loading-div"></div>' +
 			'<div id="P1-graph-div" style="display:none;"></div>' + 
 			'<div id="P2-graph-div" style="display:none;"></div>' +
 			'<div id="P3-graph-div" style="display:none;"></div>' + 
@@ -74,7 +74,7 @@ describe('Test SitePlots', function() {
 		
 		it('Expects loading div to be visible before ajax call completes', function() {
 			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3']);
-			expect($('#loading-div').is(':visible')).toBe(true);
+			expect($('#graphs-loading-div').is(':visible')).toBe(true);
 		});
 		
 		it('Expects ajax to be called', function() {
