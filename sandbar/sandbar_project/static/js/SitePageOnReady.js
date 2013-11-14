@@ -56,13 +56,23 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 			$('#parameter-selection-div input:checked').each(function() {
 				params.push($(this).val());
 			});
-			sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
+			if (params.length === 0) {
+				$('#parameter-errors').append('Please select one or more parameters to plot');
+				$('#parameter-errors').show();
+			}
+			else {
+				$('#parameter-errors').html('');
+				$('#parameter-errors').hide();
+				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
+			}
 		}
 	});
 	$('form').validate({
 		onsubmit: false,
+		errorClass: 'text-danger',
 		errorPlacement: function(error, element) {
 			error.appendTo(element.parent());
-		}
+		},
+		
 	});
 };

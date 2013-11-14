@@ -41,7 +41,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 								data, {
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',
 							labelsDivWidth: 300,
-							yAxisLabelWidth: 80,
+							yAxisLabelWidth: 95,
 							showRangeSelector : true							
 						});
 					}

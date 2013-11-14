@@ -11,6 +11,8 @@
 .loading-div {
 	text-align: center;
 	font-size: 2em;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 .dygraph-legend {
 	text-align: left!important;
