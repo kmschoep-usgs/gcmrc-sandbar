@@ -15,7 +15,7 @@ SB.GDAWSFormatUtils = {
 		var paramsData = '';
 		for (var i = 0; i < params.length; i++) {
 			var thisConfig = SB.Config.SITE_PARAMETERS[params[i]];
-			paramsData += '&column[]=inst!' + thisConfig.param +  '!' + gdawsSiteId + '!' + thisConfig.colName;
+			paramsData += '&column[]=inst!' + thisConfig.groupName +  '!' + gdawsSiteId + '!' + thisConfig.colName;
 		}
 		return 'beginPosition=' + startDate + '&endPosition=' + endDate + 
 			'&column[]=time!ISO!time' + paramsData +

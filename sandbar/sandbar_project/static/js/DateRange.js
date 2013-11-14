@@ -1,9 +1,26 @@
-SB.DateRange = function(startEl, endEl, initialStart, initialEnd, minDate, maxDate) {
+SB.DateRange = function(startEl, endEl, options /* Object */) {
+	/*
+	 * The following options are used
+	 * initialStart - date string to set startEl's value
+	 * initialEnd - date string to set endEl's value
+	 * minDate - dateString to set min prop
+	 * maxDate - dateString to set max prop
+	 */
+	var today = new Date();
+	
+	this._options = {
+		initialStart : new Date(today.getTime() - 30 * 24 * 60 *60 *1000).toISOString().slice(0, 10),
+		initialEnd : today.toISOString().slice(0, 10),
+		minDate : '1900-01-01',
+		maxDate : today.toISOString().slice(0, 10)
+	}
+
 	this.startEl = startEl;
 	this.endEl = endEl;
+	$.extend(this._options, options);
 	
-	this.startEl.val(initialStart).attr('min', minDate).attr('max', maxDate);
-	this.endEl.val(initialEnd).attr('min', minDate).attr('max', maxDate);
+	this.startEl.val(this._options.initialStart).attr('min', this._options.minDate).attr('max', this._options.initialEnd);
+	this.endEl.val(this._options.initialEnd).attr('min', this._options.initialStart).attr('max', this._options.maxDate);
 	
 	this.startEl.bind('blur', $.proxy(function() {
 		var startVal = $(this.startEl).val();

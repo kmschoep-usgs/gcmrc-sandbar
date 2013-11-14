@@ -1,20 +1,16 @@
 SB.Config = {};
+/*SB.Config.SITE_PARAMETERS = ['S Sand Cumul Load', 'Discharge']; */
 SB.Config.SITE_PARAMETERS = {
 	cumulSandLoad : {
-		param : 'S Sand Cumul Load',
+		groupName : 'S Sand Cumul Load',
 		colName : 'cumulLoad',
-		graphYLabel : 'Cumulative Sand Load (metric tons)',
-		shortLabel : 'Cumul Sand Load'
+		description: {} /* Filled in when page is loaded */
 	},
 	discharge : {
-		param : 'Discharge',
+		groupName : 'Discharge',
 		colName: 'discharge',
-		graphYLabel : 'Discharge (cfs)',
-		shortLabel : 'Discharge'
+		description: {} /* Filled in when page is loaded */
 	}
 };
-SB.Config.SITE_INITIAL_END_DATE = new Date().toISOString().slice(0, 10);
-SB.Config.SITE_INITIAL_START_DATE = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-SB.Config.SITE_MIN_DATE = '1996-01-01';
-SB.Config.SITE_MAX_DATE = SB.Config.SITE_INITIAL_END_DATE;
+
 

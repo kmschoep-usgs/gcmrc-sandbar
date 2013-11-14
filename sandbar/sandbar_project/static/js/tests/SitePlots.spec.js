@@ -14,23 +14,26 @@ describe('Test SitePlots', function() {
 				P1 : {
 					param: 'parameter 1',
 					colName: 'Param1',
-					graphYLabel : 'P1 data',
-					labels: ['Date', 'P1'],
-					shortLabel: 'P1'
+					description: {
+						displayName: 'P1 data',
+						unitsShort : 'm'
+					}
 				},
 				P2 : {
 					param: 'parameter 2',
 					colName: 'Param2',
-					graphYLabel : 'P2 data',
-					labels: ['Time', 'P2'],
-					shortLabel: 'P2'
+					description: {
+						displayName: 'P2 data',
+						unitsShort : 'km'
+					}
 				},
 				P3 : {
 					param: 'parameter 3',
 					colName: 'Param3',
-					graphYLabel: 'P3 data',
-					labels: ['Time', 'P3'],
-					shortLabel: 'P3'
+					description: {
+						displayName: 'P3 data',
+						unitsShort : 'mi'
+					}
 				}
 			}
 		};

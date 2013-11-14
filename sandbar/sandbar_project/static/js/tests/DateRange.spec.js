@@ -2,7 +2,6 @@ describe('Test SB.DateRange object', function() {
 	
 	var testDivEl;
 	var dateRange;
-	var today = '2013-09-14'
 	
 	beforeEach(function() {
 		var startHtml = '<input type="date" id="start-date" />';
@@ -11,7 +10,12 @@ describe('Test SB.DateRange object', function() {
 		
 		testDivEl = $('#test-div');
 		
-		dateRange = new SB.DateRange($('#start-date'), $('#end-date'), '2013-08-15', '2013-09-14', '1996-01-01', '2013-09-14');
+		dateRange = new SB.DateRange($('#start-date'), $('#end-date'), {
+			initialStart : '2013-08-15', 
+			initialEnd : '2013-09-14',
+			minDate: '1996-01-01',
+			maxDate: '2013-09-14'
+		});
 	});
 	
 	afterEach(function() {
@@ -25,7 +29,7 @@ describe('Test SB.DateRange object', function() {
 	
 	it('Expects the min and max props to be set', function() {
 		expect(dateRange.startEl.prop('min')).toEqual('1996-01-01');
-		expect(dateRange.endEl.prop('min')).toEqual('1996-01-01');
+		expect(dateRange.endEl.prop('min')).toEqual('2013-08-15');
 		expect(dateRange.startEl.prop('max')).toEqual('2013-09-14');
 		expect(dateRange.endEl.prop('max')).toEqual('2013-09-14')
 	});
@@ -40,17 +44,17 @@ describe('Test SB.DateRange object', function() {
         dateRange.endEl.val('1998-01-01');
         dateRange.endEl.blur();
         
-        expect(dateRange.startEl.prop('max')).toEqual('1998-01-01');
+        expect(dateRange.startEl.prop('max')).toEqual('2013-09-14');
 	});
 	
 	it('Expects the min property on end date to be unchanged if the start date entered value is not valid', function() {
 		dateRange.startEl.val('2013-10-14');
 		dateRange.startEl.blur();		
-		expect(dateRange.endEl.prop('min')).toEqual('1996-01-01');
+		expect(dateRange.endEl.prop('min')).toEqual('2013-08-15');
 		
 		dateRange.startEl.val('1995-01-01');
 		dateRange.startEl.blur();
-		expect(dateRange.endEl.prop('min')).toEqual('1996-01-01');
+		expect(dateRange.endEl.prop('min')).toEqual('2013-08-15');
 	});
 	
 	it('Expects the max property on start date to be unchanged if the end date entered is not valid', function() {

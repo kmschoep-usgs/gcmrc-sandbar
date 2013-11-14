@@ -24,80 +24,74 @@
 	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
 	{% js "lib/dygraph-combined.js" %}
 	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}
+	{% js "lib/mustache.js-master/mustache.js" %}
+	
 	
 	{% js "js/Config.js" %}
 	{% js "js/DateRange.js" %}
 	{% js "js/GDAWSFormatUtils.js" %}
 	{% js "js/SitePlots.js" %}
+	{% js "js/SitePageOnReady.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
 				
 		$(document).ready(function() {
-			var dateRange = new SB.DateRange($('#start-date'), $('#end-date'), SB.Config.SITE_INITIAL_START_DATE, SB.Config.SITE_INITIAL_END_DATE, SB.Config.SITE_MIN_DATE, SB.Config.SITE_MAX_DATE);
-						
-			// Initialize dygraphs
-			var sitePlots = new SB.SitePlots('graphs-div', "{{ site.gdaws_site_id }}");
-			
-			$('#update-plots-button').click(function(event) {
-				if ($('form').valid()) {
-					var params = [];
-					$('#parameter-selection-div input:checked').each(function() {
-						params.push($(this).attr('name'));
-					});
-					sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
-				}
-			});
-			$('form').validate({
-				onsubmit: false,
-				errorPlacement: function(error, element) {
-					error.appendTo(element.parent());
-				}
-			});
+			SB.SitePageOnReady("{{ site.gdaws_site_id }}");
 		});
 	</script>
+	
+	<!-- HTML Templates -->
+	{% verbatim %}
+	<script id="param_template" type="text/html">
+		<div class="parameter-group">
+			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
+			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
+			<br />
+			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
+		</div>
+	</script>
+	{% endverbatim %}
 {% endblock %}
 
 {% block page_content %}
 	<h2>{{ site.site_name }} - {{ site.river_mile }} {{ site.river_side }}</h2>
-	<div class="col-md-3">
-		<div id="parameter-selection-div" class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">Parameters</h4>
-			</div>
-			<form>
-			<div class="panel-body">
-				<div class="parameter-group">
-					<input id="sand-cumul-load-checkbox" name="cumulSandLoad" type="checkbox" value="Sand Cumul Load" />
-					<label for="sand-cumul-load-checkbox">Cumulative Sand Load</label>			
-				</div>
-				<div class="parameter-group">
-					<input id="discharge-checkbox"type="checkbox" name="discharge" value="Discharge" />
-					<label for="discharge-checkbox">Discharge</label>			
-				</div>
-				<div class="parameter-group">
-					<label for="start-date">From:&nbsp;</label>
-					<input type="date" id="start-date" />
-				</div>
-				 <div class="parameter-group">
-					<label for="end-date">To:&nbsp;</label>
-					<input type="date" id="end-date"/>
-				</div>
-				<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
-			</div>
-			</form>
-		</div>
+	<div id="page-loading-div" class="loading-div">
+		<span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/>
 	</div>
-	<div class="col-md-9">
-		<div id="graphs-panel-div" class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">Plots</h4>
+	<div id="site-page-content" style="display: none;">
+		<div class="col-md-4">
+			<div id="parameter-selection-div" class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Parameters</h4>
+				</div>
+				<form>
+				<div class="panel-body">
+					<div id="parameter-checkbox-div"></div>
+					<div class="parameter-group">
+						<label for="start-date">From:&nbsp;</label>
+						<input type="date" id="start-date" />
+					</div>
+					 <div class="parameter-group">
+						<label for="end-date">To:&nbsp;</label>
+						<input type="date" id="end-date"/>
+					</div>
+					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
+				</div>
+				</form>
 			</div>
-			<div id="graphs-div" class="panel-body">
-				<div id="loading-div" class="well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
-				<div id="cumulSandLoad-graph-div" class="graph-div"></div>
-				<div id="discharge-graph-div" class="graph-div"></div>
-			</div>
-		</div>		
+		</div>
+		<div class="col-md-8">
+			<div id="graphs-panel-div" class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Plots</h4>
+				</div>
+				<div id="graphs-div" class="panel-body">
+					<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
+					<div id="cumulSandLoad-graph-div" class="graph-div"></div>
+					<div id="discharge-graph-div" class="graph-div"></div>
+				</div>
+			</div>		
+		</div>
 	</div>
 {% endblock %}
