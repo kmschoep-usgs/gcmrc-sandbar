@@ -16,30 +16,38 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 				// Parse response and put into SB.Config.SITE_PARAMETERS
 				var respJSON = $.parseJSON(resp.responseText);
 				var data = respJSON.success.data
-				for (var i = 0; i < data.length; i++) {
-					for (key in SB.Config.SITE_PARAMETERS) {
-						if (SB.Config.SITE_PARAMETERS[key].groupName === data[i].groupName) {
-							SB.Config.SITE_PARAMETERS[key].description = data[i];
-							// Only really want date portion of time strings
-							SB.Config.SITE_PARAMETERS[key].description.beginPosition = data[i].beginPosition.slice(0, 10);
-							SB.Config.SITE_PARAMETERS[key].description.endPosition = data[i].endPosition.slice(0, 10);
-							break;
+				if (data) {
+					for (var i = 0; i < data.length; i++) {
+						for (key in SB.Config.SITE_PARAMETERS) {
+							if (SB.Config.SITE_PARAMETERS[key].groupName === data[i].groupName) {
+								SB.Config.SITE_PARAMETERS[key].description = data[i];
+								// Only really want date portion of time strings
+								SB.Config.SITE_PARAMETERS[key].description.beginPosition = data[i].beginPosition.slice(0, 10);
+								SB.Config.SITE_PARAMETERS[key].description.endPosition = data[i].endPosition.slice(0, 10);
+								break;
+							}
 						}
 					}
-				}
 				
-				// Create the parameter checkboxes
-				var template = $('#param_template').html();
-				for (key in SB.Config.SITE_PARAMETERS) {
-					var data = {
-						paramName : key, 
-						description : SB.Config.SITE_PARAMETERS[key].description
+					// Create the parameter checkboxes
+					var template = $('#param_template').html();
+					for (key in SB.Config.SITE_PARAMETERS) {
+						var data = {
+							paramName : key, 
+							description : SB.Config.SITE_PARAMETERS[key].description
+						}
+						$('#parameter-checkbox-div').append(Mustache.render(template, data));
 					}
-					$('#parameter-checkbox-div').append(Mustache.render(template, data));
+					$('#parameter-checkbox-div').prop('disabled', false);
+				}
+				else {
+					$('#update-plots-button').prop('disabled', true);
+					$('#parameter-checkbox-div').append('<span class="text-danger">No data is available for the default GDAWS site, ' + gdawsSiteId + '</span>');
 				}
 			}
 			else {
-				alert('Unable to contact plot web service: ' + resp.status + ' : ' + resp.statusText);
+				$('#update-plots-button').prop('disabled', true);
+				$('#parameter-checkbox-div').append('<span class="text-danger">Unable to contact plot web service: ' + resp.status + ' : ' + resp.statusText);
 			}
 			$('#page-loading-div').hide();
 			$('#site-page-content').show();
