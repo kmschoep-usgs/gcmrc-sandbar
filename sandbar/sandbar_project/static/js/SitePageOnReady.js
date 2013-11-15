@@ -1,4 +1,5 @@
 SB.SitePageOnReady = function(gdawsSiteId) {
+	var dateRange;
 	
 	var queryParams = 'site=' + gdawsSiteId;
 	for (key in SB.Config.SITE_PARAMETERS) {
@@ -17,6 +18,11 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 				var respJSON = $.parseJSON(resp.responseText);
 				var data = respJSON.success.data
 				if (data) {
+					var minDate;
+					var maxDate;
+
+					var template = $('#param_template').html();
+
 					for (var i = 0; i < data.length; i++) {
 						for (key in SB.Config.SITE_PARAMETERS) {
 							if (SB.Config.SITE_PARAMETERS[key].groupName === data[i].groupName) {
@@ -24,20 +30,38 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 								// Only really want date portion of time strings
 								SB.Config.SITE_PARAMETERS[key].description.beginPosition = data[i].beginPosition.slice(0, 10);
 								SB.Config.SITE_PARAMETERS[key].description.endPosition = data[i].endPosition.slice(0, 10);
+
+								// Create the parameters's checkbox
+								var checkboxData = {
+									paramName : key, 
+									description : SB.Config.SITE_PARAMETERS[key].description
+								}
+								$('#parameter-checkbox-div').append(Mustache.render(template, checkboxData));
+								
+								// Update minDate and maxDate
+								var beginDate = new Date(data[i].beginPosition);
+								var endDate = new Date(data[i].endPosition);
+								if ((!minDate) || (minDate > beginDate)) {
+									minDate = beginDate
+								}
+								if ((!maxDate) || (maxDate < endDate)) {
+									maxDate = endDate;
+								}
 								break;
 							}
 						}
 					}
 				
-					// Create the parameter checkboxes
-					var template = $('#param_template').html();
-					for (key in SB.Config.SITE_PARAMETERS) {
-						var data = {
-							paramName : key, 
-							description : SB.Config.SITE_PARAMETERS[key].description
-						}
-						$('#parameter-checkbox-div').append(Mustache.render(template, data));
-					}
+					// Update the dateRange limits and set initial Dates.
+					minDateText = minDate.toISOString().slice(0,10);
+					maxDateText = maxDate.toISOString().slice(0,10);
+					
+					dateRange = new SB.DateRange($('#start-date'), $('#end-date'), {
+						initialEnd : maxDateText,
+						minDate: minDateText,
+						maxDate: maxDateText
+					});
+					
 					$('#parameter-checkbox-div').prop('disabled', false);
 				}
 				else {
@@ -53,7 +77,6 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 			$('#site-page-content').show();
 		}
 	});
-	var dateRange = new SB.DateRange($('#start-date'), $('#end-date'), {});
 				
 	// Initialize dygraphs
 	var sitePlots = new SB.SitePlots('graphs-div', gdawsSiteId);

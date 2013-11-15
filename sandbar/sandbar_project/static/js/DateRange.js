@@ -1,7 +1,7 @@
 SB.DateRange = function(startEl, endEl, options /* Object */) {
 	/*
 	 * The following options are used
-	 * initialStart - date string to set startEl's value
+	 * initialStart - date string to set startEl's value. If not specified but initialEnd is this will be one month before
 	 * initialEnd - date string to set endEl's value
 	 * minDate - dateString to set min prop
 	 * maxDate - dateString to set max prop
@@ -18,6 +18,10 @@ SB.DateRange = function(startEl, endEl, options /* Object */) {
 	this.startEl = startEl;
 	this.endEl = endEl;
 	$.extend(this._options, options);
+	if (('initialEnd' in options) && (!('initialStart' in options))) {
+		var initialEndDate = new Date(this._options.initialEnd);
+		this._options.initialStart = new Date((new Date(this._options.initialEnd)).getTime() - 30 * 24 * 60 * 60 *1000).toISOString().slice(0,10);
+	}
 	
 	this.startEl.val(this._options.initialStart).attr('min', this._options.minDate).attr('max', this._options.initialEnd);
 	this.endEl.val(this._options.initialEnd).attr('min', this._options.initialStart).attr('max', this._options.maxDate);

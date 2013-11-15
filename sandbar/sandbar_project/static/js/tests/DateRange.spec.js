@@ -11,7 +11,6 @@ describe('Test SB.DateRange object', function() {
 		testDivEl = $('#test-div');
 		
 		dateRange = new SB.DateRange($('#start-date'), $('#end-date'), {
-			initialStart : '2013-08-15', 
 			initialEnd : '2013-09-14',
 			minDate: '1996-01-01',
 			maxDate: '2013-09-14'
