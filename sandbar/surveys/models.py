@@ -63,8 +63,8 @@ class AreaVolume(models.Model):
     calc_date = models.DateField()
     min_cfs =  models.IntegerField(max_length=6)
     max_cfs = models.IntegerField(max_length=6)
-    area_amt = models.IntegerField(max_length=6)
-    volume_amt = models.IntegerField(max_length=6)
+    area_amt = models.IntegerField(max_length=6, null=True)
+    volume_amt = models.IntegerField(max_length=6, null=True)
     
     class Meta:
         db_table = 'area_volume_calc'
