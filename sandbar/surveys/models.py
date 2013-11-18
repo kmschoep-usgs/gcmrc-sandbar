@@ -45,7 +45,7 @@ class Survey(models.Model):
     def __unicode__(self):
         return str(self.site) + ' on ' + str(self.survey_date)
     
-class SiteSandbar(models.Model):
+class Sandbar(models.Model):
     
     site = models.ForeignKey(Site)
     sandbar_name = models.CharField(max_length=20)
@@ -56,6 +56,22 @@ class SiteSandbar(models.Model):
     
     def __unicode__(self):
         return str(self.sandbar_name) + ' on ' + str(self.site)
+    
+class AreaVolume(models.Model):
+    site = models.ForeignKey(Site)
+    sandbar = models.ForeignKey(Sandbar, null=True)
+    calc_date = models.DateField()
+    min_cfs =  models.IntegerField(max_length=6)
+    max_cfs = models.IntegerField(max_length=6)
+    area_amt = models.IntegerField(max_length=6)
+    volume_amt = models.IntegerField(max_length=6)
+    
+    class Meta:
+        db_table = 'area_volumn_calc'
+        unique_together = ('site', 'sandbar', 'calc_date')
+        
+    def __unicode__(self):
+        return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date)
     
 #class SiteStar(models.Model):
 #    site_id = models.IntegerField(max_length=12, primary_key=True)
