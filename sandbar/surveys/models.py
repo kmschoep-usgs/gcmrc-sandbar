@@ -56,7 +56,7 @@ class Sandbar(models.Model):
     
     def __unicode__(self):
         return str(self.sandbar_name) + ' on ' + str(self.site)
-    
+
 class AreaVolume(models.Model):
     site = models.ForeignKey(Site)
     sandbar = models.ForeignKey(Sandbar, null=True)
@@ -67,7 +67,7 @@ class AreaVolume(models.Model):
     volume_amt = models.IntegerField(max_length=6)
     
     class Meta:
-        db_table = 'area_volumn_calc'
+        db_table = 'area_volume_calc'
         unique_together = ('site', 'sandbar', 'calc_date')
         
     def __unicode__(self):
