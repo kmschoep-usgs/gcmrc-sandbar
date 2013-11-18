@@ -13,7 +13,7 @@ class Site(models.Model):
     river_mile = models.DecimalField(max_digits=5, decimal_places=2)
     river_side = models.CharField(max_length=1)
     site_name = models.CharField(max_length=128)
-    gdaws_site_id = models.CharField(max_length=40, null=True)
+    gdaws_site_id = models.CharField(max_length=40, blank=True)
     gcmrc_site_id = models.CharField(max_length=5, blank=True)
     deposit_type = models.CharField(max_length=100)
     eddy_size = models.DecimalField(max_digits=6, decimal_places=2)
@@ -44,4 +44,30 @@ class Survey(models.Model):
         
     def __unicode__(self):
         return str(self.site) + ' on ' + str(self.survey_date)
+    
+class SiteSandbar(models.Model):
+    
+    site = models.ForeignKey(Site)
+    sandbar_name = models.CharField(max_length=20)
+    
+    class Meta:
+        db_table = 'site_sandbar_rel'
+        unique_together = ('site', 'sandbar_name')
+    
+    def __unicode__(self):
+        return str(self.sandbar_name) + ' on ' + str(self.site)
+    
+#class SiteStar(models.Model):
+#    site_id = models.IntegerField(max_length=12, primary_key=True)
+#    short_name = models.CharField(max_length=32)
+#    location_geopoint = models.PointField()
+    
+#    class Meta:
+#        db_table = 'site_star'
+        
+#    objects = models.GeoManager()
+        
+#    def __unicode__(self):
+#        return str(self.site_id)
+    
         
