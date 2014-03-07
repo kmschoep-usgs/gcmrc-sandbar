@@ -25,7 +25,7 @@ MANAGERS = ADMINS
 if argv and 1 < len(argv):  
     RUNNING_TESTS = 'test' in argv
 else:  
-    RUNNING_TESTS= False  
+    RUNNING_TESTS = False  
 
 if RUNNING_TESTS:
     DATABASES = { 
