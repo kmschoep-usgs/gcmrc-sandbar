@@ -10,6 +10,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
      ('Mary Bucknell', 'mbucknell@usgs.gov'),
+     ('Andrew Yan', 'ayan@usgs.gov'),
+     ('Kathryn Schoepoester', 'kmschoep@usgs.gov'),
 )
 
 MANAGERS = ADMINS
