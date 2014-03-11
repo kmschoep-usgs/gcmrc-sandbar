@@ -250,7 +250,7 @@ if LOCAL_APPS:
 
 if os.getenv('JENKINS_URL', False):
     SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
-    print 'db_engine: $s' % str(os.getenv('DBA_SQL_DJANGO_ENGINE'))
+    print 'db_engine: %s' % str(os.getenv('DBA_SQL_DJANGO_ENGINE'))
     JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
