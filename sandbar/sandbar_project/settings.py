@@ -2,6 +2,11 @@
 from sys import argv
 import os
 
+try:
+    from local_settings import DJANGOTEST_PWD
+except ImportError:
+    DJANGOTEST_PWD = ''
+
 PROJECT_HOME = os.path.dirname(__file__)
 SITE_HOME = os.path.split(PROJECT_HOME)[0]
 
@@ -10,6 +15,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
      ('Mary Bucknell', 'mbucknell@usgs.gov'),
+     ('Andrew Yan', 'ayan@usgs.gov'),
+     ('Kathryn Schoepoester', 'kmschoep@usgs.gov'),
 )
 
 MANAGERS = ADMINS
@@ -18,7 +25,7 @@ MANAGERS = ADMINS
 if argv and 1 < len(argv):  
     RUNNING_TESTS = 'test' in argv
 else:  
-    RUNNING_TESTS= False  
+    RUNNING_TESTS = False  
 
 if RUNNING_TESTS:
     DATABASES = { 
@@ -26,7 +33,7 @@ if RUNNING_TESTS:
             'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'test_geodjango_db',                      # Or path to database file if using sqlite3.
             'USER': 'djangotest',                     # Not used with sqlite3.
-            'PASSWORD': '',                  # Not used with sqlite3.
+            'PASSWORD': DJANGOTEST_PWD,                  # Not used with sqlite3.
             'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         }
@@ -242,16 +249,19 @@ if LOCAL_APPS:
     INSTALLED_APPS += LOCAL_APPS
 
 if os.getenv('JENKINS_URL', False):
+    SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
+    POSTGIS_VERSION = (2, 1, 1) # Googling suggests that Django has a hard time reading the settings for Postgres 9.3 and PostGIS 2.1
+    print 'db_engine: %s' % str(os.getenv('DBA_SQL_DJANGO_ENGINE'))
     JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
     PROJECT_APPS = ('common', 'surveys', 'jasmine',) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
-          ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
-          NAME=os.getenv('DBA_SQL_DB_NAME'),
-          USER=os.getenv('DBA_SQL_ADMIN'),
-          PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
-          HOST=os.getenv('DBA_SQL_HOST'),
-          PORT=os.getenv('DBA_SQL_PORT')
+          ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
+          NAME = os.getenv('DBA_SQL_DB_NAME'),
+          USER = os.getenv('DBA_SQL_ADMIN'),
+          PASSWORD = os.getenv('DBA_SQL_ADMIN_PASSWORD'),
+          HOST = os.getenv('DBA_SQL_HOST'),
+          PORT = os.getenv('DBA_SQL_PORT')
     )) # This allows you to define your database to be used for tests using environment variables
 
