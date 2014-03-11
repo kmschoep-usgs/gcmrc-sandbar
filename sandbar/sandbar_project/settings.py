@@ -250,18 +250,17 @@ if LOCAL_APPS:
 
 if os.getenv('JENKINS_URL', False):
     SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
-    print 'db_engine:'
-    print os.getenv('DBA_SQL_DJANGO_ENGINE')
+    print 'db_engine: $s' % os.getenv('DBA_SQL_DJANGO_ENGINE')
     JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
     PROJECT_APPS = ('common', 'surveys', 'jasmine',) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
-          ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
-          NAME=os.getenv('DBA_SQL_DB_NAME'),
-          USER=os.getenv('DBA_SQL_ADMIN'),
-          PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
-          HOST=os.getenv('DBA_SQL_HOST'),
-          PORT=os.getenv('DBA_SQL_PORT')
+          ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
+          NAME = os.getenv('DBA_SQL_DB_NAME'),
+          USER = os.getenv('DBA_SQL_ADMIN'),
+          PASSWORD = os.getenv('DBA_SQL_ADMIN_PASSWORD'),
+          HOST = os.getenv('DBA_SQL_HOST'),
+          PORT = os.getenv('DBA_SQL_PORT')
     )) # This allows you to define your database to be used for tests using environment variables
 
