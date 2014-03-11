@@ -256,7 +256,7 @@ if os.getenv('JENKINS_URL', False):
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
     PROJECT_APPS = ('common', 'surveys', 'jasmine',) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
-          ENGINE = os.getenv('django.contrib.gis.db.backends.postgis'),
+          ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
           NAME = os.getenv('DBA_SQL_DB_NAME'),
           USER = os.getenv('DBA_SQL_ADMIN'),
           PASSWORD = os.getenv('DBA_SQL_ADMIN_PASSWORD'),
