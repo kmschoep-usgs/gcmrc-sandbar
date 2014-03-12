@@ -263,4 +263,6 @@ if os.getenv('JENKINS_URL', False):
           HOST = os.getenv('DBA_SQL_HOST'),
           PORT = os.getenv('DBA_SQL_PORT')
     )) # This allows you to define your database to be used for tests using environment variables
+else:
+    SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle'}
 
