@@ -166,7 +166,8 @@ INSTALLED_APPS = (
     'common'
 )
 
-SOUTH_TESTS_MIGRATE = False 
+SOUTH_TESTS_MIGRATE = False
+SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle_blah'} 
 
 LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
 if not os.path.exists(LOG_FILE_DIR):
@@ -263,6 +264,4 @@ if os.getenv('JENKINS_URL', False):
           HOST = os.getenv('DBA_SQL_HOST'),
           PORT = os.getenv('DBA_SQL_PORT')
     )) # This allows you to define your database to be used for tests using environment variables
-else:
-    SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle_blah'}
 
