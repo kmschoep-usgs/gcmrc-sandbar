@@ -1,5 +1,5 @@
 *.pyc
 .pydevproject
 .coverage
-env/
+/env
 /server_logs
