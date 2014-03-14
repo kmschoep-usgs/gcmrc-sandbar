@@ -2,3 +2,4 @@
 .pydevproject
 .coverage
 env/
+/server_logs
