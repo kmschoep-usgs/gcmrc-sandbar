@@ -73,7 +73,7 @@
         <connection>scm:git:http://cida-eros-stash.er.usgs.gov:7990/stash/projects/SAN/repos/sandbar_webapp</connection>
         <developerConnection>scm:git:git@cida-eros-stash.er.usgs.gov:7990/stash/scm/san/sandbar_webapp.git</developerConnection>
         <url>http://cida-eros-stash.er.usgs.gov:7990/stash/projects/SAN/repos/sandbar_webapp</url>
-      <tag>HEAD</tag>
+      <tag>sandbar_dj_webapp-0.0.1</tag>
   </scm>
 	
     <distributionManagement>
@@ -111,5 +111,5 @@
       </plugin>
     </plugins>
   </build>        
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 </project>
