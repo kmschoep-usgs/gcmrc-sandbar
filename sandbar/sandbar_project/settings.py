@@ -167,7 +167,7 @@ INSTALLED_APPS = (
 )
 
 SOUTH_TESTS_MIGRATE = False
-SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle'} 
+# SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle'} 
 
 LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
 if not os.path.exists(LOG_FILE_DIR):
