@@ -4,6 +4,7 @@
     <groupId>gov.usgs.cida.sandbar</groupId>
     <artifactId>sandbar_dj_webapp</artifactId>
     <packaging>pom</packaging>
+    <version>0.0.2-SNAPSHOT</version>
     <name>Sandbar Django Webapp</name>
   
     <properties>
@@ -71,9 +72,8 @@
 
     <scm>
         <connection>scm:git:http://cida-eros-stash.er.usgs.gov:7990/stash/projects/SAN/repos/sandbar_webapp</connection>
-        <developerConnection>scm:git:git@cida-eros-stash.er.usgs.gov:7990/stash/scm/san/sandbar_webapp.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@cida-eros-stash.er.usgs.gov:7999/san/sandbar_webapp.git</developerConnection>
         <url>http://cida-eros-stash.er.usgs.gov:7990/stash/projects/SAN/repos/sandbar_webapp</url>
-      <tag>sandbar_dj_webapp-0.0.1</tag>
   </scm>
 	
     <distributionManagement>
@@ -110,6 +110,5 @@
         </executions>
       </plugin>
     </plugins>
-  </build>        
-  <version>0.0.2-SNAPSHOT</version>
+  </build>
 </project>
