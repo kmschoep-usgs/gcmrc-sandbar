@@ -58,7 +58,7 @@
         </repository>
         <repository>
             <id>cida-python-releases</id>
-            <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
+            <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-releases/</url>
         </repository>
         <repository>
             <id>cida-python-snapshots</id>
