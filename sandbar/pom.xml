@@ -57,11 +57,11 @@
             <url>http://internal.cida.usgs.gov/maven/content/groups/cida-public/</url>
         </repository>
         <repository>
-            <id>cida-releases</id>
+            <id>cida-python-releases</id>
             <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
         </repository>
         <repository>
-            <id>cida-snapshots</id>
+            <id>cida-python-snapshots</id>
             <url>http://internal.cida.usgs.gov/maven/content/groups/public-snapshots/</url>
         </repository>
         <repository>
