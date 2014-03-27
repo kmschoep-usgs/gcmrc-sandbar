@@ -8,42 +8,29 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'AreaVolumeStg'
+        db.create_table('area_volume_calc_stage', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['surveys.Site'])),
+            ('sandbar_name', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
+            ('calc_type', self.gf('django.db.models.fields.CharField')(max_length=15, blank=True)),
+            ('calc_date', self.gf('django.db.models.fields.DateField')()),
+            ('plane_height', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9)),
+            ('area_2d_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9)),
+            ('area_3d_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9)),
+            ('volume_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9)),
+        ))
+        db.send_create_signal(u'surveys', ['AreaVolumeStg'])
 
-        # Changing field 'AreaVolume.area_2d_amt'
-        db.alter_column('area_volume_calc', 'area_2d_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9))
-
-        # Changing field 'AreaVolume.volume_amt'
-        db.alter_column('area_volume_calc', 'volume_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9))
-
-        # Changing field 'AreaVolume.plane_height'
-        db.alter_column('area_volume_calc', 'plane_height', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9))
-
-        # Changing field 'AreaVolume.calc_type'
-        db.alter_column('area_volume_calc', 'calc_type', self.gf('django.db.models.fields.CharField')(default='', max_length=15))
-
-        # Changing field 'AreaVolume.area_3d_amt'
-        db.alter_column('area_volume_calc', 'area_3d_amt', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=20, decimal_places=9))
 
     def backwards(self, orm):
+        # Deleting model 'AreaVolumeStg'
+        db.delete_table('area_volume_calc_stage')
 
-        # Changing field 'AreaVolume.area_2d_amt'
-        db.alter_column('area_volume_calc', 'area_2d_amt', self.gf('django.db.models.fields.IntegerField')(max_length=6, null=True))
-
-        # Changing field 'AreaVolume.volume_amt'
-        db.alter_column('area_volume_calc', 'volume_amt', self.gf('django.db.models.fields.IntegerField')(max_length=6, null=True))
-
-        # Changing field 'AreaVolume.plane_height'
-        db.alter_column('area_volume_calc', 'plane_height', self.gf('django.db.models.fields.IntegerField')(max_length=6, null=True))
-
-        # Changing field 'AreaVolume.calc_type'
-        db.alter_column('area_volume_calc', 'calc_type', self.gf('django.db.models.fields.CharField')(max_length=15, null=True))
-
-        # Changing field 'AreaVolume.area_3d_amt'
-        db.alter_column('area_volume_calc', 'area_3d_amt', self.gf('django.db.models.fields.IntegerField')(max_length=6, null=True))
 
     models = {
         u'surveys.areavolume': {
-            'Meta': {'unique_together': "(('site', 'sandbar', 'calc_date'),)", 'object_name': 'AreaVolume', 'db_table': "'area_volume_calc'"},
+            'Meta': {'unique_together': "(('site', 'sandbar', 'calc_date', 'calc_type', 'plane_height'),)", 'object_name': 'AreaVolume', 'db_table': "'area_volume_calc'"},
             'area_2d_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
             'area_3d_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
             'calc_date': ('django.db.models.fields.DateField', [], {}),
@@ -51,6 +38,18 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'plane_height': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
             'sandbar': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['surveys.Sandbar']", 'null': 'True'}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['surveys.Site']"}),
+            'volume_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'})
+        },
+        u'surveys.areavolumestg': {
+            'Meta': {'object_name': 'AreaVolumeStg', 'db_table': "'area_volume_calc_stage'"},
+            'area_2d_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
+            'area_3d_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
+            'calc_date': ('django.db.models.fields.DateField', [], {}),
+            'calc_type': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'plane_height': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'}),
+            'sandbar_name': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['surveys.Site']"}),
             'volume_amt': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '20', 'decimal_places': '9'})
         },
