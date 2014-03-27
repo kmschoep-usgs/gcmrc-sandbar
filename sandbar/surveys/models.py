@@ -21,7 +21,6 @@ class Site(models.Model):
     exp_ratio_45000 = models.DecimalField(max_digits=5, decimal_places=2)
     stage_change = models.DecimalField(max_digits=5, decimal_places=2)
     sed_budget_reach = models.CharField(max_length=100)
-    cur_stage_relation = models.CharField(max_length=100, default="equation")
     campsite = models.CharField(max_length=3, choices=YES_NO)
     geom = models.PointField(blank=True, null=True)
     
@@ -39,9 +38,6 @@ class Survey(models.Model):
     site = models.ForeignKey(Site)
     survey_date = models.DateField()
     survey_method = models.CharField(max_length=100)
-    uncrt_a_8000 = models.IntegerField(max_length=3)
-    uncrt_b_8000 = models.IntegerField(max_length=3)
-    discharge = models.DecimalField(max_digits=8, decimal_places=2)
     
     class Meta:
         db_table = 'surveys'
@@ -64,16 +60,15 @@ class Sandbar(models.Model):
 class AreaVolume(models.Model):
     site = models.ForeignKey(Site)
     sandbar = models.ForeignKey(Sandbar, null=True)
-    calc_type = models.CharField(max_length=15, blank=True)
     calc_date = models.DateField()
-    plane_height =  models.DecimalField(max_digits=20, decimal_places=9, null=True)
-    area_2d_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
-    area_3d_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
-    volume_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
+    min_cfs =  models.IntegerField(max_length=6)
+    max_cfs = models.IntegerField(max_length=6)
+    area_amt = models.IntegerField(max_length=6, null=True)
+    volume_amt = models.IntegerField(max_length=6, null=True)
     
     class Meta:
         db_table = 'area_volume_calc'
-        unique_together = ('site', 'sandbar', 'calc_date', 'calc_type', 'plane_height')
+        unique_together = ('site', 'sandbar', 'calc_date')
         
     def __unicode__(self):
         return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date)

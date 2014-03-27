@@ -167,7 +167,7 @@ INSTALLED_APPS = (
 )
 
 SOUTH_TESTS_MIGRATE = False
-SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle'} 
+# SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle'} 
 
 LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
 if not os.path.exists(LOG_FILE_DIR):
@@ -252,7 +252,9 @@ if LOCAL_APPS:
 if os.getenv('JENKINS_URL', False):
     SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
     POSTGIS_VERSION = (2, 1, 1) # Googling suggests that Django has a hard time reading the settings for Postgres 9.3 and PostGIS 2.1
-    JENKINS_TASKS = ('django_jenkins.tasks.django_tests',) # This is where you would add other django_jenkins tasks
+    JENKINS_TASKS = ('django_jenkins.tasks.django_tests',
+                     'django_jenkins.tasks.run_pylint',
+                     'django_jenkins.tasks.with_coverage',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
     PROJECT_APPS = ('common', 'surveys', 'jasmine',) # This is where you would add the apps that you would like tested
