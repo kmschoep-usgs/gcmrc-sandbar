@@ -21,7 +21,7 @@ class Site(models.Model):
     exp_ratio_45000 = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     stage_change = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     sed_budget_reach = models.CharField(max_length=100)
-    cur_stage_relation = models.CharField(max_length=100, default="equation")
+    cur_stage_relation = models.CharField(max_length=200, default="equation")
     campsite = models.CharField(max_length=3, choices=YES_NO)
     geom = models.PointField(blank=True, null=True)
     stage_discharge_coeff_a = models.DecimalField(max_digits= 16, decimal_places=13)
