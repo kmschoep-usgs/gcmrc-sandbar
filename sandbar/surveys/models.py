@@ -24,9 +24,9 @@ class Site(models.Model):
     cur_stage_relation = models.CharField(max_length=100, default="equation")
     campsite = models.CharField(max_length=3, choices=YES_NO)
     geom = models.PointField(blank=True, null=True)
-    stage_discharge_coeff_a = models.DecimalField(max_digits= 16, decimal_places=13, null=True)
-    stage_discharge_coeff_b = models.DecimalField(max_digits= 15, decimal_places=13, null=True)
-    stage_discharge_coeff_c = models.DecimalField(max_digits= 18, decimal_places=15, null=True)
+    stage_discharge_coeff_a = models.DecimalField(max_digits= 16, decimal_places=13)
+    stage_discharge_coeff_b = models.DecimalField(max_digits= 15, decimal_places=13)
+    stage_discharge_coeff_c = models.DecimalField(max_digits= 18, decimal_places=15)
     
     class Meta:
         db_table = 'sites'
