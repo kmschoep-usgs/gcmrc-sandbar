@@ -16,14 +16,17 @@ class Site(models.Model):
     gdaws_site_id = models.CharField(max_length=40, blank=True)
     gcmrc_site_id = models.CharField(max_length=5, blank=True)
     deposit_type = models.CharField(max_length=100)
-    eddy_size = models.DecimalField(max_digits=6, decimal_places=2)
-    exp_ratio_8000 = models.DecimalField(max_digits=5, decimal_places=2)
-    exp_ratio_45000 = models.DecimalField(max_digits=5, decimal_places=2)
-    stage_change = models.DecimalField(max_digits=5, decimal_places=2)
+    eddy_size = models.IntegerField(max_digits=6, null=True)
+    exp_ratio_8000 = models.DecimalField(max_digits=5, decimal_places=1, null=True)
+    exp_ratio_45000 = models.DecimalField(max_digits=5, decimal_places=1, null=True)
+    stage_change = models.DecimalField(max_digits=5, decimal_places=1, null=True)
     sed_budget_reach = models.CharField(max_length=100)
     cur_stage_relation = models.CharField(max_length=100, default="equation")
     campsite = models.CharField(max_length=3, choices=YES_NO)
     geom = models.PointField(blank=True, null=True)
+    stage_discharge_coeff_a = models.DecimalField(max_digits= 16, decimal_places=13)
+    stage_discharge_coeff_b = models.DecimalField(max_digits= 15, decimal_places=13)
+    stage_discharge_coeff_c = models.DecimalField(max_digits= 15, decimal_places=15)
     
     class Meta:
         db_table = 'sites'
