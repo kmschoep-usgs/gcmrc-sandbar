@@ -22,7 +22,7 @@ class Site(models.Model):
     stage_change = models.DecimalField(max_digits=5, decimal_places=2)
     sed_budget_reach = models.CharField(max_length=100)
     campsite = models.CharField(max_length=3, choices=YES_NO)
-    geom = models.PointField()
+    geom = models.PointField(blank=True, null=True)
     
     class Meta:
         db_table = 'sites'
@@ -72,7 +72,20 @@ class AreaVolume(models.Model):
         
     def __unicode__(self):
         return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date)
+ 
+class AreaVolumeStg(models.Model):
+    dataset = models.CharField(max_length=100, blank=True)
+    plane_height =  models.CharField(max_length=100, blank=True)
+    area_2d_amt = models.CharField(max_length=100, blank=True)
+    area_3d_amt = models.CharField(max_length=100, blank=True)
+    volume_amt = models.CharField(max_length=100, blank=True)
     
+    class Meta:
+        db_table = 'area_volume_calc_stage'
+        
+    def __unicode__(self):
+        return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date)
+       
 #class SiteStar(models.Model):
 #    site_id = models.IntegerField(max_length=12, primary_key=True)
 #    short_name = models.CharField(max_length=32)

@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
             ('stage_change', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2)),
             ('sed_budget_reach', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('campsite', self.gf('django.db.models.fields.CharField')(max_length=3)),
-            ('geom', self.gf('django.contrib.gis.db.models.fields.PointField')()),
+            ('geom', self.gf('django.contrib.gis.db.models.fields.PointField')(blank=True, null=True)),
         ))
         db.send_create_signal(u'surveys', ['Site'])
 
@@ -56,7 +56,7 @@ class Migration(SchemaMigration):
             'eddy_size': ('django.db.models.fields.DecimalField', [], {'max_digits': '6', 'decimal_places': '2'}),
             'exp_ratio_45000': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'}),
             'exp_ratio_8000': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'}),
-            'geom': ('django.contrib.gis.db.models.fields.PointField', [], {}),
+            'geom': ('django.contrib.gis.db.models.fields.PointField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'river_mile': ('django.db.models.fields.DecimalField', [], {'max_digits': '5', 'decimal_places': '2'}),
             'sed_budget_reach': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
