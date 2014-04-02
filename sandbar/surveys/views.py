@@ -5,6 +5,8 @@ from django.views.generic import ListView, DetailView
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey
+from math import pow
+from numpy import interp
 
 class SitesListView(ListView):
     '''
@@ -47,4 +49,29 @@ class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     '''
     service_url = settings.GDAWS_SERVICE_URL
     
+def _elevationM(a,b,c,Q):
+    '''
+    Equation:
+    Z=a+b*Q-c*Q^2
+    where,
+    Z = elevation, in meters
+    Q is discharge in cfs
+
+    inputs:
+    Q = user input
+    a = sites.STAGE_DISCHARGE_COEFF_A
+    b = sites.STAGE_DISCHARGE_COEFF_B
+    c = sites.STAGE_DISCHARGE_COEFF_C
+
+    The resulting Z-range is compared to area_volume_calc.plane_height.
+    '''
+    result = a+b*Q-c*pow(Q,2);
+
+    return result
+
+def _interpolateCalcs(xp, fp, Z):
+    
+    result = interp(Z, xp, fp);
+    
+    return result
     
