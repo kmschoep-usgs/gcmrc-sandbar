@@ -219,13 +219,13 @@ LOGGING = {
         'common': {
             'handlers': ['file'],
             'level' : 'DEBUG',
-            'propogate' : True,
+            'propagate' : True,
             'filters' : ['require_debug_true']
         },
         'surveys': {
             'handlers': ['file'],
             'level' : 'DEBUG',
-            'propogate' : True,
+            'propagate' : True,
             'filters' : ['require_debug_true']
         },                
 
