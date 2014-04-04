@@ -1,6 +1,6 @@
 
 from django.conf import settings
-from django.db.models import Min, Max
+from django.db.models import Min, Max, F, Q
 from django.views.generic import ListView, DetailView, View
 from django.db import connection
 from urllib2 import urlopen, HTTPError
@@ -12,6 +12,44 @@ from .models import Site, Survey
 from math import pow
 from numpy import interp
 
+def _area_volume_qs(site_id, min_elev, max_elev):
+    
+    query = 'select \
+AV.SITE_ID, \
+AV.SANDBAR_ID, \
+av.calc_date, \
+av.calc_type, \
+av2.calc_type, \
+AV.PLANE_HEIGHT survey, \
+AV2.PLANE_HEIGHT min_surf, \
+AV.AREA_2D_AMT  - AV2.AREA_2D_AMT area2d, \
+AV.AREA_2D_AMT - AV2.AREA_3D_AMT area3d, \
+AV.VOLUME_AMT - AV2.VOLUME_AMT vol \
+from AREA_VOLUME_CALC av, AREA_VOLUME_CALC av2 \
+where AV.CALC_DATE = AV.CALC_DATE \
+ and ((AV.CALC_TYPE = \'chan\' and \
+ AV2.CALC_TYPE = \'minchan\') or \
+  (AV.CALC_TYPE = \'eddy\' and \
+ AV2.CALC_TYPE = \'mineddy\')) and \
+ av.site_id = av2.site_id and \
+ av.site_id = %s and \
+ nvl(av.sandbar_id,-9) = nvl(av2.sandbar_id,-9) \
+ and av.plane_height between %s and %s \
+ and av2.plane_height = \
+    (select min(av3.plane_height) from area_volume_calc av3 \
+        where av3.calc_date = av.calc_date and \
+        av3.calc_type in (\'eddy\',\'chan\') and \
+        av.site_id = av3.site_id and \
+        nvl(av.sandbar_id,-9) = nvl(av3.sandbar_id,-9) \
+        ) \
+order by av.calc_date, av.plane_height;' %(site_id, min_elev, max_elev)
+        
+    cursor = connection.cursor() #@UndefinedVariable
+    cursor.execute(query)
+    results_list = dictfetchall(cursor)
+    return results_list
+                                            
+                                            
 class SitesListView(ListView):
     '''
     Extends ListView to serve site data including the min and max survey date. 
