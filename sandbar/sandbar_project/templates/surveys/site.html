@@ -95,4 +95,15 @@
 			</div>		
 		</div>
 	</div>
+	<div>
+		<table>
+		{% for area_vol in site.areaVolume %}
+			<tr>
+				<td class="river-mile-cell">{{ area_vol.av.area_2d_amt}}</td>
+				<td class="river-mile-cell">{{ area_vol.av.area_3d_amt}}</td>
+				<td class="river-mile-cell">{{ area_vol.av.volume_amt}}</td>
+			</tr>
+		{% endfor %}
+		</table>	
+	</div>
 {% endblock %}
