@@ -1,13 +1,32 @@
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
+from django.db import connection
+from django.http import Http404
+#from factory.django import DjangoModelFactory
 
 from common.views import SimpleWebServiceProxyView
-from .models import Site, Survey
+from common.utils.view_utils import dictfetchall
+from .models import Site, Survey, AreaVolume
 from math import pow
-from numpy import interp
+from numpy import interp                                           
 
+def _areaVolumeCalcs(site_id, coeffa, coeffb, coeffc, Q):
+    
+        Elev = _elevationM(coeffa, coeffb, coeffc, Q)
+        
+        area_volume = AreaVolume.objects.filter(site_id=site_id, prev_plane_height__lte=Elev, next_plane_height__gte=Elev).exclude(prev_plane_height__iexact=0)
+        return area_volume.values('site_id',
+                             'calc_date',
+                             'calc_type',
+                             'plane_height',
+                             'area_2d_amt',
+                             'area_3d_amt',
+                             'volume_amt',
+                             'prev_plane_height',
+                             'next_plane_height')  
+                                                    
 class SitesListView(ListView):
     '''
     Extends ListView to serve site data including the min and max survey date. 
@@ -42,7 +61,9 @@ class SiteDetailView(DetailView):
     model = Site
     
     context_object_name = 'site'
-    
+
+
+
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     ''' 
     Extends the SimpleWebServiceProxyView to implement the GDAWS service

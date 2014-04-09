@@ -73,6 +73,8 @@ class AreaVolume(models.Model):
     area_2d_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
     area_3d_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
     volume_amt = models.DecimalField(max_digits=20, decimal_places=9, null=True)
+    prev_plane_height = models.DecimalField(max_digits=20, decimal_places=9, null=True)
+    next_plane_height = models.DecimalField(max_digits=20, decimal_places=9, null=True)
     
     class Meta:
         db_table = 'area_volume_calc'
