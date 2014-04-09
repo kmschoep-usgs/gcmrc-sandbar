@@ -5,7 +5,7 @@ from django.contrib.gis.geos import Point
 from django.test import TestCase
 
 from ..models import Site, Survey
-from ..views import SitesListView, _elevationM, _interpolateCalcs 
+from ..views import SitesListView, _elevationM, _interpolateCalcs
 
 class SitesViewTestCase(TestCase):
     
@@ -107,9 +107,21 @@ class ElevationMTestCase(TestCase):
         self.assertEqual(720.95200188184742, _elevationM(a,b,c,Q))
         
 class InterpolateCalcsTestCase(TestCase):        
-    def test_interpolateCalcs(self):
+    def test_in_range(self):
         xp = [833.66, 833.76]
         fp = [9585.930877, 9228.061652]
         Z = 833.7
         self.assertAlmostEqual(9442.783186999, _interpolateCalcs(xp, fp, Z))
+    
+    def test_min_val(self):
+        xp = [833.66, 833.76]
+        fp = [9585.930877, 9228.061652]
+        Z = 833.66
+        self.assertAlmostEqual(9585.930877, _interpolateCalcs(xp, fp, Z))
+        
+    def test_max_val(self):
+        xp = [833.66, 833.76]
+        fp = [9585.930877, 9228.061652]
+        Z = 833.76
+        self.assertAlmostEqual(9228.061652, _interpolateCalcs(xp, fp, Z))
                                         

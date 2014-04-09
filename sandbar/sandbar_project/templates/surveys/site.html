@@ -2,11 +2,11 @@
 
 {% load js %}
 
-{% block title %}Sandbar - {{ site.site_name }}{% endblock %}
+{% block title %}Sandbar - {{ site.detail.site_name }}{% endblock %}
 
 {% block page_description %}
-	Provides data and plotting tools for sandbar {{ site.site_name }} located at 
-	river mile {{ site.river_mile }}
+	Provides data and plotting tools for sandbar {{ site.detail.site_name }} located at 
+	river mile {{ site.detail.river_mile }}
 {% endblock %}
 
 {% block page_style %}
@@ -37,7 +37,7 @@
 		$.webshims.polyfill();		
 				
 		$(document).ready(function() {
-			SB.SitePageOnReady("{{ site.gdaws_site_id }}");
+			SB.SitePageOnReady("{{ site.detail.gdaws_site_id }}");
 		});
 	</script>
 	
@@ -55,7 +55,7 @@
 {% endblock %}
 
 {% block page_content %}
-	<h2>{{ site.site_name }} - {{ site.river_mile }} {{ site.river_side }}</h2>
+	<h2>{{ site.detail.site_name }} - {{ site.detail.river_mile }} {{ site.detail.river_side }}</h2>
 	<div id="page-loading-div" class="loading-div">
 		<span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/>
 	</div>
@@ -97,11 +97,11 @@
 	</div>
 	<div>
 		<table>
-		{% for area_vol in site.areaVolume %}
+		{% for av in site.area_volume %}
 			<tr>
-				<td class="river-mile-cell">{{ area_vol.av.area_2d_amt}}</td>
-				<td class="river-mile-cell">{{ area_vol.av.area_3d_amt}}</td>
-				<td class="river-mile-cell">{{ area_vol.av.volume_amt}}</td>
+				<td class="river-mile-cell">{{ av.area_vol.area_2d_amt}}</td>
+				<td class="river-mile-cell">{{ av.area_vol.area_3d_amt}}</td>
+				<td class="river-mile-cell">{{ av.area_vol.volume_amt}}</td>
 			</tr>
 		{% endfor %}
 		</table>	
