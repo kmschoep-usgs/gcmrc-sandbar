@@ -6,7 +6,7 @@ from django.db import connection
 from django.http import Http404
 
 from common.views import SimpleWebServiceProxyView
-from common.utils.view_utils import dictfetchall
+#from common.utils.view_utils import dictfetchall
 from .models import Site, Survey, AreaVolume
 from math import pow
 from numpy import interp                                           

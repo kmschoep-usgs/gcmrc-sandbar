@@ -111,25 +111,29 @@ class InterpolateCalcsTestCase(TestCase):
         xp = [833.66, 833.76]
         fp = [9585.930877, 9228.061652]
         Z = 833.7
-        self.assertAlmostEqual(9442.783186999, _interpolateCalcs(xp, fp, Z))
+        result = _interpolateCalcs(xp, fp, Z)
+        self.assertAlmostEqual(9442.783186999, result)
     
     def test_in_range2(self):
         xp = [834.16, 834.26]
         fp = [9485.851390867, 9120.851821026]
         Z = 834.243511493
-        self.assertAlmostEqual(9181.0348006, _interpolateCalcs(xp, fp, Z))
+        result = _interpolateCalcs(xp, fp, Z)
+        self.assertAlmostEqual(9181.0348006, result)
         
     def test_min_val(self):
         xp = [833.66, 833.76]
         fp = [9585.930877, 9228.061652]
         Z = 833.66
-        self.assertAlmostEqual(9585.930877, _interpolateCalcs(xp, fp, Z))
+        result = _interpolateCalcs(xp, fp, Z)
+        self.assertAlmostEqual(9585.930877, result)
         
     def test_max_val(self):
         xp = [833.66, 833.76]
         fp = [9585.930877, 9228.061652]
         Z = 833.76
-        self.assertAlmostEqual(9228.061652, _interpolateCalcs(xp, fp, Z))     
+        result = _interpolateCalcs(xp, fp, Z)
+        self.assertAlmostEqual(9228.061652, result)     
 
 class AreaVolumeCalcsFactory(DjangoModelFactory):
     FACTORY_FOR = 'surveys.AreaVolume'
