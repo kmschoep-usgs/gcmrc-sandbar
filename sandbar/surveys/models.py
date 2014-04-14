@@ -1,5 +1,6 @@
 
 from django.contrib.gis.db import models
+import decimal
 #from django.contrib.gis.geos import GEOSGeometry, fromstr, fromfile,  Point
 
 # Create your models here.
@@ -36,6 +37,30 @@ class Site(models.Model):
     
     def __unicode__(self):
         return str(self.river_mile) + ' : ' + self.site_name
+    
+    def elevationM(self, dis):
+        '''
+        Equation:
+        Z=a+b*ds-c*ds^2
+        where,
+        Z = elevation, in meters
+        ds is discharge in cfs
+
+        inputs:
+        ds = user input
+        a = sites.STAGE_DISCHARGE_COEFF_A
+        b = sites.STAGE_DISCHARGE_COEFF_B
+        c = sites.STAGE_DISCHARGE_COEFF_C
+
+        The resulting Z-range is compared to area_volume_calc.plane_height.
+        '''
+        #result = []
+        result = float(self.stage_discharge_coeff_a)+float(self.stage_discharge_coeff_b)*dis-float(self.stage_discharge_coeff_c)*pow(dis,2)
+        #result_max = float(self.stage_discharge_coeff_a)+float(self.stage_discharge_coeff_b)*ds_max-float(self.stage_discharge_coeff_c)*pow(ds_max,2)
+        
+        #result.append(str(result_min))
+        #result.append(str(result_max))
+        return result
     
 class Survey(models.Model):
     
@@ -81,7 +106,7 @@ class AreaVolume(models.Model):
         unique_together = ('site', 'sandbar', 'calc_date', 'calc_type', 'plane_height')
         
     def __unicode__(self):
-        return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date)
+        return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date) + '; Plane Height:' + str(self.plane_height)
  
 class AreaVolumeStg(models.Model):
     dataset = models.CharField(max_length=100, blank=True)
