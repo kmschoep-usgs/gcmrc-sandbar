@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, View, TemplateView
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
-from .custom_mixins import JSONResponseMixin
+from .custom_mixins import JSONResponseMixin, CSVResponseMixin
 from numpy import interp 
 
 
@@ -19,7 +19,7 @@ class DygraphView(TemplateView):
         
         return self.render_to_response(context)                                          
 
-class AreaVolumeCalcsView(JSONResponseMixin, View):
+class AreaVolumeCalcsView(CSVResponseMixin, View):
     
     model = AreaVolume
     
@@ -48,8 +48,9 @@ class AreaVolumeCalcsView(JSONResponseMixin, View):
                 
             survey_date_str = survey_date.strftime('%Y/%m/%d') 
             result.append({'Time' : survey_date_str, 'Area2d' : Area2d})
+            data_keys = ['Time', 'Area2d']
         
-        return self.render_to_json_response(context=result)
+        return self.render_to_csv_response(context=result, data_keys=data_keys)
 
                                       
 class SitesListView(ListView):

@@ -20,6 +20,12 @@
 		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
 	</script>
 	
+	<script type="text/javascript">
+		var PAGE_URL = window.location.pathname;
+		var SITE_ID = PAGE_URL.split('/')[3];
+		var AREA_2D_URL = '{% url "surveys-areavolume" %}' + '?site_id=' + SITE_ID;
+	</script>
+	
  	{% js "lib/modernizr.custom.45705.js" %}
 	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
 	{% js "lib/dygraph-combined.js" %}
@@ -32,6 +38,7 @@
 	{% js "js/GDAWSFormatUtils.js" %}
 	{% js "js/SitePlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
+	{% js "js/TimeSeriesPlots.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		

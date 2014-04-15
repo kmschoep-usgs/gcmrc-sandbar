@@ -18,5 +18,5 @@ urlpatterns = patterns('',
         name='surveys-areavolume'),
     url(r'^dygraph_page',
         DygraphView.as_view(),
-        name='dygraphys_page'),                 
+        name='dygraphs_page'),                 
 )
