@@ -1,14 +1,10 @@
 
 from django.conf import settings
-from django.db.models import Min, Max, Q
+from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View
-from django.db import connection
-from django.http import Http404
 
 from common.views import SimpleWebServiceProxyView
-from common.utils.view_utils import dictfetchall
 from .models import Site, Survey, AreaVolume
-from math import pow
 from numpy import interp                                           
 
 class AreaVolumeCalcsView(View):
@@ -28,16 +24,18 @@ class AreaVolumeCalcsView(View):
         for survey_date in qs.dates('calc_date', 'day'):
             d1 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMin).filter(next_plane_height__gte=elevationMin).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMin).order_by('plane_height')
             if d1.exists():
-                minAreaInt = _interpolateCalcs([d1[0].plane_height, d1[1].plane_height] , [d1[0].area_2d_amt, d1[1].area_2d_amt], elevationMin)
-                '''
+                minAreaInt = _interpolateCalcs([float(d1[0].plane_height), float(d1[1].plane_height)] , [float(d1[0].area_2d_amt), float(d1[1].area_2d_amt)], float(elevationMin))
                 d2 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMax).filter(next_plane_height__gte=elevationMax).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMax).order_by('plane_height')
                 if d2.exists():
-                    maxAreaInt = _interpolateCalcs([d2.plane_height[0], d2.plane_height[1]] , [d2.area_2d_amt[0], d2.area_2d_amt[1]], elevationMax)
+                    maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
                     Area2d = maxAreaInt - minAreaInt
-                    result.append({'Time' : survey_date,
-                                   'Area2d' : Area2d})
-                '''
-        return minAreaInt    
+                else:
+                    Area2d = ''
+            else:
+                Area2d = ''
+                
+            result.append({'Time' : survey_date, 'Area2d' : Area2d})
+        return result    
 
                                       
 class SitesListView(ListView):
