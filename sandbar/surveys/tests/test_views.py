@@ -231,7 +231,7 @@ class AreaVolumeCalcsSetTestCase(TestCase):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '38'})
         result = self.test_view.get(request)
-       
+
         self.assertEqual(result.count(), 2)
     
     def test_get_queryset_outside_lower_bounds(self):
