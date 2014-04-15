@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load js %}
+
+{% block page_script %}
+	{% js "lib/dygraph-combined.js" %}
+	{% js "js/TimeSeriesPlots.js" %}
+{% endblock page_script %}
+
+{% block page_content %}
+	<p><b>Page for Dygraphs Experiments</b></p>
+	<div id="timeseries_graph">
+	
+	</div>
+{% endblock page_content %}

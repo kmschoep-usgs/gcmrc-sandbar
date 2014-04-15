@@ -1,12 +1,23 @@
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, TemplateView
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import JSONResponseMixin
-from numpy import interp                                           
+from numpy import interp 
+
+
+class DygraphView(TemplateView):
+    
+    template_name = 'surveys/expt.html'
+    
+    def get(self, request, *args, **kwargs):
+        
+        context = None
+        
+        return self.render_to_response(context)                                          
 
 class AreaVolumeCalcsView(JSONResponseMixin, View):
     
