@@ -4,7 +4,7 @@ import datetime
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from factory.django import DjangoModelFactory
-
+import decimal
 from ..models import Site, Survey
 from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView
 
@@ -114,7 +114,7 @@ class InterpolateCalcsTestCase(TestCase):
         self.assertAlmostEqual(9442.783186999, _interpolateCalcs(xp, fp, Z))
     
     def test_in_range2(self):
-        xp = [834.16, 834.26]
+        xp = [834.160000000, 834.260000000]
         fp = [9485.851390867, 9120.851821026]
         Z = 834.243511493
         self.assertAlmostEqual(9181.0348006, _interpolateCalcs(xp, fp, Z))
@@ -227,19 +227,19 @@ class AreaVolumeCalcsSetTestCase(TestCase):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '38'})
         result = self.test_view.get(request)
-       
-        self.assertEqual(result.count(), 2)
+        
+        self.assertEqual(result[0], 300)
     
     def test_get_queryset_outside_lower_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '18'})
         result = self.test_view.get(request)
        
-        self.assertEqual(result.count(), 0)
+        self.assertEqual(result[0], 300)
         
     def test_get_queryset_outside_upper_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '40'})
         result = self.test_view.get(request)
        
-        self.assertEqual(result.count(), 0)
+        self.assertEqual(result[0], 300)
