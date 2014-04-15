@@ -5,9 +5,10 @@ from django.views.generic import ListView, DetailView, View
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
+from .custom_mixins import JSONResponseMixin
 from numpy import interp                                           
 
-class AreaVolumeCalcsView(View):
+class AreaVolumeCalcsView(JSONResponseMixin, View):
     
     model = AreaVolume
     
@@ -34,8 +35,10 @@ class AreaVolumeCalcsView(View):
             else:
                 Area2d = ''
                 
-            result.append({'Time' : survey_date, 'Area2d' : Area2d})
-        return result    
+            survey_date_str = survey_date.strftime('%Y/%m/%d') 
+            result.append({'Time' : survey_date_str, 'Area2d' : Area2d})
+        
+        return self.render_to_json_response(context=result)
 
                                       
 class SitesListView(ListView):
