@@ -10,6 +10,16 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 		return $('#' + graphId(key));
 	};
 	
+	timeSeriesGraph = new Dygraph (
+			document.getElementById("timeseries-plot"),
+			AREA_2D_URL,
+			{
+				xlabel: "Date",
+				ylabel: "2D Area",
+				showRangeSelector : true
+			}
+			);
+	
 	// public object methods
 	this.updatePlots = function(startDate, endDate /* String dates */,
 					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */) {
@@ -33,13 +43,10 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					// Update the selected graphs
 					var graphs = {};
 					for (var i = 0; i < parameterNames.length; i++) {
-						console.log(parameterNames);
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
-						console.log(thisConfig);
 						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName);
-						//console.log(data);
 						graphDivEl(parameterNames[i]).show();
-						
+						console.log(parameterNames[i]);
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',

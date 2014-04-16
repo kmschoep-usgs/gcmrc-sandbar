@@ -19,6 +19,7 @@ class DygraphView(TemplateView):
         
         return self.render_to_response(context)                                          
 
+
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
     model = AreaVolume
