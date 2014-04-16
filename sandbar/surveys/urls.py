@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url
 
-from .views import SitesListView, SiteDetailView, GDAWSWebServiceProxy, AreaVolumeCalcsView, DygraphView
+from .views import SitesListView, SiteDetailView, GDAWSWebServiceProxy, AreaVolumeCalcsView
 
 urlpatterns = patterns('',
     url(r'^sites/$',
@@ -15,8 +15,5 @@ urlpatterns = patterns('',
         name='surveys-gdaws'),
     url(r'^areavolume',
         AreaVolumeCalcsView.as_view(),
-        name='surveys-areavolume'),
-    url(r'^dygraph_page',
-        DygraphView.as_view(),
-        name='dygraphs_page'),                 
+        name='surveys-areavolume'),                
 )

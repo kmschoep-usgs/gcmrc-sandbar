@@ -38,7 +38,6 @@
 	{% js "js/GDAWSFormatUtils.js" %}
 	{% js "js/SitePlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
-	{% js "js/TimeSeriesPlots.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
@@ -103,5 +102,11 @@
 		</div>
 	</div>
 	<div>
+		<div id="timeseries-plot"></div>
 	</div>
+	
+
+	{% js "js/TimeSeriesPlots.js" %}
+
+	
 {% endblock %}
