@@ -9,7 +9,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 	var graphDivEl = function(key) {
 		return $('#' + graphId(key));
 	};
-	
+	/*
 	timeSeriesGraph = new Dygraph (
 			document.getElementById("timeseries-plot"),
 			AREA_2D_URL,
@@ -20,10 +20,25 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 			}
 			);
 	
+	timeSeriesGraph.resize(480, 320);
+	*/
 	// public object methods
 	this.updatePlots = function(startDate, endDate /* String dates */,
 					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */) {
 		
+		/*
+		timeSeriesGraph = new Dygraph (
+				document.getElementById("timeseries-plot"),
+				AREA_2D_URL,
+				{
+					xlabel: "Date",
+					ylabel: "2D Area",
+					showRangeSelector : true
+				}
+				);
+		
+		timeSeriesGraph.resize(480, 320);
+		*/
 		this.graphsDivEl.children('#graphs-loading-div').show();
 		
 		$.ajax({
@@ -46,7 +61,6 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
 						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName);
 						graphDivEl(parameterNames[i]).show();
-						console.log(parameterNames[i]);
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',

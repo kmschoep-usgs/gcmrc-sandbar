@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, View, TemplateView
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
-from .custom_mixins import JSONResponseMixin, CSVResponseMixin
+from .custom_mixins import CSVResponseMixin
 from numpy import interp 
 
 

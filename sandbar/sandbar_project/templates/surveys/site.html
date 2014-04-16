@@ -62,7 +62,6 @@
 
 {% block page_content %}
 	<h2>{{ site.site_name }} - {{ site.river_mile }} {{ site.river_side }}</h2>
-	<div id="timeseries-plot" class="graph-div"></div>
 	<div id="page-loading-div" class="loading-div">
 		<span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/>
 	</div>
@@ -98,6 +97,7 @@
 					<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
 					<div id="cumulSandLoad-graph-div" class="graph-div"></div>
 					<div id="discharge-graph-div" class="graph-div"></div>
+					<div id="timeseries-plot" class="graph-div"></div>
 				</div>
 			</div>		
 		</div>
@@ -105,8 +105,6 @@
 	<div>
 	</div>
 	
-
-	{# {% js "js/TimeSeriesPlots.js" %} #}
-
+	{% js "js/TimeSeriesPlots.js" %}
 	
 {% endblock %}
