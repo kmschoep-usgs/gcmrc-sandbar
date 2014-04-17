@@ -1,7 +1,7 @@
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.views.generic import ListView, DetailView, View
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
@@ -38,7 +38,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 
             survey_date_str = survey_date.strftime('%Y/%m/%d') 
             result.append({'Time' : survey_date_str, 'Area2d' : Area2d})
-            data_keys = ['Time', 'Area2d']
+            
+        data_keys = ['Time', 'Area2d']
         
         return self.render_to_csv_response(context=result, data_keys=data_keys)
 

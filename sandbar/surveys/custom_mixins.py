@@ -6,6 +6,10 @@ from django.http import HttpResponse
 
 class CSVResponseMixin(object):
     
+    """
+    Mixin used to create a CSV response.
+    """
+    
     
     def render_to_csv_response(self, context, data_keys=None, **response_kwargs):
         
@@ -39,6 +43,7 @@ class JSONResponseMixin(object):
         context_json = self.convert_context_to_json(context)
         
         return HttpResponse(context_json, content_type="application/json", **response_kwargs)
+    
     
     def convert_context_to_json(self, context):
         
