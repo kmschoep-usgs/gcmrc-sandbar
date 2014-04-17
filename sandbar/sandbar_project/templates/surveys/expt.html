@@ -1,26 +1,11 @@
 {% extends "base.html" %}
 
-{% load js %}
-
-{% block page_script %}
-	<script type="text/javascript">
-		var PAGE_URL = window.location.pathname;
-		var SITE_ID = PAGE_URL.split('/')[2] + 'kitten';
-		var AREA_2D_URL = '{% url "surveys-areavolume" %}';
-		console.log(SITE_ID);
-	</script>
-
-
-	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}
-	{% js "lib/dygraph-combined.js" %}
-	{% js "js/GDAWSFormatUtils.js" %}
-	{% js "js/SitePlots.js" %}
-	{% js "js/TimeSeriesPlots.js" %}
-{% endblock page_script %}
 
 {% block page_content %}
-	<p><b>Page for Dygraphs Experiments</b></p>
-	<div id="timeseries-plot">
-		
-	</div>
+
+	{% for dictionary in result_dict %}
+		{{ dictionary.Time }} and {{ dictionary.Area2d }}
+		<br/>
+	{% endfor %}
+
 {% endblock page_content %}
