@@ -163,7 +163,7 @@ INSTALLED_APPS = (
     'south',
     #CIDA apps
     'surveys',
-    'common'
+    'common',
 )
 
 SOUTH_TESTS_MIGRATE = False

@@ -4,7 +4,6 @@ import datetime
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from factory.django import DjangoModelFactory
-import decimal
 from ..models import Site, Survey
 from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView
 

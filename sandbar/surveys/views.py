@@ -9,17 +9,6 @@ from .custom_mixins import CSVResponseMixin
 from numpy import interp 
 
 
-class DygraphView(TemplateView):
-    
-    template_name = 'surveys/expt.html'
-    
-    def get(self, request, *args, **kwargs):
-        
-        context = None
-        
-        return self.render_to_response(context)                                          
-
-
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
     model = AreaVolume
