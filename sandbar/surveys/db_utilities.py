@@ -27,8 +27,8 @@ if __name__ == '__main__':
     
     q = QueryDB(SCHEMA_USER, DB_PWD, DB_DESC)
     session = q.create_session()
-    query_results = session.query(AreaVolumeCalcBase.site_id).distinct(AreaVolumeCalcBase.site_id)
+    query_results = session.query(AreaVolumeCalcBase.calc_date).distinct(AreaVolumeCalcBase.calc_date)
     for instance in query_results:
-        print instance.site_id
+        print instance.calc_date
     session.close()
     
