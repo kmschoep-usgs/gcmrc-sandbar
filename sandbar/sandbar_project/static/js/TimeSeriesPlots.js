@@ -1,3 +1,4 @@
+console.log(AREA_2D_URL);
 timeSeriesGraph = new Dygraph (
 		document.getElementById("timeseries-plot"),
 		AREA_2D_URL,
