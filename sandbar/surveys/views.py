@@ -9,15 +9,7 @@ from sqlalchemy import func
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin
-from .db_mappings import AreaVolumeCalcBase
-from .db_utilities import QueryDB
 
-try:
-    from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_DESC
-except ImportError:
-    SCHEMA_USER = None
-    DB_PWD = None
-    DB_DESC = None
 
 
 
