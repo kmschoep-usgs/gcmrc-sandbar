@@ -22,8 +22,8 @@
 	
 	<script type="text/javascript">
 		var PAGE_URL = window.location.pathname;
-		var SITE_ID = PAGE_URL.split('/')[3];
-		var AREA_2D_URL = '{% url "surveys-areavolume" %}' + '?site_id=' + SITE_ID;
+		//var SITE_ID = PAGE_URL.split('/')[3];
+		var AREA_2D_URL = '{% url "surveys-areavolume" %}' + '?site_id=' + {{ site_id }};
 	</script>
 	
  	{% js "lib/modernizr.custom.45705.js" %}
