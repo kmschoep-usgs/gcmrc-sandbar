@@ -20,6 +20,12 @@
 		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
 	</script>
 	
+	<script type="text/javascript">
+		var PAGE_URL = window.location.pathname;
+		var SITE_ID = PAGE_URL.split('/')[3];
+		var AREA_2D_URL = '{% url "surveys-areavolume" %}' + '?site_id=' + SITE_ID;
+	</script>
+	
  	{% js "lib/modernizr.custom.45705.js" %}
 	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
 	{% js "lib/dygraph-combined.js" %}
@@ -91,10 +97,14 @@
 					<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
 					<div id="cumulSandLoad-graph-div" class="graph-div"></div>
 					<div id="discharge-graph-div" class="graph-div"></div>
+					<div id="timeseries-plot" class="graph-div"></div>
 				</div>
 			</div>		
 		</div>
 	</div>
 	<div>
 	</div>
+	
+	{% js "js/TimeSeriesPlots.js" %}
+	
 {% endblock %}
