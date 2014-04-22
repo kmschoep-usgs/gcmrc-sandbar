@@ -12,10 +12,8 @@ timeSeriesGraph = new Dygraph (
 				x: {
 					ticker: function(a, b, pixels, opts, dygraph, vals) {
 						var chosen = Dygraph.pickDateTickGranularity(a, b, pixels, opts);
-						console.log(chosen);
 						if (chosen >= 0) {
 							var axisTicks = Dygraph.getDateAxis(a, b, chosen, opts, dygraph);
-							console.log(axisTicks);
 							return axisTicks;
 						}
 						else {

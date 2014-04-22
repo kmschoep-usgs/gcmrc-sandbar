@@ -3,9 +3,11 @@ import datetime
 
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
+from django.test.client import Client
+from django.core.urlresolvers import reverse
 from factory.django import DjangoModelFactory
 from ..models import Site, Survey
-from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView
+from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView, SiteDetailView
 
 class SitesViewTestCase(TestCase):
     
@@ -246,3 +248,47 @@ class AreaVolumeCalcsSetTestCase(TestCase):
         result = self.test_view.get(request)
        
         self.assertEqual(result[0], 300)
+        
+class SiteModelFactory(DjangoModelFactory):
+    
+    FACTORY_FOR = 'surveys.Site'
+
+
+class SiteDetailViewTestCase(TestCase):
+    
+    
+    def setUp(self):
+        
+        self.c = Client()
+        self.site_230 = Site(pk=230,
+                             river_mile = 60.98,
+                             river_side = 'L',
+                             site_name = 'Some site',
+                             gdaws_site_id = '0983242',
+                             gcmrc_site_id = '084L',
+                             deposit_type = 'U',
+                             eddy_size = 800,
+                             exp_ratio_8000 = 1.3,
+                             exp_ratio_45000 = 1.5,
+                             stage_change = 4.3,
+                             sed_budget_reach = 'Upper Marble Canyon',
+                             cur_stage_relation = 'y = mx + b',
+                             campsite = 'No',
+                             geom = None,
+                             stage_discharge_coeff_a = 1,
+                             stage_discharge_coeff_b = 2,
+                             stage_discharge_coeff_c = 3)
+        self.site_230.save()
+        
+    
+    def test_return_site_id_in_context(self):
+        
+        """
+        Test that the site id is returned correctly in the context
+        """
+        
+        test_pk = '230'
+        response = self.c.get(reverse('surveys-site', kwargs={'pk': test_pk}))
+        context = response.context[1]
+        site_id = context['site_id']
+        self.assertEqual(site_id, test_pk)
