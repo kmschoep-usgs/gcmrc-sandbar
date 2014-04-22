@@ -104,6 +104,7 @@ class SitesListView(ListView):
     
     context_object_name = 'site_list'
     
+    
     def get_queryset(self):
         # The below should work but there is a bug in the Oracle database backend:
         # From the django test suite
@@ -128,7 +129,12 @@ class SiteDetailView(DetailView):
     model = Site
     
     context_object_name = 'site'
-
+    
+    def get_context_data(self, **kwargs):
+        context = super(SiteDetailView, self).get_context_data(**kwargs)
+        site_id = context['site'].pk
+        context['site_id'] = str(site_id)
+        return context
 
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
