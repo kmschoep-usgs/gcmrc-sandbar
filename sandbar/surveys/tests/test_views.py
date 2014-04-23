@@ -1,13 +1,14 @@
-
 import datetime
 
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from factory.django import DjangoModelFactory
+
 from ..models import Site, Survey
-from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView, SiteDetailView
+from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsView
+
+from factories import AreaVolumeCalcsFactory, SiteModelFactory
 
 class SitesViewTestCase(TestCase):
     
@@ -135,11 +136,8 @@ class InterpolateCalcsTestCase(TestCase):
         Z = 833.76
         result = _interpolateCalcs(xp, fp, Z)
         self.assertAlmostEqual(9228.061652, result)     
-
-class AreaVolumeCalcsFactory(DjangoModelFactory):
-    FACTORY_FOR = 'surveys.AreaVolume'
-    
-    calc_type = 'eddy'
+        
+        
 
 class AreaVolumeCalcsSetTestCase(TestCase):
     # TODO: set up a site object like test above
@@ -248,10 +246,6 @@ class AreaVolumeCalcsSetTestCase(TestCase):
         result = self.test_view.get(request)
        
         self.assertEqual(result[0], 300)
-        
-class SiteModelFactory(DjangoModelFactory):
-    
-    FACTORY_FOR = 'surveys.Site'
 
 
 class SiteDetailViewTestCase(TestCase):
