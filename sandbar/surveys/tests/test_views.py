@@ -229,23 +229,23 @@ class AreaVolumeCalcsSetTestCase(TestCase):
     def test_get_queryset_within_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '38'})
-        result = self.test_view.get(request)
-        
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = -1986.25
+        self.assertContains(response, expected_value)
     
     def test_get_queryset_outside_lower_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '18'})
-        result = self.test_view.get(request)
-       
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = ''
+        self.assertContains(response, expected_value)
         
     def test_get_queryset_outside_upper_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '40'})
-        result = self.test_view.get(request)
-       
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = ''
+        self.assertContains(response, expected_value)
 
 
 class SiteDetailViewTestCase(TestCase):
