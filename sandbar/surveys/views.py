@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
 from numpy import interp 
-from sqlalchemy import func
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
