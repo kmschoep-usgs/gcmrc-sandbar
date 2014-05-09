@@ -1,7 +1,7 @@
 
 timeSeriesGraph = new Dygraph (
 		document.getElementById("timeseries-plot"),
-		AREA_2D_URL,
+		AREA_2D_URL  + '&ds_min=' + $('#ds-min').val() + '&ds_max=' + $('#ds-max').val() ,
 		{
 			xlabel: "Date",
 			ylabel: "2D Area",
