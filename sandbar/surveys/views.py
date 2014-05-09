@@ -38,7 +38,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 pickle.dumps(d2)
                 if d2.exists():
                     maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
-                    Area2d = maxAreaInt - minAreaInt
+                    Area2d =  minAreaInt - maxAreaInt
                 else:
                     Area2d = ''
             else:
