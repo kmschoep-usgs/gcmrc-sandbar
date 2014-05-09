@@ -87,18 +87,62 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
 			var params = [];
+			var errorExists = 0;
 			$('#parameter-selection-div input:checked').each(function() {
 				params.push($(this).val());
 			});
 			if (params.length === 0) {
-				$('#parameter-errors').append('Please select one or more parameters to plot');
-				$('#parameter-errors').show();
+				if (errorExists === 0) {
+					$('#parameter-errors').html('');
+				} 
+				else {
+					$('#parameter-errors').append('<br>');
+				}
+				errorExists = 1;
+				$('#parameter-errors').append('Please select one or more parameters to plot.');
+				//$('#parameter-errors').show();
 			}
-			else {
+			if (Number($('#ds-min').val()) > Number($('#ds-max').val())) {
+				if (errorExists === 0) {
+					$('#parameter-errors').html('');
+				}
+				else {
+					$('#parameter-errors').append('<br>');
+				}
+				errorExists = 1;
+				$('#parameter-errors').append('Maximum Discharge must be greater or equal to minimum discharge.');
+				//$('#parameter-errors').show();
+			}
+			if ($('#ds-min').val() === '') {
+				if (errorExists === 0) {
+					$('#parameter-errors').html('');
+				}
+				else {
+					$('#parameter-errors').append('<br>');
+				}
+				errorExists = 1;
+				$('#parameter-errors').append('Please enter a value for minimum discharge.');
+				//$('#parameter-errors').show();
+			}
+			if ($('#ds-max').val() === '') {
+				if (errorExists === 0) {
+					$('#parameter-errors').html('');
+				}
+				else {
+					$('#parameter-errors').append('<br>');
+				}
+				errorExists = 1;
+				$('#parameter-errors').append('Please enter a value for maximum discharge.');
+				//$('#parameter-errors').show();
+			}
+			if (errorExists === 0) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
 				tsPlots.updatePlots( $('#ds-min').val(),$('#ds-max').val());
+				}
+			else {
+				$('#parameter-errors').show();
 			}
 		}
 	});
