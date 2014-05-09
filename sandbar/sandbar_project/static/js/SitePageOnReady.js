@@ -100,7 +100,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				}
 				errorExists = 1;
 				$('#parameter-errors').append('Please select one or more parameters to plot.');
-				//$('#parameter-errors').show();
 			}
 			if (Number($('#ds-min').val()) > Number($('#ds-max').val())) {
 				if (errorExists === 0) {
@@ -111,7 +110,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				}
 				errorExists = 1;
 				$('#parameter-errors').append('Maximum Discharge must be greater or equal to minimum discharge.');
-				//$('#parameter-errors').show();
 			}
 			if ($('#ds-min').val() === '') {
 				if (errorExists === 0) {
