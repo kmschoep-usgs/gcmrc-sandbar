@@ -1,4 +1,4 @@
-SB.SitePageOnReady = function(gdawsSiteId) {
+SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var dateRange;
 	
 	var queryParams = 'site=' + gdawsSiteId;
@@ -77,9 +77,12 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 			$('#site-page-content').show();
 		}
 	});
-				
+	
+	
+	
 	// Initialize dygraphs
 	var sitePlots = new SB.SitePlots('graphs-div', gdawsSiteId);
+	var tsPlots = new SB.TSPlots('graphs-div', siteId);
 	
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
@@ -95,6 +98,7 @@ SB.SitePageOnReady = function(gdawsSiteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
+				tsPlots.updatePlots( $('#ds-min').val(),$('#ds-max').val());
 			}
 		}
 	});

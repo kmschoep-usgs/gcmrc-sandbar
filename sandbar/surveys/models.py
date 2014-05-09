@@ -1,6 +1,5 @@
 
 from django.contrib.gis.db import models
-import decimal
 #from django.contrib.gis.geos import GEOSGeometry, fromstr, fromfile,  Point
 
 # Create your models here.

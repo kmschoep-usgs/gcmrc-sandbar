@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
 from numpy import interp 
-from sqlalchemy import func
 
 from common.views import SimpleWebServiceProxyView
 from .models import Site, Survey, AreaVolume
@@ -18,11 +17,13 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
     model = AreaVolume
     
     def get(self, request, *args, **kwargs):
-        ds_min = 6500
-        ds_max = 9000
+        #ds_min = 6500
+        #ds_max = 9000
         # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
 
         site = Site.objects.get(pk=request.GET.get('site_id'))
+        ds_min = float(request.GET.get('ds_min'))
+        ds_max = float(request.GET.get('ds_max'))
         elevationMin = str(site.elevationM(ds_min))
         elevationMax = str(site.elevationM(ds_max))
         qs = AreaVolume.objects.filter(site_id=site.id).filter(calc_type__iexact='eddy')
