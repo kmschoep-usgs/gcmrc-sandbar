@@ -1,0 +1,37 @@
+#sites-map {
+	height: 400px;
+	width: 100%;
+}
+.parameter-group {
+	margin: 4px;
+}
+#graphs-div {
+	position: relative;
+}
+.loading-div {
+	text-align: center;
+	font-size: 2em;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.dygraph-legend {
+	text-align: left!important;
+}
+.graph-div {
+	width: 100%!important;
+}
+label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
+	width: 3em;
+}
+input[type=date] {
+	width: 160px;
+}
+.error {
+	color: red;
+}
+.graph-div {
+	margin-bottom: 1em;
+}
+.parameter-dates {
+	font-style: italic;
+}
