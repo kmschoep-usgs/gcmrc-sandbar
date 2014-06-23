@@ -17,11 +17,13 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
     model = AreaVolume
     
     def get(self, request, *args, **kwargs):
-        ds_min = 6500
-        ds_max = 9000
+        #ds_min = 6500
+        #ds_max = 9000
         # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
 
         site = Site.objects.get(pk=request.GET.get('site_id'))
+        ds_min = float(request.GET.get('ds_min'))
+        ds_max = float(request.GET.get('ds_max'))
         elevationMin = str(site.elevationM(ds_min))
         elevationMax = str(site.elevationM(ds_max))
         qs = AreaVolume.objects.filter(site_id=site.id).filter(calc_type__iexact='eddy')
@@ -36,7 +38,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 pickle.dumps(d2)
                 if d2.exists():
                     maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
-                    Area2d = maxAreaInt - minAreaInt
+                    Area2d =  minAreaInt - maxAreaInt
                 else:
                     Area2d = ''
             else:

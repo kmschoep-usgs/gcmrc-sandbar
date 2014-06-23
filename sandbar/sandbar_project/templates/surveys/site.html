@@ -18,12 +18,13 @@
 		var SB = {};
 		SB.GDAWS_SERVICE = '{% url "surveys-gdaws" op="" %}';
 		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
+		SB.AREA_2D_URL = '{% url "surveys-areavolume" %}' ;
 	</script>
 	
 	<script type="text/javascript">
 		var PAGE_URL = window.location.pathname;
 		//var SITE_ID = PAGE_URL.split('/')[3];
-		var AREA_2D_URL = '{% url "surveys-areavolume" %}' + '?site_id=' + {{ site_id }};
+		
 	</script>
 	
  	{% js "lib/modernizr.custom.45705.js" %}
@@ -36,14 +37,16 @@
 	{% js "js/Config.js" %}
 	{% js "js/DateRange.js" %}
 	{% js "js/GDAWSFormatUtils.js" %}
+	
 	{% js "js/SitePlots.js" %}
+	{% js "js/TSPlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
 				
 		$(document).ready(function() {
-			SB.SitePageOnReady("{{ site.gdaws_site_id }}");
+			SB.SitePageOnReady("{{ site.gdaws_site_id }}", "{{ site.id }}");
 		});
 	</script>
 	
@@ -82,6 +85,14 @@
 						<label for="end-date">To:&nbsp;</label>
 						<input type="date" id="end-date"/>
 					</div>
+					<div class="parameter-group">
+						<label for="ds-min">Minimum Discharge:&nbsp;</label>
+						<input type="text" id="ds-min"/>
+					</div>
+					<div class="parameter-group">
+						<label for="ds-max">Maximum Discharge:&nbsp;</label>
+						<input type="text" id="ds-max"/>
+					</div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 					<div id="parameter-errors" class="alert alert-danger" style="display: none;"></div>
 				</div>
@@ -97,6 +108,7 @@
 					<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
 					<div id="cumulSandLoad-graph-div" class="graph-div"></div>
 					<div id="discharge-graph-div" class="graph-div"></div>
+					<div id="plots-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
 					<div id="timeseries-plot" class="graph-div"></div>
 				</div>
 			</div>		
@@ -105,6 +117,6 @@
 	<div>
 	</div>
 	
-	{% js "js/TimeSeriesPlots.js" %}
+	<!-- {% js "js/TimeSeriesPlots.js" %} -->
 	
 {% endblock %}

@@ -1,6 +1,5 @@
 
 from django.contrib.gis.db import models
-import decimal
 #from django.contrib.gis.geos import GEOSGeometry, fromstr, fromfile,  Point
 
 # Create your models here.
@@ -103,7 +102,7 @@ class AreaVolume(models.Model):
     
     class Meta:
         db_table = 'area_volume_calc'
-        unique_together = ('site', 'sandbar', 'calc_date', 'calc_type', 'plane_height')
+        unique_together = ('site', 'sandbar', 'calc_date', 'calc_type', 'plane_height','prev_plane_height','next_plane_height')
         
     def __unicode__(self):
         return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date) + '; Plane Height:' + str(self.plane_height)
