@@ -12,7 +12,25 @@
 	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
 	{% js "lib/leaflet-0.6.4/leaflet.js" %}
 	{% js "js/SiteMarker.js" %}
-	{% js "js/SiteMap.js" %}
+	{% js "lib/leaflet.ajax.js" %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#sites-table-div table').fixedHeaderTable({
+				'height' : 400
+			});
+			var geojsonURL = "http://127.0.0.1:8000/surveys/sites_geo_json/";
+			var geojsonLayer = L.geoJson.ajax(geojsonURL);
+			var map = L.map('sites-map-home', {
+				center: [36.5, -112.0],
+				zoom : 7,
+				attributionControl: false
+			});
+			
+			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
+			map.addLayer(baseLayer);
+			map.addLayer(geojsonLayer);
+		});
+	</script>
 {% endblock page_script %}
 
 
@@ -21,7 +39,7 @@
 	<div id="content" class="row-fluid">
 		<div class="span9">
 			<div id="sites=map=div" class="well">
-				<div id="sites-map" class="lfMap">
+				<div id="sites-map-home" class="lfMap">
 				</div>
 			</div>
 		</div>	
