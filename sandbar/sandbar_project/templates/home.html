@@ -1,5 +1,30 @@
-{% extends "base.html" %}
+{% extends "base_home.html" %}
+
+{% load js %}
+
+{% block page_style %}
+	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
+	{% css "lib/leaflet-0.6.4/leaflet.css" %}
+	{% css "css/sandbar_custom.css" %}
+{% endblock page_style %}
+
+{% block page_script %}
+	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
+	{% js "lib/leaflet-0.6.4/leaflet.js" %}
+	{% js "js/SiteMarker.js" %}
+	{% js "js/SiteMap.js" %}
+{% endblock page_script %}
+
 
 {% block page_content %}
-	<h1>Sandbar Project</h1>
-{% endblock %}
+	<h2>Grand Canyon Sandbar Monitoring</h2>
+	<div id="content" class="row-fluid">
+		<div class="span9">
+			<div id="sites=map=div" class="well">
+				<div id="sites-map" class="lfMap">
+				</div>
+			</div>
+		</div>	
+	</div>
+	
+{% endblock page_content %}

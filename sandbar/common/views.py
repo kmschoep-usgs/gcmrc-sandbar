@@ -31,4 +31,3 @@ class SimpleWebServiceProxyView(View):
             return HttpResponse(e.msg, status=e.code, content_type='text/plain')
         else:
             return HttpResponse(content, status=status_code, content_type=content_type)
-

@@ -6,8 +6,9 @@ from django.views.generic import ListView, DetailView, View, TemplateView
 from numpy import interp 
 
 from common.views import SimpleWebServiceProxyView
+from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
-from .custom_mixins import CSVResponseMixin
+from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 
 
 
@@ -150,4 +151,23 @@ def _interpolateCalcs(xp, fp, Z):
     result = interp(Z, xp, fp);
     
     return result
+
+class SandBarSitesGeoJSON(JSONResponseMixin, View):
+    
+    model = Site
+    
+    def get(self, request, *args, **kwargs):
+        
+        sites = Site.objects.all()
+        feature_list = []
+        for site_object in sites:
+            latitude = site_object.geom.x
+            longitude = site_object.geom.y
+            point = create_geojson_point(latitude, longitude)
+            feature_id = site_object.id
+            feature = create_geojson_feature(point=point, feature_id=feature_id)
+            feature_list.append(feature)
+        feature_collection = create_geojson_feature_collection(feature_list)
+        
+        return self.render_to_json_response(context=feature_collection)
     
