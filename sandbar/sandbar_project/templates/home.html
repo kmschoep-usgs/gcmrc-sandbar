@@ -6,6 +6,7 @@
 	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
 	{% css "lib/leaflet-0.6.4/leaflet.css" %}
 	{% css "css/sandbar_custom.css" %}
+	{% css "css/sandbar_home_custom.css" %}
 {% endblock page_style %}
 
 {% block page_script %}
@@ -16,7 +17,7 @@
 	{% js "js/utils.js" %}
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var map = L.map('sites-map', {
+			var map = L.map('sites-map-home', {
 				center: [36.5, -112.0],
 				zoom : 7,
 				attributionControl: true
@@ -36,12 +37,57 @@
 	<h2>Grand Canyon Sandbar Monitoring</h2>
 	<div id="content" class="row-fluid">
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
-		<div class="span9">
+		<div class="col-md-8">
 			<div id="sites-map-div" class="well">
-				<div id="sites-map" class="lfMap">
+				<div id="sites-map-home" class="lfMap">
 				</div>
 			</div>
-		</div>	
+		</div>
+		<div id="sandbar_data" class="col-md-4">
+			<div class="sectionWideTitle">View Sandbar Monitoring Data</div>
+			<div id="sandbar_data_links" class="well">
+				<h4>Sandbar Surveys</h4>
+					<li><a href="{% url 'surveys-site_list' %}">Survey Data</a></li>
+				<h4>Photos</h4>
+					<li><a href="http://www.gcmrc.gov/gis/sandbartour2012/index.html?">Photos showing results of 2012 high-flow</a></li>
+					<li><a href="http://www.gcmrc.gov/gis/sandbartour2013/index.html?">Photos showing results of 2013 high-flow</a></li>
+			</div>
+		</div>
+	</div>
+	<div id="credits" class="row-fluid">
+		<div class="col-md-4">
+			<div class="sectionWideTitle">For Additional Information</div>
+			<div class="well full">
+				<span>For additional information, please contact</span>
+					<div class="media">
+						<h5 class="media-heading">Project Chief</h5>
+						<ul class="list-unstyled">
+							<li>
+								Paul Grams
+								<ul>
+									<li>USGS Southwest Biological Science Center</li>
+									<li>Grand Canyon Monitoring Research Center</li>
+									<li>
+										Contact
+										<a href="mailto:pgrams@usgs.gov">pgrams@usgs.gov</a>
+										or (928)-556-7385
+									</li>
+								</ul>					
+							</li>
+						</ul>
+					</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="sectionWideTitle">Cooperating Agencies and Academic Institutions</div>
+			<div class="well half"></div>
+			<div class="sectionWideTitle">Cooperating USGS Water Science Centers</div>
+			<div class="well half"></div>
+		</div>
+		<div class="col-md-4">
+			<div class="sectionWideTitle">Terms of Use</div>
+			<div class="well full"></div>
+		</div>
 	</div>
 	
 {% endblock page_content %}
