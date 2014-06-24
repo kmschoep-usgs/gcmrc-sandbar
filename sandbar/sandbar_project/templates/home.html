@@ -21,8 +21,7 @@
 				zoom : 7,
 				attributionControl: true
 			});
-			var hostname = get_value('#hostname');
-			var geojsonURL = 'http://' + hostname + '/surveys/sites_geo_json/';
+			var geojsonURL = get_value('#geojson_sites');
 			var geojsonLayer = L.geoJson.ajax(geojsonURL);
 			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
 			map.addLayer(baseLayer);
@@ -36,7 +35,7 @@
 {% block page_content %}
 	<h2>Grand Canyon Sandbar Monitoring</h2>
 	<div id="content" class="row-fluid">
-		<input type="hidden" id="hostname" name="app_host" value="{{ host }}" readonly>
+		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
 		<div class="span9">
 			<div id="sites-map-div" class="well">
 				<div id="sites-map" class="lfMap">
