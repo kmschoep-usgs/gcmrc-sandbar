@@ -10,6 +10,7 @@ class TestAreaVolumeCalcsFactory(TestCase):
     
     def setUp(self):
         
+        self.av = AreaVolume
         self.av_calc_model_instance = AreaVolumeCalcsFactory(site_id = '678', 
                                                              calc_date = '1990-09-29', 
                                                              area_2d_amt = '0', 
@@ -25,7 +26,7 @@ class TestAreaVolumeCalcsFactory(TestCase):
         """
             
         av_calc = self.av_calc_model_instance
-        self.assertTrue(isinstance(av_calc, AreaVolume))
+        self.assertTrue(isinstance(av_calc, self.av))
         
         
 class TestSiteModelFactory(TestCase):
@@ -33,6 +34,7 @@ class TestSiteModelFactory(TestCase):
     
     def setUp(self):
         
+        self.site = Site
         self.site_factory = SiteModelFactory(pk=970,
                                              river_mile = 60.98,
                                              river_side = 'L',
@@ -60,6 +62,6 @@ class TestSiteModelFactory(TestCase):
         """
         
         site_factory_instance = self.site_factory
-        self.assertTrue(isinstance(site_factory_instance, Site))
+        self.assertTrue(isinstance(site_factory_instance, self.site))
         
         

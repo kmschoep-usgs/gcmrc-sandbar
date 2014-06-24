@@ -229,23 +229,23 @@ class AreaVolumeCalcsSetTestCase(TestCase):
     def test_get_queryset_within_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '38'})
-        result = self.test_view.get(request)
-        
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = -1986.25
+        self.assertContains(response, expected_value)
     
     def test_get_queryset_outside_lower_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '18'})
-        result = self.test_view.get(request)
-       
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = ''
+        self.assertContains(response, expected_value)
         
     def test_get_queryset_outside_upper_bounds(self):
         
         request = self.request_factory.get('/areavolume/', {'site_id': '40'})
-        result = self.test_view.get(request)
-       
-        self.assertEqual(result[0], 300)
+        response = self.test_view.get(request)
+        expected_value = ''
+        self.assertContains(response, expected_value)
 
 
 class SiteDetailViewTestCase(TestCase):
@@ -255,23 +255,23 @@ class SiteDetailViewTestCase(TestCase):
         
         self.c = Client()
         self.site_230 = SiteModelFactory(pk=230,
-                                         river_mile = 60.98,
-                                         river_side = 'L',
-                                         site_name = 'Some site',
-                                         gdaws_site_id = '0983242',
-                                         gcmrc_site_id = '084L',
-                                         deposit_type = 'U',
-                                         eddy_size = 800,
-                                         exp_ratio_8000 = 1.3,
-                                         exp_ratio_45000 = 1.5,
-                                         stage_change = 4.3,
-                                         sed_budget_reach = 'Upper Marble Canyon',
-                                         cur_stage_relation = 'y = mx + b',
-                                         campsite = 'No',
-                                         geom = None,
-                                         stage_discharge_coeff_a = 1,
-                                         stage_discharge_coeff_b = 2,
-                                         stage_discharge_coeff_c = 3)
+                                         river_mile=60.98,
+                                         river_side='L',
+                                         site_name='Some site',
+                                         gdaws_site_id='0983242',
+                                         gcmrc_site_id='084L',
+                                         deposit_type='U',
+                                         eddy_size=800,
+                                         exp_ratio_8000=1.3,
+                                         exp_ratio_45000=1.5,
+                                         stage_change=4.3,
+                                         sed_budget_reach='Upper Marble Canyon',
+                                         cur_stage_relation='y = mx + b',
+                                         campsite='No',
+                                         geom=None,
+                                         stage_discharge_coeff_a=1,
+                                         stage_discharge_coeff_b=2,
+                                         stage_discharge_coeff_c=3)
         
     
     def test_return_site_id_in_context(self):

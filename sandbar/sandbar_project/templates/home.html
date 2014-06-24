@@ -1,5 +1,48 @@
-{% extends "base.html" %}
+{% extends "base_home.html" %}
+
+{% load js %}
+
+{% block page_style %}
+	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
+	{% css "lib/leaflet-0.6.4/leaflet.css" %}
+	{% css "css/sandbar_custom.css" %}
+{% endblock page_style %}
+
+{% block page_script %}
+	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
+	{% js "lib/leaflet-0.6.4/leaflet.js" %}
+	{% js "js/SiteMarker.js" %}
+	{% js "lib/leaflet.ajax.js" %}
+	{% js "js/utils.js" %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var map = L.map('sites-map', {
+				center: [36.5, -112.0],
+				zoom : 7,
+				attributionControl: true
+			});
+			var hostname = get_value('#hostname');
+			var geojsonURL = 'http://' + hostname + '/surveys/sites_geo_json/';
+			var geojsonLayer = L.geoJson.ajax(geojsonURL);
+			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
+			map.addLayer(baseLayer);
+			map.addLayer(geojsonLayer);
+					
+		});
+	</script>
+{% endblock page_script %}
+
 
 {% block page_content %}
-	<h1>Sandbar Project</h1>
-{% endblock %}
+	<h2>Grand Canyon Sandbar Monitoring</h2>
+	<div id="content" class="row-fluid">
+		<input type="hidden" id="hostname" name="app_host" value="{{ host }}" readonly>
+		<div class="span9">
+			<div id="sites-map-div" class="well">
+				<div id="sites-map" class="lfMap">
+				</div>
+			</div>
+		</div>	
+	</div>
+	
+{% endblock page_content %}

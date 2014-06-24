@@ -4,7 +4,7 @@ import mimetypes
 from urllib2 import urlopen, HTTPError
 
 from django.http import HttpResponse
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 
 logger = logging.getLogger(__name__)
 
@@ -31,4 +31,15 @@ class SimpleWebServiceProxyView(View):
             return HttpResponse(e.msg, status=e.code, content_type='text/plain')
         else:
             return HttpResponse(content, status=status_code, content_type=content_type)
-
+        
+        
+class SandbarHome(TemplateView):
+    
+    template_name = 'home.html'
+    
+    def get(self, request, *args, **kwargs):
+        
+        application_host = request.get_host()
+        context = {'host': application_host}
+        
+        return self.render_to_response(context) 

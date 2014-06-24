@@ -1,9 +1,9 @@
 
 from django.conf import settings
 from django.conf.urls import patterns, url, include
-from django.views.generic import TemplateView
 
 from jasmine.test_urls import ProjectJasmineView
+from common.views import SandbarHome
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -11,7 +11,7 @@ from jasmine.test_urls import ProjectJasmineView
 
 urlpatterns = patterns('',
     url(r'^home/$',
-        TemplateView.as_view(template_name='home.html'),
+        SandbarHome.as_view(),
         name='home'),
     url(r'^surveys/', include('surveys.urls')),
                        
