@@ -21,14 +21,18 @@
 			var map = L.map('sites-map-home', {
 				center: [36.5, -112.0],
 				zoom : 8,
-				attributionControl: true
+				attributionControl: false,
+				keyboard: false,
+				zoomControl: false,
+				scrollWheelZoom: false,
+				doubleClickZoom: false,
+				boxZoom: false
 			});
 			var geojsonURL = get_value('#geojson_sites');
 			var geojsonLayer = L.geoJson.ajax(geojsonURL);
 			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
 			map.addLayer(baseLayer);
 			map.addLayer(geojsonLayer);
-					
 		});
 	</script>
 {% endblock page_script %}
@@ -40,8 +44,7 @@
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
 		<div class="col-md-8">
 			<div id="sites-map-div" class="well">
-				<div id="sites-map-home">
-				</div>
+				<div id="sites-map-home"></div>
 			</div>
 		</div>
 		<div id="sandbar_data" class="col-md-4">
