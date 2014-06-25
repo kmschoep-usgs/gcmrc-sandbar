@@ -46,3 +46,11 @@
 #credits div.well.half {
 	min-height: 17em;
 }
+
+.application-body {
+	min-height: 1140px;
+}
+
+#homepage-title {
+	margin-left: 10px;
+}
