@@ -20,7 +20,7 @@
 		$(document).ready(function() {
 			var map = L.map('sites-map-home', {
 				center: [36.5, -112.4],
-				zoom : 8,
+				zoom : 7,
 				attributionControl: false,
 				keyboard: false,
 				zoomControl: false,
@@ -44,7 +44,7 @@
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
 		<div id="sandbar-intro" class="col-md-4">
 			<div class="sectionWideTitle">Introduction</div>
-			<div  id='intro-text' class="well half">
+			<div  id='intro-text' class="well">
 			<p>
 			Since the completion of Glen Canyon Dam in 1963, the amount of sand supplied to Grand Canyon National Park has been reduced by more than 90 percent. 
 			The Paria River, a tributary to the Colorado River 15 miles downstream from the dam, is now the single most important supplier of sand to the Colorado River within the Park. 
@@ -55,14 +55,27 @@
 			</p>
 			</div>
 		</div>
-		<div class="col-md-4">
+		<div id="sandbar-monitoring"class="col-md-4">
+			<div class="sectionWideTitle">The Sandbar Monitoring Data</div>
 			<div id="sites-map-div" class="well">
-				<div id="sites-map-home"></div>
+				<div id="monitoring-text">
+					<p>
+					Currently, topographic maps are made at a set of monitoring sites annually using conventional survey equipment. 
+					These surveys are used to calculate the size of each sandbar in terms of the area of exposed sand and the volume 
+					of sand contained in the bar. Both of these calculations are relative to an elevation of interest.				
+					</p>
+				</div>
+				<!-- <div id="sites-map-home"></div> -->
+				<br/>
+				<div id="sandbar-home-img">
+					<img style="width:100%;" src="{% static 'images/SB0351L_2013_0923_183839_Crop_1000.JPG' %}">
+				</div>
 			</div>
 		</div>
 		<div id="sandbar_data" class="col-md-4">
 			<div class="sectionWideTitle">View Sandbar Monitoring Data</div>
 			<div id="sandbar_data_links" class="well">
+				<div id="sites-map-home"></div>
 				<h4>Sandbar Surveys</h4>
 					<ul>
 						<li><a href="{% url 'surveys-site_list' %}">Survey Data</a></li>

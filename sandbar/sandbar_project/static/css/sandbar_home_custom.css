@@ -30,8 +30,12 @@
 	margin-top: 0px;
 }
 
+#sites-map-div {
+	min-height: 410px;
+}
+
 #sites-map-home {
-	height: 400px;
+	height: 200px;
 	width: 100%;
 }
 
