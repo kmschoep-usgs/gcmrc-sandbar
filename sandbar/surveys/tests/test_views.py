@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
@@ -285,3 +286,71 @@ class SiteDetailViewTestCase(TestCase):
         context = response.context[1]
         site_id = context['site_id']
         self.assertEqual(site_id, test_pk)
+        
+class TestSandBarSitesGeoJSON(TestCase):
+    
+    def setUp(self):
+        self.site1 = Site(river_mile='16.0',
+                         site_name='Fake Site 1',
+                         deposit_type='a',
+                         eddy_size='3',
+                         exp_ratio_8000='2.3',
+                         exp_ratio_45000='3.4',
+                         stage_change='5.4',
+                         sed_budget_reach='reach1',
+                         campsite='NO',
+                         stage_discharge_coeff_a='717.396358',
+                         stage_discharge_coeff_b='0.0001638795122',
+                         stage_discharge_coeff_c='-0.000000001435143',
+                         geom=Point(-128.6, 84.9))
+        self.site1.save() 
+        self.site2 = Site(river_mile='19.0',
+                         site_name='Fake Site 2',
+                         deposit_type='a',
+                         eddy_size='1',
+                         exp_ratio_8000='2.3',
+                         exp_ratio_45000='3.4',
+                         stage_change='5.4',
+                         sed_budget_reach='reach1',
+                         campsite='NO',
+                         stage_discharge_coeff_a='757.392458',
+                         stage_discharge_coeff_b='0.0001038795122',
+                         stage_discharge_coeff_c='-0.000000001432133',
+                         geom=Point(-130.6, 89.1))
+        self.site2.save()
+        self.c = Client()
+        
+    def test_view_response_status(self):
+        
+        """
+        Test that the view responds
+        """
+        
+        response = self.c.get(reverse('gjson_sites'))
+        status_code = response.status_code
+        expected = 200
+        self.assertEqual(status_code, expected)
+        
+    def test_response_content(self):
+        
+        """
+        Verify that the expected GeoJSON attributes are present
+        """
+        
+        response = self.c.get(reverse('gjson_sites'))
+        self.assertContains(response, 'FeatureCollection')
+        self.assertContains(response, 'Feature')
+        self.assertContains(response, 'Point')
+        
+    def test_response_length(self):
+        
+        """
+        Verify that two features are returned.
+        These are the same two features that 
+        were setup.
+        """
+        
+        response = self.c.get(reverse('gjson_sites'))
+        data = json.loads(response.content)
+        data_features = data[u'features']
+        self.assertEqual(len(data_features), 2)
