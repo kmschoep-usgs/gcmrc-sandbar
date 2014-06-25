@@ -354,3 +354,14 @@ class TestSandBarSitesGeoJSON(TestCase):
         data = json.loads(response.content)
         data_features = data[u'features']
         self.assertEqual(len(data_features), 2)
+        
+    def test_point_coordinates(self):
+        
+        """
+        Verify that the coordinates for the points
+        are created correctly.
+        """
+        
+        response = self.c.get(reverse('gjson_sites'))
+        expected_point_text = '"coordinates": [-128.6, 84.9]'
+        self.assertContains(response, expected_point_text)
