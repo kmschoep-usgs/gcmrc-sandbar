@@ -42,7 +42,20 @@
 	<h2 id="homepage-title">Grand Canyon Sandbar Monitoring</h2>
 	<div id="content" class="row-fluid">
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
-		<div class="col-md-8">
+		<div id="sandbar-intro" class="col-md-4">
+			<div class="sectionWideTitle">Introduction</div>
+			<div  id='intro-text' class="well half">
+			<p>
+			Since the completion of Glen Canyon Dam in 1963, the amount of sand supplied to Grand Canyon National Park has been reduced by more than 90 percent. 
+			The Paria River, a tributary to the Colorado River 15 miles downstream from the dam, is now the single most important supplier of sand to the Colorado River within the Park. 
+			This large reduction in sand supply has resulted in substantial decrease in the number and size of sandbars. Sandbars are important because they serve as campsites for 
+			river runner and hikers, provide important aquatic and riparian habitats, and are the source of sand that may help protect archeological sites. The information collected 
+			by this project will be used to determine whether dam operations, including short-duration artificial floods, cause increases or decreases in sandbars and associated 
+			campsites in Grand Canyon National Park.
+			</p>
+			</div>
+		</div>
+		<div class="col-md-4">
 			<div id="sites-map-div" class="well">
 				<div id="sites-map-home"></div>
 			</div>
@@ -120,7 +133,7 @@
 							<img src="{% static 'images/source-usbr.gif' %}">
 						</div>
 						<div class="media-body">
-							<h4 class="media-heading">Bureau of Reclamation</h4>
+							<h4 class="media-heading link-text">Bureau of Reclamation</h4>
 						</div>
 					</a>
 				</div>
@@ -130,7 +143,7 @@
 							<img src="{% static 'images/source-nps.gif' %}">
 						</div>
 						<div class="media-body">
-							<h4 class="media-heading">National Park Service</h4>
+							<h4 class="media-heading link-text">National Park Service</h4>
 						</div>
 					</a>
 				</div>
@@ -140,7 +153,7 @@
 							<img style="width:100%;" src="{% static 'images/NAU_PrimH-transparent.png' %}">
 						</div>
 						<div class="media-body">
-							<h4 class="media-heading">Northern Arizona University</h4>
+							<h4 class="media-heading link-text">Northern Arizona University</h4>
 						</div>
 					</a>
 				</div>
@@ -150,7 +163,7 @@
 				<div class="media">
 					<a href="http://az.water.usgs.gov/">
 						<div class="media-body">
-							<h4 class="media-heading">Arizona Water Science Center</h4>
+							<h4 class="media-heading link-text">Arizona Water Science Center</h4>
 						</div>
 					</a>
 				</div>

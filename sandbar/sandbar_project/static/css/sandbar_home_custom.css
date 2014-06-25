@@ -39,6 +39,10 @@
 	min-height: 410px;
 }
 
+#intro-text {
+	min-height: 410px;
+}
+
 #credits div.well.full {
 	min-height: 40em;
 }
@@ -57,4 +61,16 @@
 
 .credit-header {
 	font-weight:bold;
+}
+
+.link-text {
+	color:inherit;
+}
+
+/*Links*/
+a:link {
+	color: #08c;
+}
+a:visited {
+	color:#0000FF;
 }
