@@ -1,6 +1,7 @@
 {% extends "base_home.html" %}
 
 {% load js %}
+{% load static %}
 
 {% block page_style %}
 	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
@@ -18,34 +19,63 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			var map = L.map('sites-map-home', {
-				center: [36.5, -112.0],
+				center: [36.5, -112.4],
 				zoom : 7,
-				attributionControl: true
+				attributionControl: false,
+				keyboard: false,
+				zoomControl: false,
+				scrollWheelZoom: false,
+				doubleClickZoom: false,
+				boxZoom: false
 			});
 			var geojsonURL = get_value('#geojson_sites');
 			var geojsonLayer = L.geoJson.ajax(geojsonURL);
 			var baseLayer = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png')
 			map.addLayer(baseLayer);
 			map.addLayer(geojsonLayer);
-					
 		});
 	</script>
 {% endblock page_script %}
 
 
 {% block page_content %}
-	<h2>Grand Canyon Sandbar Monitoring</h2>
+	<h2 id="homepage-title">Grand Canyon Sandbar Monitoring</h2>
 	<div id="content" class="row-fluid">
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
-		<div class="col-md-8">
+		<div id="sandbar-intro" class="col-md-4">
+			<div class="sectionWideTitle">Introduction</div>
+			<div  id='intro-text' class="well">
+			<p>
+			Since the completion of Glen Canyon Dam in 1963, the amount of sand supplied to Grand Canyon National Park has been reduced by more than 90 percent. 
+			The Paria River, a tributary to the Colorado River 15 miles downstream from the dam, is now the single most important supplier of sand to the Colorado River within the Park. 
+			This large reduction in sand supply has resulted in substantial decrease in the number and size of sandbars. Sandbars are important because they serve as campsites for 
+			river runner and hikers, provide important aquatic and riparian habitats, and are the source of sand that may help protect archeological sites. The information collected 
+			by this project will be used to determine whether dam operations, including short-duration artificial floods, cause increases or decreases in sandbars and associated 
+			campsites in Grand Canyon National Park.
+			</p>
+			</div>
+		</div>
+		<div id="sandbar-monitoring"class="col-md-4">
+			<div class="sectionWideTitle">The Sandbar Monitoring Data</div>
 			<div id="sites-map-div" class="well">
-				<div id="sites-map-home">
+				<div id="monitoring-text">
+					<p>
+					Currently, topographic maps are made at a set of monitoring sites annually using conventional survey equipment. 
+					These surveys are used to calculate the size of each sandbar in terms of the area of exposed sand and the volume 
+					of sand contained in the bar. Both of these calculations are relative to an elevation of interest.				
+					</p>
+				</div>
+				<!-- <div id="sites-map-home"></div> -->
+				<br/>
+				<div id="sandbar-home-img">
+					<img style="width:100%;" src="{% static 'images/SB0351L_2013_0923_183839_Crop_1000.JPG' %}">
 				</div>
 			</div>
 		</div>
 		<div id="sandbar_data" class="col-md-4">
 			<div class="sectionWideTitle">View Sandbar Monitoring Data</div>
 			<div id="sandbar_data_links" class="well">
+				<div id="sites-map-home"></div>
 				<h4>Sandbar Surveys</h4>
 					<ul>
 						<li><a href="{% url 'surveys-site_list' %}">Survey Data</a></li>
@@ -65,7 +95,7 @@
 				<span>For additional information, please contact</span>
 					<div class="media">
 						<div class="media-body">
-							<h5 class="media-heading">Project Chief</h5>
+							<h5 class="media-heading credit-header">Project Chief</h5>
 							<ul class="list-unstyled">
 								<li>
 									Paul Grams
@@ -82,13 +112,75 @@
 							</ul>
 						</div>
 					</div>
+					<div class="media">
+						<div class="media-body">
+							<h5 class="media-header credit-header">Database Designer/Programmer</h5>
+							<ul class="list-unstyled">
+								<li>Kathryn Schoephoester
+									<ul>
+										<li>USGS Center for Integrated Data Analytics</li>
+									</ul>	
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="media">
+						<a class="pull-left" href="http://cida.usgs.gov/">
+							<img class="media-object" src="{% static 'images/source-cida.gif' %}">
+						</a>
+						<div class="media-body">
+							<h5 class="media-heading credit-header">Website Design and Programming</h5>
+							<ul class="list-unstyled">
+								<li>USGS Center for Integrated Data Analytics</li>
+							</ul>
+						</div>
+					</div>
 			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="sectionWideTitle">Cooperating Agencies and Academic Institutions</div>
-			<div class="well half"></div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://www.usbr.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-usbr.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">Bureau of Reclamation</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="http://www.nps.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-nps.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">National Park Service</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="https://www.nau.edu">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img style="width:100%;" src="{% static 'images/NAU_PrimH-transparent.png' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">Northern Arizona University</h4>
+						</div>
+					</a>
+				</div>
+			</div>
 			<div class="sectionWideTitle">Cooperating USGS Water Science Centers</div>
-			<div class="well half"></div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://az.water.usgs.gov/">
+						<div class="media-body">
+							<h4 class="media-heading link-text">Arizona Water Science Center</h4>
+						</div>
+					</a>
+				</div>
+			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="sectionWideTitle">Terms of Use</div>

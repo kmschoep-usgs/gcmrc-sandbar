@@ -30,12 +30,20 @@
 	margin-top: 0px;
 }
 
+#sites-map-div {
+	min-height: 410px;
+}
+
 #sites-map-home {
-	height: 400px;
+	height: 200px;
 	width: 100%;
 }
 
 #sandbar_data_links {
+	min-height: 410px;
+}
+
+#intro-text {
 	min-height: 410px;
 }
 
@@ -45,4 +53,28 @@
 
 #credits div.well.half {
 	min-height: 17em;
+}
+
+.application-body {
+	min-height: 1140px;
+}
+
+#homepage-title {
+	margin-left: 10px;
+}
+
+.credit-header {
+	font-weight:bold;
+}
+
+.link-text {
+	color:inherit;
+}
+
+/*Links*/
+a:link {
+	color: #08c;
+}
+a:visited {
+	color:#0000FF;
 }
