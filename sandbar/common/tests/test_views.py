@@ -3,8 +3,10 @@ import mock
 
 from urllib2 import HTTPError
 
-from django.test import TestCase
-from django.test.client import RequestFactory
+from django.test import TestCase, SimpleTestCase
+from django.test.client import RequestFactory, Client
+from django.core.urlresolvers import reverse
+
 
 from ..views import SimpleWebServiceProxyView
 
@@ -66,4 +68,15 @@ class SimpleWebServiceProxyViewTestCase(TestCase):
             self.assertEqual(response.status_code, 404)
             self.assertEqual(response.content,'Can not find service')
 
+class TestSandbarHomeView(SimpleTestCase):
+    
+    def setUp(self):
         
+        self.c = Client()
+        
+    def test_view_response(self):
+        
+        response = self.c.get(reverse('home'))
+        resp_status_code = response.status_code
+        expected_status_code = 200
+        self.assertEqual(resp_status_code, expected_status_code)   
