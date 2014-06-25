@@ -1,6 +1,7 @@
 {% extends "base_home.html" %}
 
 {% load js %}
+{% load static %}
 
 {% block page_style %}
 	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
@@ -86,9 +87,48 @@
 		</div>
 		<div class="col-md-4">
 			<div class="sectionWideTitle">Cooperating Agencies and Academic Institutions</div>
-			<div class="well half"></div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://www.usbr.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-usbr.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">Bureau of Reclamation</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="http://www.nps.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-nps.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">National Park Service</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="https://www.nau.edu">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img style="width:100%;" src="{% static 'images/NAU_PrimH-transparent.png' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">Northern Arizona University</h4>
+						</div>
+					</a>
+				</div>
+			</div>
 			<div class="sectionWideTitle">Cooperating USGS Water Science Centers</div>
-			<div class="well half"></div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://az.water.usgs.gov/">
+						<div class="media-body">
+							<h4 class="media-heading">Arizona Water Science Center</h4>
+						</div>
+					</a>
+				</div>
+			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="sectionWideTitle">Terms of Use</div>
