@@ -79,4 +79,4 @@ class TestSandbarHomeView(SimpleTestCase):
         response = self.c.get(reverse('home'))
         resp_status_code = response.status_code
         expected_status_code = 200
-        self.assertEqual(resp_status_code, expected_status_code)   
+        self.assertEqual(resp_status_code, expected_status_code)
