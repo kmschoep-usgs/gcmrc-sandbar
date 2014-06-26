@@ -226,24 +226,26 @@ class AreaVolumeCalcsSetTestCase(TestCase):
 
         self.test_view = AreaVolumeCalcsView()
         self.request_factory = RequestFactory()
+        self.ds_min = u'6500'
+        self.ds_max = u'9000'
         
     def test_get_queryset_within_bounds(self):
         
-        request = self.request_factory.get('/areavolume/', {'site_id': '38'})
+        request = self.request_factory.get('/areavolume/', {'site_id': '38', 'ds_min': self.ds_min, 'ds_max': self.ds_max})
         response = self.test_view.get(request)
-        expected_value = -1986.25
+        expected_value = 1986.25 # not sure if this should be a positive or negative value
         self.assertContains(response, expected_value)
     
     def test_get_queryset_outside_lower_bounds(self):
         
-        request = self.request_factory.get('/areavolume/', {'site_id': '18'})
+        request = self.request_factory.get('/areavolume/', {'site_id': '18', 'ds_min': self.ds_min, 'ds_max': self.ds_max})
         response = self.test_view.get(request)
         expected_value = ''
         self.assertContains(response, expected_value)
         
     def test_get_queryset_outside_upper_bounds(self):
         
-        request = self.request_factory.get('/areavolume/', {'site_id': '40'})
+        request = self.request_factory.get('/areavolume/', {'site_id': '40', 'ds_min': self.ds_min, 'ds_max': self.ds_max})
         response = self.test_view.get(request)
         expected_value = ''
         self.assertContains(response, expected_value)
@@ -286,6 +288,7 @@ class SiteDetailViewTestCase(TestCase):
         context = response.context[1]
         site_id = context['site_id']
         self.assertEqual(site_id, test_pk)
+
         
 class TestSandBarSitesGeoJSON(TestCase):
     
