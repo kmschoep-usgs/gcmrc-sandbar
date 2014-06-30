@@ -1,4 +1,3 @@
-
 import logging
 import mimetypes
 from urllib2 import urlopen, HTTPError
