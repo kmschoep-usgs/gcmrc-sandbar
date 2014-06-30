@@ -1,4 +1,3 @@
-
 import logging
 import mimetypes
 from urllib2 import urlopen, HTTPError
@@ -39,7 +38,6 @@ class SandbarHome(TemplateView):
     
     def get(self, request, *args, **kwargs):
         
-        application_host = request.get_host()
-        context = {'host': application_host}
+        context = None
         
         return self.render_to_response(context) 

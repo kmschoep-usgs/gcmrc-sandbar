@@ -93,48 +93,48 @@
 			<div class="sectionWideTitle">For Additional Information</div>
 			<div class="well full">
 				<span>For additional information, please contact</span>
-					<div class="media">
-						<div class="media-body">
-							<h5 class="media-heading credit-header">Project Chief</h5>
-							<ul class="list-unstyled">
-								<li>
-									Paul Grams
-									<ul>
-										<li>USGS Southwest Biological Science Center</li>
-										<li>Grand Canyon Monitoring Research Center</li>
-										<li>
-											Contact
-											<a href="mailto:pgrams@usgs.gov">pgrams@usgs.gov</a>
-											or (928)-556-7385
-										</li>
-									</ul>					
-								</li>
-							</ul>
-						</div>
+				<div class="media">
+					<div class="media-body">
+						<h5 class="media-heading credit-header">Project Chief</h5>
+						<ul class="list-unstyled">
+							<li>
+								Paul Grams
+								<ul>
+									<li>USGS Southwest Biological Science Center</li>
+									<li>Grand Canyon Monitoring Research Center</li>
+									<li>
+										Contact
+										<a href="mailto:pgrams@usgs.gov">pgrams@usgs.gov</a>
+										or (928)-556-7385
+									</li>
+								</ul>					
+							</li>
+						</ul>
 					</div>
-					<div class="media">
-						<div class="media-body">
-							<h5 class="media-header credit-header">Database Designer/Programmer</h5>
-							<ul class="list-unstyled">
-								<li>Kathryn Schoephoester
-									<ul>
-										<li>USGS Center for Integrated Data Analytics</li>
-									</ul>	
-								</li>
-							</ul>
-						</div>
+				</div>
+				<div class="media">
+					<div class="media-body">
+						<h5 class="media-header credit-header">Database Designer/Programmer</h5>
+						<ul class="list-unstyled">
+							<li>Kathryn Schoephoester
+								<ul>
+									<li>USGS Center for Integrated Data Analytics</li>
+								</ul>	
+							</li>
+						</ul>
 					</div>
-					<div class="media">
-						<a class="pull-left" href="http://cida.usgs.gov/">
-							<img class="media-object" src="{% static 'images/source-cida.gif' %}">
-						</a>
-						<div class="media-body">
-							<h5 class="media-heading credit-header">Website Design and Programming</h5>
-							<ul class="list-unstyled">
-								<li>USGS Center for Integrated Data Analytics</li>
-							</ul>
-						</div>
+				</div>
+				<div class="media">
+					<a class="pull-left" href="http://cida.usgs.gov/">
+						<img class="media-object" src="{% static 'images/source-cida.gif' %}">
+					</a>
+					<div class="media-body">
+						<h5 class="media-heading credit-header">Website Design and Programming</h5>
+						<ul class="list-unstyled">
+							<li>USGS Center for Integrated Data Analytics</li>
+						</ul>
 					</div>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
@@ -184,7 +184,7 @@
 		</div>
 		<div class="col-md-4">
 			<div class="sectionWideTitle">Terms of Use</div>
-			<div class="well full">
+			<div class="well half">
 				<p>
 					The data presented in this website are collected 
 					and processed using standard USGS protocols 
@@ -200,6 +200,51 @@
 				</p>
 			</div>
 		</div>
+		<div class="col-md-4">
+			<div class="sectionWideTitle">References</div>
+			<div class="well half">
+				<div class="media">
+					<div class="media-body">
+						<h5 class="media-heading credit-header">Methods</h5>
+							<ul>
+								<li>
+									Hazel, J.E., Jr., Grams, P.E., Schmidt, J.C., and Kaplinski, M., 2010, Sandbar response in Marble and Grand Canyons, Arizona, 
+									following the 2008 high-flow experiment on the Colorado River: U.S. Geological Survey Scientific Investigations Report 2010&#8211;5015, 52 p. 
+									<a href="http://pubs.usgs.gov/sir/2010/5015/">http://pubs.usgs.gov/sir/2010/5015/</a>.									
+								</li>
+							</ul>	
+					</div>
+				</div>
+				<div class="media">
+					<div class="media-body">
+						<h5 class="media-heading credit-header">Recent Publications</h5>
+							<ul>
+								<li>
+									Grams P. E., 2013, A sand budget for Marble Canyon, Arizona -- implications for long-term
+									monoritoring of sand storage change, U.S. Geological Survey Fact Sheet 2013&#8211;3074, 4p.,
+									<a href="http://pubs.usgs.gov/fs/2013/3074">http://pubs.usgs.gov/fs/2013/3074</a>.
+								</li>
+								<li>
+									Grams P. E., D. J. Topping, J. C. Schmidt, J. E. Hazel Jr., and M. Kaplinski, 2013, Linking morphodyamic
+									response of sediment mass balance on the Colorado River in Marble Canyon: Issues of scale, geomorphic setting,
+									and sampling design, J. Geophys. Res. Earth Surf., 118, 361&#8211;381, doi:10.1002/jgrf.20050.
+									<a href="http://onlinelibrary.wiley.com/doi/10.1002/jgrf.20050/full">http://onlinelibrary.wiley.com/doi/10.1002/jgrf.20050/full</a>
+								</li>							
+							</ul>
+					</div>
+				</div>
+				<div class="media">
+					<div class="media-body">
+						<h5 class="media-heading credit-header">Full Publication List</h5>
+							<ul>
+								<li>
+									<a href="{% static 'pub_list/PubsList.pdf'%}">Full Publications</a>
+								</li>
+							</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	
+
 {% endblock page_content %}
