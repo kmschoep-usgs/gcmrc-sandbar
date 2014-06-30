@@ -14,12 +14,12 @@ class CSVResponseMixin(object):
     def render_to_csv_response(self, context, data_keys=None, **response_kwargs):
         
         response = HttpResponse(content_type='text/csv')
-        self._write_csv_for_plot(data=context, outfile=response, data_keys=data_keys)
+        self._write_csv_content(data=context, outfile=response, data_keys=data_keys)
         
         return response
     
         
-    def _write_csv_for_plot(self, data, outfile, data_keys=None):
+    def _write_csv_content(self, data, outfile, data_keys=None):
         
         if data_keys == None:
             data_keys = data[0].keys()
