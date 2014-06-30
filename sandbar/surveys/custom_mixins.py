@@ -14,12 +14,11 @@ class CSVResponseMixin(object):
     def render_to_csv_response(self, context, data_keys=None, **response_kwargs):
         
         response = HttpResponse(content_type='text/csv')
-        self._write_csv_for_plot(data=context, outfile=response, data_keys=data_keys)
+        self._write_csv_content(data=context, outfile=response, data_keys=data_keys)
         
         return response
-    
-        
-    def _write_csv_for_plot(self, data, outfile, data_keys=None):
+         
+    def _write_csv_content(self, data, outfile, data_keys=None):
         
         if data_keys == None:
             data_keys = data[0].keys()
@@ -30,7 +29,6 @@ class CSVResponseMixin(object):
         for data_dict in data:
             csv_writer.writerow(data_dict)
         
-    
 
 class JSONResponseMixin(object):
     
@@ -40,12 +38,11 @@ class JSONResponseMixin(object):
     
     def render_to_json_response(self, context, **response_kwargs):
         
-        context_json = self.convert_context_to_json(context)
+        context_json = self._convert_context_to_json(context)
         
         return HttpResponse(context_json, content_type="application/json", **response_kwargs)
-    
-    
-    def convert_context_to_json(self, context):
+        
+    def _convert_context_to_json(self, context):
         
         json_dump = json.dumps(context)
         
