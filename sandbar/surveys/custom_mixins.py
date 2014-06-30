@@ -17,8 +17,7 @@ class CSVResponseMixin(object):
         self._write_csv_content(data=context, outfile=response, data_keys=data_keys)
         
         return response
-    
-        
+         
     def _write_csv_content(self, data, outfile, data_keys=None):
         
         if data_keys == None:
@@ -30,7 +29,6 @@ class CSVResponseMixin(object):
         for data_dict in data:
             csv_writer.writerow(data_dict)
         
-    
 
 class JSONResponseMixin(object):
     
@@ -43,8 +41,7 @@ class JSONResponseMixin(object):
         context_json = self._convert_context_to_json(context)
         
         return HttpResponse(context_json, content_type="application/json", **response_kwargs)
-    
-    
+        
     def _convert_context_to_json(self, context):
         
         json_dump = json.dumps(context)
