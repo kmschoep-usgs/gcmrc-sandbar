@@ -56,8 +56,10 @@
 	min-height: 17em;
 }
 
-.application-body {
+.application-body-home {
 	min-height: 1300px;
+	margin-left: 25px;
+	margin-right: 25px;
 }
 
 #homepage-title {
