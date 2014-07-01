@@ -15,7 +15,10 @@
 	{% js "lib/leaflet-0.6.4/leaflet.js" %}
 	{% js "js/SiteMarker.js" %}
 	{% js "lib/leaflet.ajax.js" %}
+	{% js "lib/isotope-2.0.0/isotope.pkgd.min.js" %}
+	{% js "lib/imagesLoaded-3.1.8/imagesloaded.pkgd.min.js" %}
 	{% js "js/utils.js" %}
+	{% js "js/tight-bootstrap.js" %}
 	{% js "js/SandbarHomeMap.js" %}
 	<script type="text/javascript">
 	</script>
@@ -26,7 +29,7 @@
 	<h2 id="homepage-title">Grand Canyon Sandbar Monitoring</h2>
 	<div id="content" class="row">
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
-		<div id="sandbar-intro" class="col-md-4">
+		<div id="sandbar-intro" class="col-md-4 item">
 			<div class="sectionWideTitle">Introduction</div>
 			<div  id='intro-text' class="well">
 			<p>
@@ -39,7 +42,7 @@
 			</p>
 			</div>
 		</div>
-		<div id="sandbar-monitoring"class="col-md-4">
+		<div id="sandbar-monitoring"class="col-md-4 item">
 			<div class="sectionWideTitle">The Sandbar Monitoring Data</div>
 			<div id="sites-map-div" class="well">
 				<div id="monitoring-text">
@@ -58,9 +61,8 @@
 					<img style="width:100%;" src="{% static 'images/SB0651R_2012_1009_115407_Crop_1000.JPG' %}">
 				</div>
 			</div>
-			<div class="clearfix visible-md-block"></div>
 		</div>
-		<div id="sandbar_data" class="col-md-4">
+		<div id="sandbar_data" class="col-md-4 item">
 			<div class="sectionWideTitle">View Sandbar Monitoring Data</div>
 			<div id="sandbar_data_links" class="well">
 				<div id="sites-map-home"></div>
@@ -75,9 +77,7 @@
 					</ul>
 			</div>
 		</div>
-	</div>
-	<div id="credits" class="row">
-		<div class="col-md-4">
+		<div class="col-md-4 item">
 			<div class="sectionWideTitle">For Additional Information</div>
 			<div class="well half">
 				<span>For additional information, please contact</span>
@@ -141,52 +141,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<div class="sectionWideTitle">Cooperating Agencies and Academic Institutions</div>
-			<div class="well half">
-				<div class="media">
-					<a href="http://www.usbr.gov/">
-						<div class="media-object pull-left" style="width:106px; text-align:center;">
-							<img src="{% static 'images/source-usbr.gif' %}">
-						</div>
-						<div class="media-body">
-							<h4 class="media-heading link-text">Bureau of Reclamation</h4>
-						</div>
-					</a>
-				</div>
-				<div class="media">
-					<a href="http://www.nps.gov/">
-						<div class="media-object pull-left" style="width:106px; text-align:center;">
-							<img src="{% static 'images/source-nps.gif' %}">
-						</div>
-						<div class="media-body">
-							<h4 class="media-heading link-text">National Park Service</h4>
-						</div>
-					</a>
-				</div>
-				<div class="media">
-					<a href="https://www.nau.edu">
-						<div class="media-object pull-left" style="width:106px; text-align:center;">
-							<img style="width:100%;" src="{% static 'images/NAU_PrimH-transparent.png' %}">
-						</div>
-						<div class="media-body">
-							<h4 class="media-heading link-text">Northern Arizona University</h4>
-						</div>
-					</a>
-				</div>
-			</div>
-			<div class="sectionWideTitle">Cooperating USGS Water Science Centers</div>
-			<div class="well half">
-				<div class="media">
-					<a href="http://az.water.usgs.gov/">
-						<div class="media-body">
-							<h4 class="media-heading link-text">Arizona Water Science Center</h4>
-						</div>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 item">
 			<div class="sectionWideTitle">References</div>
 			<div class="well full">
 				<div class="media">
@@ -228,6 +183,51 @@
 								</li>
 							</ul>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 item">
+			<div class="sectionWideTitle">Cooperating Agencies and Academic Institutions</div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://www.usbr.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-usbr.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">Bureau of Reclamation</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="http://www.nps.gov/">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img src="{% static 'images/source-nps.gif' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">National Park Service</h4>
+						</div>
+					</a>
+				</div>
+				<div class="media">
+					<a href="https://www.nau.edu">
+						<div class="media-object pull-left" style="width:106px; text-align:center;">
+							<img style="width:100%;" src="{% static 'images/NAU_PrimH-transparent.png' %}">
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading link-text">Northern Arizona University</h4>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="sectionWideTitle">Cooperating USGS Water Science Centers</div>
+			<div class="well half">
+				<div class="media">
+					<a href="http://az.water.usgs.gov/">
+						<div class="media-body">
+							<h4 class="media-heading link-text">Arizona Water Science Center</h4>
+						</div>
+					</a>
 				</div>
 			</div>
 		</div>

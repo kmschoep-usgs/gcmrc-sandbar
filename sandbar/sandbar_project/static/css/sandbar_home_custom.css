@@ -57,13 +57,13 @@
 }
 
 .application-body-home {
-	min-height: 1300px;
-	margin-left: 25px;
-	margin-right: 25px;
+	min-height: 1100;
+	margin-left: 15px;
+	margin-right: 15px;
 }
 
 #homepage-title {
-	margin-left: 10px;
+	margin-left: 0px;
 }
 
 .credit-header {
@@ -81,3 +81,5 @@ a:link {
 a:visited {
 	color:#0000FF;
 }
+
+
