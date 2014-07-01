@@ -28,7 +28,7 @@
 		<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
 		<div id="sandbar-intro" class="col-md-4">
 			<div class="sectionWideTitle">Introduction</div>
-			<div  id='intro-text' class="well">
+			<div  id='intro-text' class="well full">
 			<p>
 			Since the completion of Glen Canyon Dam in 1963, the amount of sand supplied to Grand Canyon National Park has been reduced by more than 90 percent. 
 			The Paria River, a tributary to the Colorado River 15 miles downstream from the dam, is now the single most important supplier of sand to the Colorado River within the Park. 
@@ -41,7 +41,7 @@
 		</div>
 		<div id="sandbar-monitoring"class="col-md-4">
 			<div class="sectionWideTitle">The Sandbar Monitoring Data</div>
-			<div id="sites-map-div" class="well">
+			<div id="sites-map-div" class="well full">
 				<div id="monitoring-text">
 					<p>
 					Currently, topographic maps are made at a set of monitoring sites annually using conventional survey equipment. 
@@ -53,6 +53,11 @@
 				<br/>
 				<div id="sandbar-home-img">
 					<img style="width:100%;" src="{% static 'images/SB0351L_2013_0923_183839_Crop_1000.JPG' %}">
+
+					<br/>
+					<br/>
+					<img style="width:100%;" src="{% static 'images/SB0651R_2012_1009_115407_Crop_1000.JPG' %}">
+
 				</div>
 			</div>
 		</div>
@@ -75,7 +80,7 @@
 	<div id="credits" class="row-fluid">
 		<div class="col-md-4">
 			<div class="sectionWideTitle">For Additional Information</div>
-			<div class="well full">
+			<div class="well half">
 				<span>For additional information, please contact</span>
 				<div class="media">
 					<div class="media-body">
@@ -119,6 +124,22 @@
 						</ul>
 					</div>
 				</div>
+			</div>
+			<div class="sectionWideTitle">Terms of Use</div>
+			<div class="well half">
+				<p>
+					The data presented in this website are collected 
+					and processed using standard USGS protocols 
+					and other established peer-reviewed methods, 
+					and subject to rigorous quality control.  
+					Nevertheless, minor edits of these data are 
+					possible.
+				</p>
+				<p>
+					The data are released on the condition that neither the USGS 
+					nor the U.S. Government may be held liable for any damages 
+					resulting from its authorized or unauthorized use.
+				</p>
 			</div>
 		</div>
 		<div class="col-md-4">
@@ -167,26 +188,8 @@
 			</div>
 		</div>
 		<div class="col-md-4">
-			<div class="sectionWideTitle">Terms of Use</div>
-			<div class="well half">
-				<p>
-					The data presented in this website are collected 
-					and processed using standard USGS protocols 
-					and other established peer-reviewed methods, 
-					and subject to rigorous quality control.  
-					Nevertheless, minor edits of these data are 
-					possible.
-				</p>
-				<p>
-					The data are released on the condition that neither the USGS 
-					nor the U.S. Government may be held liable for any damages 
-					resulting from its authorized or unauthorized use.
-				</p>
-			</div>
-		</div>
-		<div class="col-md-4">
 			<div class="sectionWideTitle">References</div>
-			<div class="well half">
+			<div class="well full">
 				<div class="media">
 					<div class="media-body">
 						<h5 class="media-heading credit-header">Methods</h5>
@@ -230,5 +233,6 @@
 			</div>
 		</div>
 	</div>
+		
 
 {% endblock page_content %}
