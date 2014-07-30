@@ -9,6 +9,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
+from .db_utilities import convert_datetime_to_str
 
 
 
@@ -39,7 +40,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 pickle.dumps(d2)
                 if d2.exists():
                     maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
-                    Area2d =  minAreaInt - maxAreaInt
+                    Area2d = minAreaInt - maxAreaInt
                 else:
                     Area2d = ''
             else:
@@ -91,8 +92,8 @@ class SiteDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
-        site_id = context['site'].pk
-        context['site_id'] = str(site_id)
+        #site_id = context['site'].pk
+        #context['site'] = str(site_id)
         return context
 
 
@@ -127,4 +128,25 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
         feature_collection = create_geojson_feature_collection(feature_list)
         
         return self.render_to_json_response(context=feature_collection)
+    
+    
+class BasicSiteInfoJSON(JSONResponseMixin, View):
+    
+    model = AreaVolume
+    
+    def get(self, request, *args, **kwargs):
+        
+        site_id = request.GET.get('site_id')
+        site_filter_set = AreaVolume.objects.filter(site_id=site_id)
+        area_calc_date_min = site_filter_set.aggregate(Min('calc_date'))
+        area_min_date_str = convert_datetime_to_str(area_calc_date_min['calc_date__min'])
+        area_calc_date_max = site_filter_set.aggregate(Max('calc_date'))
+        area_max_date_str = convert_datetime_to_str(area_calc_date_max['calc_date__max'])
+        site_info = {'siteID': site_id,
+                     'calcDates': {'min': area_min_date_str,
+                                  'max': area_max_date_str,},
+                     'paramNames': {'area2d': 'Area 2D',
+                                    'area3d': 'Area 3D'}
+                     }
+        return self.render_to_json_response(site_info)
     

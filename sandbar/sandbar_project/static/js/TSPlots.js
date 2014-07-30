@@ -39,7 +39,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						yAxisLabelWidth: 95,
 						labelsDivWidth: 300,							
 					});
-					this._graphs = timeSeriesGraph;
 				}
 				else {
 					alert('Unable to retrieve data: ' + resp.status + ' : ' + resp.statusText);

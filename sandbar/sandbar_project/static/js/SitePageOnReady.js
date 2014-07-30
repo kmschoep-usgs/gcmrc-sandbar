@@ -1,12 +1,12 @@
 SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var dateRange;
-	
 	var queryParams = 'site=' + gdawsSiteId;
+	var internalSiteId = siteId;
 	for (key in SB.Config.SITE_PARAMETERS) {
 		queryParams += '&groupName=' + SB.Config.SITE_PARAMETERS[key].groupName;
 	}
 	
-	// Fetch the parameter display information
+	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
 		type: 'GET',
@@ -75,6 +75,26 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			}
 			$('#page-loading-div').hide();
 			$('#site-page-content').show();
+		}
+	});
+	
+	$.ajax({
+		url: SB.SITE_AREA_CALC_URL,
+		type: 'GET',
+		data: 'site_id=' + internalSiteId,
+		dataType: 'json',
+		complete: function(resp, status) {
+			var template = $('#app_param_template').html();
+			var respJSON = $.parseJSON(resp.responseText);
+			var area2dParam = respJSON.paramNames.area2d;
+			var startDate = respJSON.calcDates.min;
+			var endDate = respJSON.calcDates.max;
+			var appCheckBoxParam = {
+				areaParam: area2dParam,
+				minDate: startDate,
+				maxDate: endDate
+			};
+			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
 		}
 	});
 	
