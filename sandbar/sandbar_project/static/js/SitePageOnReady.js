@@ -106,11 +106,18 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
-			var params = [];
+			var gcmrcParams = [];
+			var sandbarParams = [];
 			var errorExists = 0;
 			$('#parameter-selection-div input:checked').each(function() {
-				params.push($(this).val());
+				if ($(this).val() != 'Area 2D') {
+					gcmrcParams.push($(this).val());
+				}
+				else {
+					sandbarParams.push($(this).val());
+				}
 			});
+			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
 					$('#parameter-errors').html('');
@@ -156,8 +163,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			if (errorExists === 0) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
-				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
-				tsPlots.updatePlots( $('#ds-min').val(),$('#ds-max').val());
+				console.log(params);
+				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params);
 				}
 			else {
 				$('#parameter-errors').show();
