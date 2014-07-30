@@ -13,7 +13,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	// public object methods
 	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
 		var showArea2d = $.inArray('Area 2D', params);
-		console.log(showArea2d);
 		if (showArea2d > -1) {
 			this.graphsDivEl.children('#plots-loading-div').show();
 			$.ajax({
