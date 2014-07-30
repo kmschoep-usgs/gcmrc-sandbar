@@ -165,7 +165,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').hide();
 				console.log(params);
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params);
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), dateRange.startEl.val(), dateRange.endEl.val(), params);
 				}
 			else {
 				$('#parameter-errors').show();
