@@ -80,12 +80,6 @@
 		}
 	};
 	
-	$(document).on('load', '#area2d-checkbox', function() {
-		var checkedStatus = $('#area2d-checkbox').is(':checked');
-		selectDefaultSubParam(checkedStatus);
-		disableField(checkedStatus);
-	});
-	
 	$(document).on('click', '#area2d-checkbox', function() {
 		var checkedStatus = $('#area2d-checkbox').is(':checked');
 		selectDefaultSubParam(checkedStatus);
