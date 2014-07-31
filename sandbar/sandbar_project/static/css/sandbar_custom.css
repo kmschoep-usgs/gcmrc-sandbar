@@ -6,6 +6,10 @@
 .parameter-group {
 	margin: 4px;
 }
+
+.sub-param-group {
+	margin: 12px;
+}
 #graphs-div {
 	position: relative;
 }

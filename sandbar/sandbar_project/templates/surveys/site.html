@@ -51,6 +51,53 @@
 		});
 	</script>
 	
+	<script type="text/javascript">
+	function selectDefaultSubParam(checkedStatus) {
+		if (checkedStatus) {
+			$('#area2d-eddy-radio').prop('checked', true);
+		}
+		else {
+			$('div.sub-param-group input:radio').prop('checked', false);
+		}
+	};
+	
+	function clearRadios(checkedStatus) {
+		if (checkedStatus) {
+			$('div.sub-param-group input:radio').prop('checked', false);
+			console.log(event.target.id);
+			var clickedTargetId = event.target.id
+			var targetStr = '#' + clickedTargetId;
+			$(targetStr).prop('checked', true);
+		}
+	};
+	
+	function disableField(checkedStatus) {
+		if (checkedStatus) {
+			$('div.sub-param-group input:radio').attr('disabled', false);
+		}
+		else {
+			$('div.sub-param-group input:radio').attr('disabled', true);
+		}
+	};
+	
+	$(document).on('load', '#area2d-checkbox', function() {
+		var checkedStatus = $('#area2d-checkbox').is(':checked');
+		selectDefaultSubParam(checkedStatus);
+		disableField(checkedStatus);
+	});
+	
+	$(document).on('click', '#area2d-checkbox', function() {
+		var checkedStatus = $('#area2d-checkbox').is(':checked');
+		selectDefaultSubParam(checkedStatus);
+		disableField(checkedStatus);
+	});
+	
+	$(document).on('click', 'div.sub-param-group input:radio', function() {
+		var checkedStatus = $('#area2d-checkbox').is(':checked');
+		clearRadios(checkedStatus);
+	});
+	</script>
+	
 	<!-- HTML Templates -->
 	{% verbatim %}
 	<script id="param_template" type="text/html">
@@ -63,10 +110,17 @@
 	</script>
 	<script id="app_param_template" type="text/html">
 		<div class="parameter-group">
-			<input id="{{areaParam}}-checkbox" type="checkbox" value="{{areaParam}}" />
-			<label for="{{areaParam}}-checkbox" title="{{areaParam}}-title">{{areaParam}}</label>
+			<input id="{{areaParamVal}}-checkbox" type="checkbox" value="{{areaParam}}" />
+			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
 			<br />
 			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
+			<br />
+			{{#wrapperSubParam}}
+			<div class="sub-param-group">
+				<input id="{{areaParamVal}}-{{subParamValue}}-radio" type="radio" name="{{areaParamVal}}-{{subParamValue}}-name" value="{{subParamValue}}" />
+				<label for="{{areaParamVal}}-{{subParamValue}}-radio" title="{{areaParamVal}}-{{subParamValue}}-radio-title">{{subParamLabel}}</label>			
+			</div>
+			{{/wrapperSubParam}}
 		</div>
 	</script>
 	{% endverbatim %}

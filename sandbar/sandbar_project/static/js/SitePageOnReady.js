@@ -90,11 +90,17 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
 			var appCheckBoxParam = {
+				areaParamVal: 'area2d',
 				areaParam: area2dParam,
 				minDate: startDate,
-				maxDate: endDate
+				maxDate: endDate,
+				wrapperSubParam: [
+						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
+						          {subParamValue: 'channel', subParamLabel: 'Channel'}
+						          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
+			$('div.sub-param-group input:radio').attr('disabled', true);
 		}
 	});
 	
@@ -108,14 +114,18 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		if ($('form').valid()) {
 			var gcmrcParams = [];
 			var sandbarParams = [];
+			var subParams = [];
 			var errorExists = 0;
-			$('#parameter-selection-div input:checked').each(function() {
+			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				if ($(this).val() != 'Area 2D') {
 					gcmrcParams.push($(this).val());
 				}
 				else {
 					sandbarParams.push($(this).val());
 				}
+			});
+			$('#parameter-selection-div input[type=radio]:checked').each(function() {
+				subParams.push($(this).val());
 			});
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
