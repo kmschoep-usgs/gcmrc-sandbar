@@ -9,7 +9,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str
+from .db_utilities import convert_datetime_to_str, AlchemDB
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -59,32 +59,22 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         #ds_min = 6500
         #ds_max = 9000
         # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
+        
+        result = []
 
         site = Site.objects.get(pk=request.GET.get('site_id'))
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
-        elevationMin = str(site.elevationM(ds_min))
-        elevationMax = str(site.elevationM(ds_max))
-        qs = AreaVolume.objects.filter(site_id=site.id).filter(calc_type__iexact='eddy')
-        pickle.dumps(qs)
-        result = []
-        for survey_date in qs.dates('calc_date', 'day'):
-            d1 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMin).filter(next_plane_height__gte=elevationMin).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMin).order_by('plane_height')
-            pickle.dumps(d1)
-            if d1.exists():
-                minAreaInt = _interpolateCalcs([float(d1[0].plane_height), float(d1[1].plane_height)] , [float(d1[0].area_2d_amt), float(d1[1].area_2d_amt)], float(elevationMin))
-                d2 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMax).filter(next_plane_height__gte=elevationMax).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMax).order_by('plane_height')
-                pickle.dumps(d2)
-                if d2.exists():
-                    maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
-                    Area2d = minAreaInt - maxAreaInt
-                else:
-                    Area2d = ''
-            else:
-                Area2d = ''
-                
-            survey_date_str = survey_date.strftime('%Y/%m/%d') 
-            result.append({'Time' : survey_date_str, 'Area2d' : Area2d})
+        alchemical_sql = AlchemDB()
+        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date'
+        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
+        ora_session = alchemical_sql.create_session()
+        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).all()
+        for query_result in query_results:
+            date, interp_area_2d = query_result
+            date_str = date.strftime('%Y/%m/%d')
+            result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
+            result.append(result_dict)
             
         data_keys = ['Time', 'Area2d']
         
