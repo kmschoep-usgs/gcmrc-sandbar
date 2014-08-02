@@ -69,7 +69,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
-        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).all()
+        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement)
         for query_result in query_results:
             date, interp_area_2d = query_result
             date_str = date.strftime('%Y/%m/%d')
