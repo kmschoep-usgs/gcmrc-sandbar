@@ -20,31 +20,22 @@ class AreaVolumeCalcsTemp(TemplateView):
         #ds_max = 9000
         # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
 
+        result = []
+
         site = Site.objects.get(pk=request.GET.get('site_id'))
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
-        elevationMin = str(site.elevationM(ds_min))
-        elevationMax = str(site.elevationM(ds_max))
-        qs = AreaVolume.objects.filter(site_id=site.id).filter(calc_type__iexact='eddy')
-        #pickle.dumps(qs)
-        result = []
-        for survey_date in qs.dates('calc_date', 'day'):
-            d1 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMin).filter(next_plane_height__gte=elevationMin).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMin).order_by('plane_height')
-            #pickle.dumps(d1)
-            if d1.exists():
-                minAreaInt = _interpolateCalcs([float(d1[0].plane_height), float(d1[1].plane_height)] , [float(d1[0].area_2d_amt), float(d1[1].area_2d_amt)], float(elevationMin))
-                d2 = qs.filter(calc_date=survey_date).filter(prev_plane_height__lte=elevationMax).filter(next_plane_height__gte=elevationMax).exclude(prev_plane_height__exact='0', plane_height__gte=elevationMax).order_by('plane_height')
-                #pickle.dumps(d2)
-                if d2.exists():
-                    maxAreaInt = _interpolateCalcs([float(d2[0].plane_height), float(d2[1].plane_height)] , [float(d2[0].area_2d_amt), float(d2[1].area_2d_amt)], float(elevationMax))
-                    Area2d = minAreaInt - maxAreaInt
-                else:
-                    Area2d = ''
-            else:
-                Area2d = ''
-                
-            survey_date_str = survey_date.strftime('%Y/%m/%d') 
-            result.append({'Time' : survey_date_str, 'Area2d' : Area2d})
+        calculation_type = request.GET.get('calc_type', None)
+        alchemical_sql = AlchemDB()
+        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
+        ora_session = alchemical_sql.create_session()
+        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type)
+        for query_result in query_results:
+            date, interp_area_2d = query_result
+            date_str = date.strftime('%Y/%m/%d')
+            result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
+            result.append(result_dict)
             
         context = {'result_dict': result}
         

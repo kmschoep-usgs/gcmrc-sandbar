@@ -96,7 +96,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				maxDate: endDate,
 				wrapperSubParam: [
 						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
-						          {subParamValue: 'channel', subParamLabel: 'Channel'}
+						          {subParamValue: 'chan', subParamLabel: 'Channel'}
 						          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
@@ -114,7 +114,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		if ($('form').valid()) {
 			var gcmrcParams = [];
 			var sandbarParams = [];
-			var subParams = [];
+			var subParam;
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				if ($(this).val() != 'Area 2D') {
@@ -125,7 +125,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				}
 			});
 			$('#parameter-selection-div input[type=radio]:checked').each(function() {
-				subParams.push($(this).val());
+				//subParams.push($(this).val());
+				subParam = $(this).val();
 			});
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
@@ -174,7 +175,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, 'eddy');
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, subParam);
 				}
 			else {
 				$('#parameter-errors').show();

@@ -12,7 +12,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	var graphDivEl = $('#timeseries-plot');
 	// public object methods
 	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, calc_type) {
-		console.log(calc_type);
 		var showArea2d = $.inArray('Area 2D', params);
 		if (showArea2d > -1) {
 			this.graphsDivEl.children('#plots-loading-div').show();
