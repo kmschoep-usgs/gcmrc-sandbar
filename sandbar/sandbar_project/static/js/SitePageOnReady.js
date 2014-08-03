@@ -174,7 +174,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), dateRange.startEl.val(), dateRange.endEl.val(), params);
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, 'eddy');
 				}
 			else {
 				$('#parameter-errors').show();

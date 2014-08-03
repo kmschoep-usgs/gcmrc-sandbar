@@ -11,14 +11,15 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	//};
 	var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, startDate, endDate, params) {
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, calc_type) {
+		console.log(calc_type);
 		var showArea2d = $.inArray('Area 2D', params);
 		if (showArea2d > -1) {
 			this.graphsDivEl.children('#plots-loading-div').show();
 			$.ajax({
 				url: SB.AREA_2D_URL,
 				type: 'GET',
-				data: 'site_id=' + siteId + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax,
+				data: 'site_id=' + siteId + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + '&calc_type=' + calc_type,
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();

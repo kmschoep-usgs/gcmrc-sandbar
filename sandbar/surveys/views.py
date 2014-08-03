@@ -65,11 +65,12 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         site = Site.objects.get(pk=request.GET.get('site_id'))
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
+        calculation_type = request.GET.get('calc_type', None)
         alchemical_sql = AlchemDB()
-        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date'
+        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
-        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement)
+        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type)
         for query_result in query_results:
             date, interp_area_2d = query_result
             date_str = date.strftime('%Y/%m/%d')
