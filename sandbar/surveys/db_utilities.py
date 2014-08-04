@@ -1,8 +1,6 @@
-from sqlalchemy import create_engine, func
-from sqlalchemy.sql.functions import GenericFunction
 from sqlalchemy.orm import sessionmaker
 import cx_Oracle
-from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME, DB_DESC
+from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
 
 def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
     
@@ -16,7 +14,7 @@ def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
 
 class AlchemDB(object): 
     
-    def __init__(self, schema=SCHEMA_USER, password=DB_PWD, db_name=DB_DESC):
+    def __init__(self, schema=SCHEMA_USER, password=DB_PWD, db_name=DB_NAME):
         
         self.connect = 'oracle+cx_oracle://%s:%s@%s' % (schema, password, db_name)
         self.engine = create_engine(self.connect)
