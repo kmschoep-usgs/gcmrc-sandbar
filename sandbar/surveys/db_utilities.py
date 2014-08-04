@@ -1,3 +1,4 @@
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import cx_Oracle
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
