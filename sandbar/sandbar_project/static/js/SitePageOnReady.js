@@ -96,7 +96,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				maxDate: endDate,
 				wrapperSubParam: [
 						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
-						          {subParamValue: 'chan', subParamLabel: 'Channel'}
+						          {subParamValue: 'chan', subParamLabel: 'Channel'},
+						          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
 						          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));

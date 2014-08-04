@@ -1,4 +1,4 @@
-import pickle
+from collections import namedtuple
 
 from django.conf import settings
 from django.db.models import Min, Max
@@ -61,7 +61,65 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
-        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type)
+        if calculation_type == 'eddy':
+            query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='eddy')
+        elif calculation_type == 'chan':
+            query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='chan')
+        elif calculation_type == 'eddy_chan_sum':
+            eddy_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='eddy').all()
+            chan_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='chan').all()
+            full_dates = []
+            for e_record in eddy_results:
+                e_date = e_record[0]
+                full_dates.append(e_date)
+            for c_record in chan_results:
+                c_date = c_record[0]
+                full_dates.append(c_date)
+            date_set = set(full_dates)
+            distinct_dates = list(date_set)
+            sorted_distinct_dates = sorted(distinct_dates)
+            combined_results = []
+            query_results = []
+            for distinct_date in sorted_distinct_dates:
+                CombinedResults = namedtuple('CombinedResults', ['calc_date', 'eddy_value', 'chan_value'])
+                cr_tuple = CombinedResults(calc_date=distinct_date, eddy_value=None, chan_value=None)
+                for eddy_result in eddy_results:
+                    eddy_date, eddy_val = eddy_result
+                    if eddy_date == distinct_date:
+                        cr_tuple = cr_tuple._replace(eddy_value=eddy_val)
+                for chan_result in chan_results:
+                    chan_date, chan_val = chan_result
+                    if chan_date == distinct_date:
+                        cr_tuple = cr_tuple._replace(chan_value=chan_val)
+                combined_results.append(cr_tuple)
+            #sum eddy and channel values
+            for combined_result in combined_results:
+                measurement_date = combined_result.calc_date
+                cr_eddy_val = combined_result.eddy_value
+                cr_chan_val = combined_result.chan_value
+                # handle NaNs in the summation
+                if cr_eddy_val is None and cr_chan_val is not None:
+                    cev = 0
+                    ccv = cr_chan_val
+                elif cr_eddy_val is not None and cr_chan_val is None:
+                    cev = cr_eddy_val
+                    ccv = 0
+                elif cr_eddy_val is None and cr_chan_val is None:
+                    cev = None
+                    ccv = None
+                else:
+                    cev = 0
+                    ccv = 0
+                try:
+                    cr_sum = cev + ccv
+                    cr_tuple = (measurement_date, cr_sum)
+                    query_results.append(cr_tuple)
+                except TypeError:
+                    cr_tuple = (measurement_date, None)
+                    query_results.append(cr_tuple)    
+        else:
+            query_results = []
+        
         for query_result in query_results:
             date, interp_area_2d = query_result
             date_str = date.strftime('%Y/%m/%d')

@@ -10,7 +10,6 @@ function selectDefaultSubParam(checkedStatus) {
 function clearRadios(checkedStatus) {
 	if (checkedStatus) {
 		$('div.sub-param-group input:radio').prop('checked', false);
-		console.log(event.target.id);
 		var clickedTargetId = event.target.id
 		var targetStr = '#' + clickedTargetId;
 		$(targetStr).prop('checked', true);
