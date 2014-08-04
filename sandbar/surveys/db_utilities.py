@@ -1,16 +1,26 @@
 from sqlalchemy import create_engine, func
+from sqlalchemy.sql.functions import GenericFunction
 from sqlalchemy.orm import sessionmaker
+import cx_Oracle
+from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME, DB_DESC
 
+def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
+    
+    """
+    Convert a python date object to a string.
+    """
+    
+    date_str = date_object.strftime(date_format)
+    
+    return date_str
 
-class QueryDB(object):
+class AlchemDB(object): 
     
-    
-    def __init__(self, schema, password, db_name):
+    def __init__(self, schema=SCHEMA_USER, password=DB_PWD, db_name=DB_DESC):
         
         self.connect = 'oracle+cx_oracle://%s:%s@%s' % (schema, password, db_name)
         self.engine = create_engine(self.connect)
-        
-        
+               
     def create_session(self):
         
         Session = sessionmaker()
@@ -18,20 +28,75 @@ class QueryDB(object):
         session = Session()
         
         return session
+
+
+class OracleConnection(object):
+    
+    def __init__(self, schema=SCHEMA_USER, pwd=DB_PWD, db_name=DB_NAME):
         
+        self.oa = create_cx_oracle_auth_str(schema, pwd, db_name, ip_address=None)
         
-if __name__ == '__main__':
+    def run_oracle_query(self, sql_query, close_connection=True):
+        
+        """
+        Execute a SQL query and returns the results
+        as a list of dictionaries
+        """
+        
+        ora = cx_Oracle.connect(self.oa)
+        cursor = ora.cursor()
+        cursor.execute(sql_query)
+        columns = [desc[0] for desc in cursor.description]
+        record_list_dic = [dict(zip(columns, record)) for record in cursor]
+        if close_connection:
+            ora.close()
+        
+        return (ora, record_list_dic)
+            
+    def execute_dml(self, dml_list, close_connection=True):
+        
+        """
+        Execute a list of SQL commands and report the failures with errors.
+        """
+        
+        failed_list = []
+        
+        ora = cx_Oracle.connect(self.oa)
+        cursor = ora.cursor()
+        sql_statment_count = len(dml_list)
+        for sql_statement in dml_list:
+            try:
+                cursor.execute(sql_statement)
+            except(cx_Oracle.Error), exc:
+                failed_dictionary = {}
+                error, = exc.args
+                failed_dictionary['error'] = error.message
+                failed_dictionary['statement'] = sql_statement
+                failed_list.append(failed_dictionary) 
+                continue
+        cursor.close()
+        ora.commit()
+        if close_connection:
+            ora.close()
+            
+        results = {'total_count': sql_statment_count,
+                   'failed_count': len(failed_list),
+                   'failed_list': failed_list}    
+            
+        return results
+
     
-    from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_DESC
-    from db_mappings import AreaVolumeCalcBase
+def create_cx_oracle_auth_str(schema, pwd, db_name, ip_address=None):
     
-    q = QueryDB(SCHEMA_USER, DB_PWD, DB_DESC)
-    session = q.create_session()
-    dates = session.query(AreaVolumeCalcBase.calc_date).distinct(AreaVolumeCalcBase.calc_date).filter(func.lower(AreaVolumeCalcBase.calc_type)=='eddy').filter(AreaVolumeCalcBase.site_id=='38').order_by(AreaVolumeCalcBase.calc_date)
-    for date in dates:
-        print date
-        d1 = session.query(AreaVolumeCalcBase.plane_height, AreaVolumeCalcBase.next_plane_height, AreaVolumeCalcBase.area_2d_amt).filter(AreaVolumeCalcBase.prev_plane_height!=0).order_by(AreaVolumeCalcBase.plane_height)
-        d1_list = d1.all()
-        print d1_list[0].plane_height
-    session.close()
+    """
+    Create the authentication string that 
+    cx_Oracle will use to connect to the
+    database
+    """
     
+    if ip_address:
+        auth_str = '%s/%s@%s:1521/%s' % (schema, pwd, ip_address, db_name)
+    else:
+        auth_str = '%s/%s@%s' % (schema, pwd, db_name)
+        
+    return auth_str

@@ -1,12 +1,12 @@
 SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var dateRange;
-	
 	var queryParams = 'site=' + gdawsSiteId;
+	var internalSiteId = siteId;
 	for (key in SB.Config.SITE_PARAMETERS) {
 		queryParams += '&groupName=' + SB.Config.SITE_PARAMETERS[key].groupName;
 	}
 	
-	// Fetch the parameter display information
+	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
 		type: 'GET',
@@ -78,6 +78,32 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		}
 	});
 	
+	$.ajax({
+		url: SB.SITE_AREA_CALC_URL,
+		type: 'GET',
+		data: 'site_id=' + internalSiteId,
+		dataType: 'json',
+		complete: function(resp, status) {
+			var template = $('#app_param_template').html();
+			var respJSON = $.parseJSON(resp.responseText);
+			var area2dParam = respJSON.paramNames.area2d;
+			var startDate = respJSON.calcDates.min;
+			var endDate = respJSON.calcDates.max;
+			var appCheckBoxParam = {
+				areaParamVal: 'area2d',
+				areaParam: area2dParam,
+				minDate: startDate,
+				maxDate: endDate,
+				wrapperSubParam: [
+						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
+						          {subParamValue: 'chan', subParamLabel: 'Channel'}
+						          ]
+			};
+			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
+			$('div.sub-param-group input:radio').attr('disabled', true);
+		}
+	});
+	
 	
 	
 	// Initialize dygraphs
@@ -86,11 +112,23 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
-			var params = [];
+			var gcmrcParams = [];
+			var sandbarParams = [];
+			var subParam;
 			var errorExists = 0;
-			$('#parameter-selection-div input:checked').each(function() {
-				params.push($(this).val());
+			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
+				if ($(this).val() != 'Area 2D') {
+					gcmrcParams.push($(this).val());
+				}
+				else {
+					sandbarParams.push($(this).val());
+				}
 			});
+			$('#parameter-selection-div input[type=radio]:checked').each(function() {
+				//subParams.push($(this).val());
+				subParam = $(this).val();
+			});
+			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
 					$('#parameter-errors').html('');
@@ -136,8 +174,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			if (errorExists === 0) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
-				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), params);
-				tsPlots.updatePlots( $('#ds-min').val(),$('#ds-max').val());
+				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, subParam);
 				}
 			else {
 				$('#parameter-errors').show();

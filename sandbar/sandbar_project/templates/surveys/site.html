@@ -18,7 +18,8 @@
 		var SB = {};
 		SB.GDAWS_SERVICE = '{% url "surveys-gdaws" op="" %}';
 		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
-		SB.AREA_2D_URL = '{% url "surveys-areavolume" %}' ;
+		SB.AREA_2D_URL = '{% url "surveys-areavolume" %}';
+		SB.SITE_AREA_CALC_URL = '{% url "basic_area_info" %}';
 	</script>
 	
 	<script type="text/javascript">
@@ -41,6 +42,7 @@
 	{% js "js/SitePlots.js" %}
 	{% js "js/TSPlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
+	{% js "js/SiteParams.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
@@ -58,6 +60,21 @@
 			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
 			<br />
 			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
+		</div>
+	</script>
+	<script id="app_param_template" type="text/html">
+		<div class="parameter-group">
+			<input id="{{areaParamVal}}-checkbox" type="checkbox" value="{{areaParam}}" />
+			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
+			<br />
+			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
+			<br />
+			{{#wrapperSubParam}}
+			<div class="sub-param-group">
+				<input id="{{areaParamVal}}-{{subParamValue}}-radio" type="radio" name="{{areaParamVal}}-{{subParamValue}}-name" value="{{subParamValue}}" />
+				<label for="{{areaParamVal}}-{{subParamValue}}-radio" title="{{areaParamVal}}-{{subParamValue}}-radio-title">{{subParamLabel}}</label>			
+			</div>
+			{{/wrapperSubParam}}
 		</div>
 	</script>
 	{% endverbatim %}
