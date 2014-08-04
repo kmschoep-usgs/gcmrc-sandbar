@@ -128,7 +128,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
             date_str = date.strftime('%Y/%m/%d')
             result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
             result.append(result_dict)
-            
+        ora_session.close()  
         data_keys = ['Time', 'Area2d']
         
         return self.render_to_csv_response(context=result, data_keys=data_keys)
