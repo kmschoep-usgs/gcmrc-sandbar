@@ -97,8 +97,11 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 measurement_date = combined_result.calc_date
                 cr_eddy_val = combined_result.eddy_value
                 cr_chan_val = combined_result.chan_value
-                # handle NaNs in the summation
-                if cr_eddy_val is None and cr_chan_val is not None:
+                # handle NaNs in the summation of eddy and channel
+                if cr_eddy_val and cr_chan_val:
+                    cev = cr_eddy_val
+                    ccv = cr_chan_val
+                elif cr_eddy_val is None and cr_chan_val is not None:
                     cev = 0
                     ccv = cr_chan_val
                 elif cr_eddy_val is not None and cr_chan_val is None:
