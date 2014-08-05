@@ -115,20 +115,26 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		if ($('form').valid()) {
 			var gcmrcParams = [];
 			var sandbarParams = [];
-			var subParam;
+			var subParam = [];
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
-				if ($(this).val() != 'Area 2D') {
+				var parent = $(this).parent().attr('class');
+				if ($(this).val() != 'Area 2D' && parent != 'sub-param-group') {
 					gcmrcParams.push($(this).val());
+				}
+				else if (parent === 'sub-param-group') {
+					subParam.push($(this).val());
 				}
 				else {
 					sandbarParams.push($(this).val());
 				}
 			});
+			/*
 			$('#parameter-selection-div input[type=radio]:checked').each(function() {
 				//subParams.push($(this).val());
 				subParam = $(this).val();
 			});
+			*/
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {

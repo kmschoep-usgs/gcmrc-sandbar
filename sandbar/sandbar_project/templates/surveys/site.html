@@ -42,7 +42,7 @@
 	{% js "js/SitePlots.js" %}
 	{% js "js/TSPlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
-	{% js "js/siteParams.js" %}
+	{% js "js/SiteParams.js" %}
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
@@ -71,8 +71,8 @@
 			<br />
 			{{#wrapperSubParam}}
 			<div class="sub-param-group">
-				<input id="{{areaParamVal}}-{{subParamValue}}-radio" type="radio" name="{{areaParamVal}}-{{subParamValue}}-name" value="{{subParamValue}}" />
-				<label for="{{areaParamVal}}-{{subParamValue}}-radio" title="{{areaParamVal}}-{{subParamValue}}-radio-title">{{subParamLabel}}</label>			
+				<input id="{{areaParamVal}}-{{subParamValue}}-checkbox" type="checkbox" name="{{areaParamVal}}-{{subParamValue}}-name" value="{{subParamValue}}" />
+				<label for="{{areaParamVal}}-{{subParamValue}}-checkbox" title="{{areaParamVal}}-{{subParamValue}}-checkbox-title">{{subParamLabel}}</label>			
 			</div>
 			{{/wrapperSubParam}}
 		</div>
