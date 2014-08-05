@@ -150,6 +150,16 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				errorExists = 1;
 				$('#parameter-errors').append('Maximum Discharge must be greater or equal to minimum discharge.');
 			}
+			if (isNaN(Number($('#ds-min').val())) || isNaN(Number($('#ds-max').val()))) {
+				if (errorExists === 0) {
+					$('#parameter-errors').html('');
+				}
+				else {
+					$('#parameter-errors').append('<br>');
+				}
+				errorExists = 1;
+				$('#parameter-errors').append('Discharge values must be numeric.');
+			}
 			if ($('#ds-min').val() === '') {
 				if (errorExists === 0) {
 					$('#parameter-errors').html('');
