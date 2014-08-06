@@ -64,7 +64,7 @@
 	</script>
 	<script id="app_param_template" type="text/html">
 		<div class="parameter-group">
-			<input id="{{areaParamVal}}-checkbox" type="checkbox" value="{{areaParam}}" />
+			<input id="{{areaParamVal}}-checkbox" type="checkbox" value="{{areaParamVal}}" />
 			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
 			<br />
 			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
@@ -122,12 +122,15 @@
 					<h4 class="panel-title">Plots</h4>
 				</div>
 				<div id="graphs-div" class="panel-body">
-					<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
-					<div id="cumulSandLoad-graph-div" class="graph-div"></div>
-					<div id="discharge-graph-div" class="graph-div"></div>
-					<div id="plots-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
-					<div id="timeseries-plot" class="graph-div"></div>
-					<div id="ts-legend"></div>
+					<div id="gcmrc-plots">
+						<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
+						<div id="cumulSandLoad-graph-div" class="graph-div"></div>
+						<div id="discharge-graph-div" class="graph-div"></div>
+					</div>
+					<div id="sandbar-plots">
+						<div id="plots-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
+						<div id="area2d-graph-div" class="graph-div"></div>
+					</div>
 				</div>
 			</div>		
 		</div>

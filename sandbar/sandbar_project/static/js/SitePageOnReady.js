@@ -108,8 +108,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	
 	
 	// Initialize dygraphs
-	var sitePlots = new SB.SitePlots('graphs-div', gdawsSiteId);
-	var tsPlots = new SB.TSPlots('graphs-div', siteId);
+	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
+	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
@@ -119,7 +119,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				var parent = $(this).parent().attr('class');
-				if ($(this).val() != 'Area 2D' && parent != 'sub-param-group') {
+				if ($(this).val() != 'area2d' && parent != 'sub-param-group') {
 					gcmrcParams.push($(this).val());
 				}
 				else if (parent === 'sub-param-group') {
@@ -200,7 +200,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, subParam);
+				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), sandbarParams, subParam);
 				}
 			else {
 				$('#parameter-errors').show();
