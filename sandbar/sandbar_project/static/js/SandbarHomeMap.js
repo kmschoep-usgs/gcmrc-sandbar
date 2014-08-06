@@ -10,6 +10,7 @@ $(document).ready(function() {
 		boxZoom: false
 	});
 	var geojsonURL = get_value('#geojson_sites');
+	geojsonURL = geojsonURL + "/"
 	var geojsonLayer = L.geoJson.ajax(geojsonURL, {
 		pointToLayer: function(feature, latlng) {
 			return L.marker(latlng, {clickable: false});

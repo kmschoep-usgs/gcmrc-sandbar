@@ -200,9 +200,13 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
     def get(self, request, *args, **kwargs):
         
-
-        sites = Site.objects.all()
-        feature_list = []
+        site = request.GET.get('site_id')
+        if site == None:
+            sites = Site.objects.all()
+        else:
+            sites = Site.objects.filter(id=site)
+        
+            feature_list = []
         for site_object in sites:
             latitude = site_object.geom.x
             longitude = site_object.geom.y
