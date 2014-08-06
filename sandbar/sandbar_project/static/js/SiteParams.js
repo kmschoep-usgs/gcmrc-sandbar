@@ -1,15 +1,10 @@
-function selectDefaultSubParam(checkedStatus) {
-	if (checkedStatus) {
-		$('#area2d-eddy-radio').prop('checked', true);
-	}
-	else {
-		$('div.sub-param-group input:radio').prop('checked', false);
-	}
+function controlDefaultSubParam() {
+	$('div.sub-param-group input:checkbox').prop('checked', false);
 };
 
 function clearRadios(checkedStatus) {
 	if (checkedStatus) {
-		$('div.sub-param-group input:radio').prop('checked', false);
+		$('div.sub-param-group input:checkbox').prop('checked', false);
 		var clickedTargetId = event.target.id
 		var targetStr = '#' + clickedTargetId;
 		$(targetStr).prop('checked', true);
@@ -18,23 +13,25 @@ function clearRadios(checkedStatus) {
 
 function disableField(checkedStatus) {
 	if (checkedStatus) {
-		$('div.sub-param-group input:radio').attr('disabled', false);
+		$('div.sub-param-group input:checkbox').attr('disabled', false);
 	}
 	else {
-		$('div.sub-param-group input:radio').attr('disabled', true);
+		$('div.sub-param-group input:checkbox').attr('disabled', true);
 	}
 };
 
 $(document).ready(function() {
 	$(this).on('click', '#area2d-checkbox', function() {
 		var checkedStatus = $('#area2d-checkbox').is(':checked');
-		selectDefaultSubParam(checkedStatus);
+		controlDefaultSubParam();
 		//disable radio buttons if Area 2D is unchecked; enable if checked
 		disableField(checkedStatus);		
 	});
-	$(this).on('click', 'div.sub-param-group input:radio', function() {
+	/*
+	$(this).on('click', 'div.sub-param-group input:checkbox', function() {
 		var checkedStatus = $('#area2d-checkbox').is(':checked');
 		// clear all the radio buttons and then populate the button that triggered the clear action
 		clearRadios(checkedStatus);		
 	});
+	*/
 })

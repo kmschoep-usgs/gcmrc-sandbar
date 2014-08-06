@@ -101,7 +101,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 						          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
-			$('div.sub-param-group input:radio').attr('disabled', true);
+			$('div.sub-param-group input:checkbox').attr('disabled', true);
 		}
 	});
 	
