@@ -1,9 +1,8 @@
-from collections import namedtuple
-
 from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
-from numpy import interp 
+from numpy import interp
+import pandas as pd 
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
@@ -51,87 +50,92 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         #ds_max = 9000
         # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
         
-        result = []
-
         site = Site.objects.get(pk=request.GET.get('site_id'))
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
-        calculation_type = request.GET.get('calc_type', None)
+        calculation_types = request.GET.getlist('calc_type', None)
         alchemical_sql = AlchemDB()
         sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
-        if calculation_type == 'eddy':
-            query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='eddy')
-        elif calculation_type == 'chan':
-            query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='chan')
-        elif calculation_type == 'eddy_chan_sum':
-            eddy_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='eddy').all()
-            chan_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='chan').all()
-            full_dates = []
-            for e_record in eddy_results:
-                e_date = e_record[0]
-                full_dates.append(e_date)
-            for c_record in chan_results:
-                c_date = c_record[0]
-                full_dates.append(c_date)
-            date_set = set(full_dates)
-            distinct_dates = list(date_set)
-            sorted_distinct_dates = sorted(distinct_dates)
-            combined_results = []
-            query_results = []
-            for distinct_date in sorted_distinct_dates:
-                CombinedResults = namedtuple('CombinedResults', ['calc_date', 'eddy_value', 'chan_value'])
-                cr_tuple = CombinedResults(calc_date=distinct_date, eddy_value=None, chan_value=None)
-                for eddy_result in eddy_results:
-                    eddy_date, eddy_val = eddy_result
-                    if eddy_date == distinct_date:
-                        cr_tuple = cr_tuple._replace(eddy_value=eddy_val)
-                for chan_result in chan_results:
-                    chan_date, chan_val = chan_result
-                    if chan_date == distinct_date:
-                        cr_tuple = cr_tuple._replace(chan_value=chan_val)
-                combined_results.append(cr_tuple)
-            #sum eddy and channel values
-            for combined_result in combined_results:
-                measurement_date = combined_result.calc_date
-                cr_eddy_val = combined_result.eddy_value
-                cr_chan_val = combined_result.chan_value
-                # handle NaNs in the summation of eddy and channel
-                if cr_eddy_val and cr_chan_val:
-                    cev = cr_eddy_val
-                    ccv = cr_chan_val
-                elif cr_eddy_val is None and cr_chan_val is not None:
-                    cev = 0
-                    ccv = cr_chan_val
-                elif cr_eddy_val is not None and cr_chan_val is None:
-                    cev = cr_eddy_val
-                    ccv = 0
-                elif cr_eddy_val is None and cr_chan_val is None:
-                    cev = None
-                    ccv = None
-                else:
-                    cev = 0
-                    ccv = 0
-                try:
-                    cr_sum = cev + ccv
-                    cr_tuple = (measurement_date, cr_sum)
-                    query_results.append(cr_tuple)
-                except TypeError:
-                    cr_tuple = (measurement_date, None)
-                    query_results.append(cr_tuple)    
+        df_list = []
+        for calculation_type in calculation_types:
+            if calculation_type != 'eddy_chan_sum':
+                query_result_set = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type).all()
+            elif calculation_type == 'eddy_chan_sum':
+                eddy_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='eddy').all()
+                chan_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type='chan').all()
+                full_dates = []
+                for e_record in eddy_results:
+                    e_date = e_record[0]
+                    full_dates.append(e_date)
+                for c_record in chan_results:
+                    c_date = c_record[0]
+                    full_dates.append(c_date)
+                date_set = set(full_dates)
+                distinct_dates = list(date_set)
+                sorted_distinct_dates = sorted(distinct_dates)
+                combined_results = []
+                query_result_set = []
+                for distinct_date in sorted_distinct_dates:
+                    combined_result = {'calc_date': distinct_date, 'eddy_value': None, 'chan_value': None}
+                    for eddy_result in eddy_results:
+                        eddy_date, eddy_val = eddy_result
+                        if eddy_date == distinct_date:
+                            combined_result['eddy_value'] = eddy_val
+                    for chan_result in chan_results:
+                        chan_date, chan_val = chan_result
+                        if chan_date == distinct_date:
+                            combined_result['chan_vale'] = chan_val
+                    combined_results.append(combined_result)
+                #sum eddy and channel values
+                for combined_result in combined_results:
+                    measurement_date = combined_result['calc_date']
+                    cr_eddy_val = combined_result['eddy_value']
+                    cr_chan_val = combined_result['chan_value']
+                    # handle NaNs in the summation of eddy and channel
+                    if cr_eddy_val and cr_chan_val:
+                        cev = cr_eddy_val
+                        ccv = cr_chan_val
+                    elif cr_eddy_val is None and cr_chan_val is not None:
+                        cev = 0
+                        ccv = cr_chan_val
+                    elif cr_eddy_val is not None and cr_chan_val is None:
+                        cev = cr_eddy_val
+                        ccv = 0
+                    elif cr_eddy_val is None and cr_chan_val is None:
+                        cev = None
+                        ccv = None
+                    else:
+                        cev = 0
+                        ccv = 0
+                    try:
+                        cr_sum = cev + ccv
+                        cr_tuple = (measurement_date, cr_sum)
+                        query_result_set.append(cr_tuple)
+                    except TypeError:
+                        cr_tuple = (measurement_date, None)
+                        query_result_set.append(cr_tuple)   
+            else:
+                query_result_set = []
+            df_value_name = '{calculation_type}_area_2d'.format(calculation_type=calculation_type)
+            df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
+            df_list.append(df)
+        df_list_len = len(df_list)
+        if df_list_len == 1:
+            df_merge = df_list[0]
+        elif df_list_len == 2:
+            df_merge = pd.merge(df_list[0], df_list[1], how='outer', on='date')
+        elif df_list_len >= 3:
+            df_merge = pd.merge(df_list[0], df_list[1], how='outer', on='date')
+            for df_object in df_list[2:]:
+                df_merge = pd.merge(df_merge, df_object, how='outer', on='date')
         else:
-            query_results = []
+            df_merge = pd.DataFrame([])
         
-        for query_result in query_results:
-            date, interp_area_2d = query_result
-            date_str = date.strftime('%Y/%m/%d')
-            result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
-            result.append(result_dict)
-        ora_session.close()  
-        data_keys = ['Time', 'Area2d']
+        df_record = df_merge.to_dict('records')
         
-        return self.render_to_csv_response(context=result, data_keys=data_keys)
+        return self.render_to_csv_response(context=df_record)
 
                                       
 class SitesListView(ListView):
@@ -196,6 +200,7 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
     def get(self, request, *args, **kwargs):
         
+
         sites = Site.objects.all()
         feature_list = []
         for site_object in sites:
