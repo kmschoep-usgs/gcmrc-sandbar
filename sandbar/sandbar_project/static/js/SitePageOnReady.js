@@ -146,6 +146,14 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				errorExists = 1;
 				$('#parameter-errors').append('Please select one or more parameters to plot.');
 			}
+			
+			var sandbarParamsLength = sandbarParams.length;
+			var sandbarSubParamsLength = subParam.length;
+			if (sandbarParamsLength >= 1 && sandbarSubParamsLength === 0) {
+				errorExists = 1;
+				$('#parameter-errors').append('A subparameter must be selected for Area2D plots.');
+			}
+			
 			if (Number($('#ds-min').val()) > Number($('#ds-max').val())) {
 				if (errorExists === 0) {
 					$('#parameter-errors').html('');
