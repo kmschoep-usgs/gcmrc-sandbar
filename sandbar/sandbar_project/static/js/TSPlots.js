@@ -11,7 +11,9 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	};
 	//var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, calc_type) {
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
+		var parentParam = params.paramVal;
+		var calc_type = params.subParamVals;
 		var calcTypeParamStr = '';
 		for (i = 0; i < calc_type.length; i++) {
 			calcTypeParamStr += '&calc_type=' + calc_type[i];
@@ -22,7 +24,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			$.ajax({
 				url: SB.AREA_2D_URL,
 				type: 'GET',
-				data: 'site_id=' + siteId + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
+				data: 'site_id=' + siteId + '$param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
@@ -35,19 +37,19 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						}
 						// Update the selected graphs
 						var graphs = {};
-						for (var i = 0; i < params.length; i++) {
-							var data = resp.responseText;
-							graphDivEl(params[i]).show();
-							graphs[params[i]] = new Dygraph(graphId(params[i]),
-									data, {
-								xlabel: "Date",
-								ylabel: params[i],
-								yAxisLabelWidth: 95,
-								labelsDivWidth: 300,
-								showRangeSelector: true,
-								legend: 'always'
-							});
-						}
+
+						var data = resp.responseText;
+						graphDivEl(params[i]).show();
+						graphs[parentParam] = new Dygraph(graphId(parentParam),
+								data, {
+							xlabel: "Date",
+							ylabel: parentParam,
+							yAxisLabelWidth: 95,
+							labelsDivWidth: 300,
+							showRangeSelector: true,
+							legend: 'always'
+						});
+
 						this._graphs = graphs;
 					}
 					else {

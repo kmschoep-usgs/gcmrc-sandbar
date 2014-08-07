@@ -120,15 +120,33 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var subParam = [];
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
-				var parent = $(this).parent().attr('class');
-				if ($(this).val() != 'area2d' && parent != 'sub-param-group') {
+				var parentClass = $(this).parent().attr('class');
+				if ($(this).val() != 'area2d' && $(this).val() != 'area3d' && $(this).val() != 'volume' && parentClass != 'sub-param-group') {
 					gcmrcParams.push($(this).val());
 				}
-				else if (parent === 'sub-param-group') {
-					subParam.push($(this).val());
+				else if ($(this).attr('name') === 'sb-param') {
+					sandbarParams.push($(this).val());
+				}
+				else if ($(this).attr('name') === 'sb-subparam') {
+					var parentID = $(this).parent().attr('id');
+					var selectParentStr = '#' + parentID;
+					var parentCheckboxVal = $(selectParentStr).siblings('input[name="sb-param"]').val()
+					var parentFound = false;
+					console.log(parentCheckboxVal);
+					for (var i = 0; i < subParam.length; i++) {
+						var paramValStr = subParam[i].paramVal;
+						if (paramValStr === parentCheckboxVal) {
+							subParam[i].subParamVals.push($(this).val()); 
+							parentFound = true;
+						}
+					}
+					if (parentFound === false) {
+						var mapping = {paramVal: parentCheckboxVal, subParamVals: [$(this).val()]}
+						subParam.push(mapping);
+					}
 				}
 				else {
-					sandbarParams.push($(this).val());
+					//do nothing
 				}
 			});
 			/*
@@ -137,6 +155,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				subParam = $(this).val();
 			});
 			*/
+			console.log(subParam);
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
@@ -202,7 +221,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), sandbarParams, subParam);
+				for (j = 0; j < subParam.length; j++) {
+					tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), subParam[i]);
+					}
 				}
 			else {
 				$('#parameter-errors').show();
