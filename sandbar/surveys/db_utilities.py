@@ -1,7 +1,22 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import cx_Oracle
+import numpy as np
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
+
+def replace_none_with_nan(query_results):
+    
+    cleaned = []
+    
+    for query_result in query_results:
+        date_obj, measurement = query_result
+        if measurement is None:
+            clean_tuple = (date_obj, np.nan)
+        else:
+            clean_tuple = (date_obj, measurement)
+        cleaned.append(clean_tuple)
+    
+    return cleaned
 
 def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
     

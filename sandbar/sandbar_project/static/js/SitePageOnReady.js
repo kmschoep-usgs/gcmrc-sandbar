@@ -90,15 +90,16 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
 			var appCheckBoxParam = {
-				areaParamVal: 'area2d',
-				areaParam: area2dParam,
-				minDate: startDate,
-				maxDate: endDate,
-				wrapperSubParam: [
-						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
-						          {subParamValue: 'chan', subParamLabel: 'Channel'},
-						          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
-						          ]
+					wrapperParam: [
+					               {areaParamVal: 'area2d', areaParam: 'Area 2D', minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'area3d', areaParam: 'Area 3D', minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'volume', areaParam: 'Volume', minDate: startDate, maxDate:endDate},
+					               ],
+					wrapperSubParam: [
+							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
+							          {subParamValue: 'chan', subParamLabel: 'Channel'},
+							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
+							          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
@@ -108,8 +109,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	
 	
 	// Initialize dygraphs
-	var sitePlots = new SB.SitePlots('graphs-div', gdawsSiteId);
-	var tsPlots = new SB.TSPlots('graphs-div', siteId);
+	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
+	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
@@ -118,15 +119,32 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var subParam = [];
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
-				var parent = $(this).parent().attr('class');
-				if ($(this).val() != 'Area 2D' && parent != 'sub-param-group') {
+				var parentClass = $(this).parent().attr('class');
+				if ($(this).val() != 'area2d' && $(this).val() != 'area3d' && $(this).val() != 'volume' && parentClass != 'sub-param-group') {
 					gcmrcParams.push($(this).val());
 				}
-				else if (parent === 'sub-param-group') {
-					subParam.push($(this).val());
+				else if ($(this).attr('name') === 'sb-param') {
+					sandbarParams.push($(this).val());
+				}
+				else if ($(this).attr('name') === 'sb-subparam') {
+					var parentID = $(this).parent().attr('id');
+					var selectParentStr = '#' + parentID;
+					var parentCheckboxVal = $(selectParentStr).siblings('input[name="sb-param"]').val()
+					var parentFound = false;
+					for (var i = 0; i < subParam.length; i++) {
+						var paramValStr = subParam[i].paramVal;
+						if (paramValStr === parentCheckboxVal) {
+							subParam[i].subParamVals.push($(this).val()); 
+							parentFound = true;
+						}
+					}
+					if (parentFound === false) {
+						var mapping = {paramVal: parentCheckboxVal, subParamVals: [$(this).val()]}
+						subParam.push(mapping);
+					}
 				}
 				else {
-					sandbarParams.push($(this).val());
+					//do nothing
 				}
 			});
 			/*
@@ -200,7 +218,12 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots( $('#ds-min').val(), $('#ds-max').val(), params, subParam);
+				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam);
+				/*
+				for (j = 0; j < subParam.length; j++) {
+					tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam[j]);
+					}
+				*/
 				}
 			else {
 				$('#parameter-errors').show();
