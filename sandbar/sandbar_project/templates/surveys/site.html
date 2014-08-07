@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load js %}
+{% load static %}
 
 {% block title %}Sandbar - {{ site.site_name }}{% endblock %}
 
@@ -25,8 +26,6 @@
 	
 	<script type="text/javascript">
 		var PAGE_URL = window.location.pathname;
-		//var SITE_ID = PAGE_URL.split('/')[3];
-		
 	</script>
 	
  	{% js "lib/modernizr.custom.45705.js" %}
@@ -137,12 +136,26 @@
 				</div>
 			</div>		
 		</div>
-		<div class="col-md-3">
-			<div id="site-info-div" class="panel panel-default">
+		<div class="col-md-3 item">
+			<div id="site-photo-div" class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">Site Photo</h4>
+				</div>
+				<div id="site-photo">
+				<img src="{% static 'images/'%}{{ site.image_name_small }}" alt="Image for {{ site.site_name }}">
+				</div>
+			</div>
+			<div id="caption">
+				{% if site.image_name_small != "" %}
+					<p class="caption">Photograph of {{ site.gcmrc_site_id }} taken {{ site.p_month }} {{ site.p_day }}, {{ site.p_year }}. View is from {{ site.photo_from }} side of river looking {{ site.photo_view }} at site. Streamflow is from {{ site.flow_direction }} of image.
+
+				{% endif %}
+			</div>
+			<div id="site-info-div" class="panel panel-default  full">
 				<div class="panel-heading">
 					<h4 class="panel-title">Site Map</h4>
 				</div>
-				<div id="site-loc-map-div">			
+				<div id="site-loc-map-div" class="full">			
 				</div>
 			</div>
 		</div>
