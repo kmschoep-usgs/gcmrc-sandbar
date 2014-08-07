@@ -81,7 +81,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 df_eddy = pd.DataFrame(eddy_cleaned, columns=('date', 'eddy_value'))
                 df_chan = pd.DataFrame(chan_cleaned, columns=('date', 'chan_value'))
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
-                df_ec_merge['eddy_channel_sum'] = df_ec_merge.sum(axis=1)
+                df_ec_merge['eddy_channel_sum'] = df_ec_merge.sum(axis=1, skipna=False)
                 df_ec_merge.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)
                 query_df = df_ec_merge
             df_list.append(query_df)

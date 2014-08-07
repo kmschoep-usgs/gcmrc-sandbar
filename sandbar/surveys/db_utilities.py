@@ -13,7 +13,7 @@ def replace_none_with_nan(query_results):
         if measurement is None:
             clean_tuple = (date_obj, np.nan)
         else:
-            clean_tuple = query_result
+            clean_tuple = (date_obj, measurement)
         cleaned.append(clean_tuple)
     
     return cleaned
