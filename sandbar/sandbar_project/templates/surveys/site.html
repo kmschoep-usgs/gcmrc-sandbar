@@ -63,19 +63,21 @@
 		</div>
 	</script>
 	<script id="app_param_template" type="text/html">
-		<div class="parameter-group">
-			<input id="{{areaParamVal}}-checkbox" type="checkbox" value="{{areaParamVal}}" />
+		{{#wrapperParam}}
+		<div id="{{areaParamVal}}-group" class="parameter-group">
+			<input id="{{areaParamVal}}-checkbox" type="checkbox" name="sb-param" value="{{areaParamVal}}" />
 			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
 			<br />
 			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
 			<br />
 			{{#wrapperSubParam}}
-			<div class="sub-param-group">
-				<input id="{{areaParamVal}}-{{subParamValue}}-checkbox" type="checkbox" name="{{areaParamVal}}-{{subParamValue}}-name" value="{{subParamValue}}" />
+			<div id="{{areaParamVal}}-subgroup" class="sub-param-group">
+				<input id="{{areaParamVal}}-{{subParamValue}}-checkbox" type="checkbox" name="sb-subparam" value="{{subParamValue}}" />
 				<label for="{{areaParamVal}}-{{subParamValue}}-checkbox" title="{{areaParamVal}}-{{subParamValue}}-checkbox-title">{{subParamLabel}}</label>			
 			</div>
 			{{/wrapperSubParam}}
 		</div>
+		{{/wrapperParam}}
 	</script>
 	{% endverbatim %}
 {% endblock %}

@@ -90,15 +90,16 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
 			var appCheckBoxParam = {
-				areaParamVal: 'area2d',
-				areaParam: area2dParam,
-				minDate: startDate,
-				maxDate: endDate,
-				wrapperSubParam: [
-						          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
-						          {subParamValue: 'chan', subParamLabel: 'Channel'},
-						          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
-						          ]
+					wrapperParam: [
+					               {areaParamVal: 'area2d', areaParam: 'Area 2D', minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'area3d', areaParam: 'Area 3D', minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'volume', areaParam: 'Volume', minDate: startDate, maxDate:endDate},
+					               ],
+					wrapperSubParam: [
+							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
+							          {subParamValue: 'chan', subParamLabel: 'Channel'},
+							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
+							          ]
 			};
 			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
@@ -114,6 +115,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
 			var gcmrcParams = [];
+			console.log(gcmrcParams);
 			var sandbarParams = [];
 			var subParam = [];
 			var errorExists = 0;
