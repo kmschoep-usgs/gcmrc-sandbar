@@ -3,12 +3,21 @@
 	width: 100%;
 }
 
+#site-loc-map-div {
+	height:300px;
+	width: 100%;
+}
+
+.caption {
+	font-size:0.8em;
+	margin-top:-15px;
+}
 .parameter-group {
 	margin: 4px;
 }
 
 .sub-param-group {
-	margin: 12px;
+	margin: 5px;
 }
 #graphs-div {
 	position: relative;

@@ -177,9 +177,7 @@ class SiteDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
         #site_id = context['site'].pk
-        #context['site'] = str(site_id)
         return context
-
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     ''' 
@@ -200,7 +198,6 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
     def get(self, request, *args, **kwargs):
         
-
         sites = Site.objects.all()
         feature_list = []
         for site_object in sites:
