@@ -13,7 +13,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	// public object methods
 	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
 		var parentParam = params.paramVal;
-		console.log(parentParam);
 		var calc_type = params.subParamVals;
 		var calcTypeParamStr = '';
 		for (i = 0; i < calc_type.length; i++) {
@@ -39,7 +38,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 					var graphs = {};
 
 					var data = resp.responseText;
-					graphDivEl(params[i]).show();
+					graphDivEl(parentParam).show();
 					graphs[parentParam] = new Dygraph(graphId(parentParam),
 							data, {
 						xlabel: "Date",
