@@ -6,7 +6,7 @@ import pandas as pd
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
-from .models import Site, Survey, AreaVolume
+from .models import Site, Survey, AreaVolume, SitePhoto
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB
 
@@ -177,9 +177,18 @@ class SiteDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
         #site_id = context['site'].pk
-        #context['site'] = str(site_id)
+        context['photos'] = SitePhoto.objects.all()
         return context
 
+class SitePhotoView(DetailView):
+
+    model = SitePhoto
+    
+    context_object_name = 'sitePhoto'
+    
+    def get_context_data(self, **kwargs):
+        context = super(SitePhotoView, self).get_context_data(**kwargs)
+        return context
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     ''' 
@@ -200,13 +209,8 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
     def get(self, request, *args, **kwargs):
         
-        site = request.GET.get('site_id')
-        if site == None:
-            sites = Site.objects.all()
-        else:
-            sites = Site.objects.filter(id=site)
-        
-            feature_list = []
+        sites = Site.objects.all()
+        feature_list = []
         for site_object in sites:
             latitude = site_object.geom.x
             longitude = site_object.geom.y

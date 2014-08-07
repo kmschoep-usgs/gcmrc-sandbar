@@ -60,6 +60,22 @@ class Site(models.Model):
         #result.append(str(result_min))
         #result.append(str(result_max))
         return result
+
+class SitePhoto(models.Model):
+    site = models.ForeignKey(Site)
+    photo_from = models.CharField(max_length=10)
+    photo_view = models.CharField(max_length=30)
+    flow_direction = models.CharField(max_length=30)
+    image_name = models.CharField(max_length=50)
+    image_name_med = models.CharField(max_length=50)
+    image_name_small = models.CharField(max_length=50)
+    
+    class Meta:
+        db_table = 'site_photos'
+        unique_together = ('site', 'image_name')
+        
+    def __unicode__(self):
+        return str(self.site) + str(self.image_name)    
     
 class Survey(models.Model):
     

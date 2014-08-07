@@ -54,8 +54,9 @@
 				
 		$(document).ready(function() {
 			SB.SitePageOnReady("{{ site.gdaws_site_id }}", "{{ site.id }}");
-			SB.SitePlotMap("{{ site.id }}","{{ site.geom.x }}","{{ site.geom.y }}");
+			SB.SitePlotMap("{{ site.geom.x }}","{{ site.geom.y }}");
 		});
+		
 	</script>
 	
 	<!-- HTML Templates -->
@@ -141,8 +142,7 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Site Map</h4>
 				</div>
-				<div id="site-loc-map-div" class="panel-body">			
-				<input type="hidden" id="geojson_sites" name="geojson_sites_url" value="{% url 'gjson_sites' %}" readonly>
+				<div id="site-loc-map-div">			
 				</div>
 			</div>
 		</div>
