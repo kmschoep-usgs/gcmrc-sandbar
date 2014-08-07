@@ -8,7 +8,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB, replace_none_with_nan
+from .db_utilities import convert_datetime_to_str, AlchemDB
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -79,9 +79,12 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 df_eddy = pd.DataFrame(eddy_results, columns=('date', 'eddy_value'))
                 df_chan = pd.DataFrame(chan_results, columns=('date', 'chan_value'))
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
+                # separate the eddy and channel values from the date for summation
                 df_values = df_ec_merge[['eddy_value', 'chan_value']]
+                # create a date dataframe
                 df_dates = df_ec_merge[['date']]
                 df_values['eddy_channel_sum'] = df_values.sum(axis=1, skipna=True)
+                # merge our dataframe back together based on row index
                 query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
                 query_df.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)
             df_list.append(query_df)
