@@ -115,7 +115,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	$('#update-plots-button').click(function(event) {
 		if ($('form').valid()) {
 			var gcmrcParams = [];
-			console.log(gcmrcParams);
 			var sandbarParams = [];
 			var subParam = [];
 			var errorExists = 0;
@@ -132,7 +131,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var selectParentStr = '#' + parentID;
 					var parentCheckboxVal = $(selectParentStr).siblings('input[name="sb-param"]').val()
 					var parentFound = false;
-					console.log(parentCheckboxVal);
 					for (var i = 0; i < subParam.length; i++) {
 						var paramValStr = subParam[i].paramVal;
 						if (paramValStr === parentCheckboxVal) {
@@ -155,7 +153,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				subParam = $(this).val();
 			});
 			*/
-			console.log(subParam);
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
@@ -221,9 +218,12 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
+				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam);
+				/*
 				for (j = 0; j < subParam.length; j++) {
 					tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam[j]);
 					}
+				*/
 				}
 			else {
 				$('#parameter-errors').show();
