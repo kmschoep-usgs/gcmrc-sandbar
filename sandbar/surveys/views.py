@@ -8,7 +8,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB
+from .db_utilities import convert_datetime_to_str, AlchemDB, replace_none_with_nan
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -53,23 +53,33 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         site = Site.objects.get(pk=request.GET.get('site_id'))
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
+        parameter_type = request.GET.get('param_type')
         calculation_types = request.GET.getlist('calc_type', None)
         alchemical_sql = AlchemDB()
         sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
         df_list = []
-        query_base = ora_session.query('calc_date', 'interp_area2d')
+        if parameter_type == 'area2d':
+            query_base = ora_session.query('calc_date', 'interp_area2d')
+        elif parameter_type == 'area3d':
+            query_base = ora_session.query('calc_date', 'interp_area3d')
+        elif parameter_type == 'volume':
+            query_base = ora_session.query('calc_date', 'interp_volume')
+        else:
+            raise Exception('I have no idea what you want me to query...')
         for calculation_type in calculation_types:
             if calculation_type != 'eddy_chan_sum':
                 query_result_set = query_base.from_statement(sql_statement).params(calc_type=calculation_type).all()
-                df_value_name = '{calculation_type}_area_2d'.format(calculation_type=calculation_type)
+                df_value_name = '{calculation_type}_{param_type}'.format(calculation_type=calculation_type, param_type=parameter_type)
                 query_df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'eddy_value'))
-                df_chan = pd.DataFrame(chan_results, columns=('date', 'chan_value'))
+                eddy_cleaned = replace_none_with_nan(eddy_results)
+                chan_cleaned = replace_none_with_nan(chan_results)
+                df_eddy = pd.DataFrame(eddy_cleaned, columns=('date', 'eddy_value'))
+                df_chan = pd.DataFrame(chan_cleaned, columns=('date', 'chan_value'))
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
                 df_ec_merge['eddy_channel_sum'] = df_ec_merge.sum(axis=1)
                 df_ec_merge.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)

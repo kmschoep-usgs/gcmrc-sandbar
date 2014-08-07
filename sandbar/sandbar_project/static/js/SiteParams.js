@@ -1,5 +1,12 @@
-function controlDefaultSubParam() {
-	$('div.sub-param-group input:checkbox').prop('checked', false);
+function selectDefaultSubParam(checkedStatus, parentVal) {
+	var selectStr = 'div#' + parentVal + '-subgroup' + ' input:checkbox';
+	var selectSubParamDefault = '#' + parentVal +'-eddy-checkbox';
+	if (checkedStatus) {
+		$(selectSubParamDefault).prop('checked', true);
+	}
+	else {
+		$(selectStr).prop('checked', false);
+	}
 };
 
 function clearRadios(checkedStatus) {
@@ -11,21 +18,23 @@ function clearRadios(checkedStatus) {
 	}
 };
 
-function disableField(checkedStatus) {
+function disableField(checkedStatus, parentVal) {
+	var selectStr = 'div#' + parentVal + '-subgroup' + ' input:checkbox';
 	if (checkedStatus) {
-		$('div.sub-param-group input:checkbox').attr('disabled', false);
+		$(selectStr).attr('disabled', false);
 	}
 	else {
-		$('div.sub-param-group input:checkbox').attr('disabled', true);
+		$(selectStr).attr('disabled', true);
 	}
 };
 
 $(document).ready(function() {
-	$(this).on('click', '#area2d-checkbox', function() {
-		var checkedStatus = $('#area2d-checkbox').is(':checked');
-		controlDefaultSubParam();
-		//disable radio buttons if Area 2D is unchecked; enable if checked
-		disableField(checkedStatus);		
+	$(this).on('click', 'input[name="sb-param"]', function() {
+		var checkedStatus = $(this).is(':checked');
+		var parentVal = $(this).val();
+		selectDefaultSubParam(checkedStatus, parentVal);
+		//disable checkbox buttons if Area 2D is unchecked; enable if checked
+		disableField(checkedStatus, parentVal);		
 	});
 	/*
 	$(this).on('click', 'div.sub-param-group input:checkbox', function() {
