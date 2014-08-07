@@ -71,7 +71,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         for calculation_type in calculation_types:
             if calculation_type != 'eddy_chan_sum':
                 query_result_set = query_base.from_statement(sql_statement).params(calc_type=calculation_type).all()
-                df_value_name = '{calculation_type}_area_2d'.format(calculation_type=calculation_type)
+                df_value_name = '{calculation_type}_{param_type}'.format(calculation_type=calculation_type, param_type=parameter_type)
                 query_df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
