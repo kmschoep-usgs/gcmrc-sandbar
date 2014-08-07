@@ -4,10 +4,21 @@
 }
 
 #site-loc-map-div {
-	height:300px;
+    height:300px;
 	width: 100%;
 }
 
+
+img.photo {
+        /***  Scaling Images with the Browser Window in CSS is pretty simple to implement for both images and video.  ***/
+        /***  You can set the media element’s max-width to 100 percent, and the browser will make    ***/
+        /***  the image shrink and expand depending on its container.    ***/
+        /***  To maintain the right proportions use auto height  ***/
+     	max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+        }
+        
 .caption {
 	font-size:0.8em;
 	margin-top:-15px;
@@ -17,7 +28,7 @@
 }
 
 .sub-param-group {
-	margin: 5px;
+	margin: 12px;
 }
 #graphs-div {
 	position: relative;
