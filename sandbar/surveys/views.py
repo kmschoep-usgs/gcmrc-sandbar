@@ -8,7 +8,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB, replace_none_with_nan
+from .db_utilities import convert_datetime_to_str, AlchemDB
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -76,14 +76,17 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                eddy_cleaned = replace_none_with_nan(eddy_results)
-                chan_cleaned = replace_none_with_nan(chan_results)
-                df_eddy = pd.DataFrame(eddy_cleaned, columns=('date', 'eddy_value'))
-                df_chan = pd.DataFrame(chan_cleaned, columns=('date', 'chan_value'))
+                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'eddy_value'))
+                df_chan = pd.DataFrame(chan_results, columns=('date', 'chan_value'))
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
-                df_ec_merge['eddy_channel_sum'] = df_ec_merge.sum(axis=1)
-                df_ec_merge.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)
-                query_df = df_ec_merge
+                # separate the eddy and channel values from the date for summation
+                df_values = df_ec_merge[['eddy_value', 'chan_value']]
+                # create a date dataframe
+                df_dates = df_ec_merge[['date']]
+                df_values['eddy_channel_sum'] = df_values.sum(axis=1, skipna=True)
+                # merge our dataframe back together based on row index
+                query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
+                query_df.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)
             df_list.append(query_df)
         df_list_len = len(df_list)
         if df_list_len == 1:
@@ -199,7 +202,8 @@ class BasicSiteInfoJSON(JSONResponseMixin, View):
                      'calcDates': {'min': area_min_date_str,
                                   'max': area_max_date_str,},
                      'paramNames': {'area2d': 'Area 2D',
-                                    'area3d': 'Area 3D'}
+                                    'area3d': 'Area 3D',
+                                    'volume': 'Volume'}
                      }
         return self.render_to_json_response(site_info)
     
