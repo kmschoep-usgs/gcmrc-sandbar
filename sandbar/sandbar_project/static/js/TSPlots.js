@@ -34,15 +34,13 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
 					
-					if (status === 'success') {					
+					if (status === 'success') {
 						/* destroy previously created graphs */
 						for (key in this._graphs) {
 							graphDivEl(key).hide();
 							this._graphs[key].destroy();
 						}
 						// Update the selected graphs
-						var graphs = {};
-
 						var data = resp.responseText;
 						graphDivEl(parentParam).show();
 						graphs[parentParam] = new Dygraph(graphId(parentParam),
