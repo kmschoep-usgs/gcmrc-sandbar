@@ -11,7 +11,8 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	};
 	//var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, siteObj, totalParams) {
+		var gcmrcPlots = siteObj._graphs;
 		var graphs = {};
 		var currentGraphs = [];
 		for (j = 0; j < params.length; j++) {
@@ -30,7 +31,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 				url: SB.AREA_2D_URL,
 				async: false,
 				type: 'GET',
-				data: 'site_id=' + siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
+				data: 'site_id=' + this.siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
@@ -39,6 +40,21 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						/* destroy previously created graphs */
 						for (key in this._graphs) {
 							var currentGraphExists = $.inArray(key, currentGraphs);
+							try {
+								if (currentGraphExists === -1) {
+									graphDivEl(key).hide();
+									this._graphs[key].destroy();									
+								}
+								else {
+									//do nothing
+								}
+							}
+							catch(TypeError) {
+								continue;
+							}
+						}
+						for (key in gcmrcPlots) {
+							var currentGraphExists = $.inArray(key, totalParams);
 							try {
 								if (currentGraphExists === -1) {
 									graphDivEl(key).hide();
@@ -64,7 +80,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							showRangeSelector: true,
 							legend: 'always'
 						});
-						//this._graphs = graphs;
 					}
 					else {
 						alert('Unable to retrieve data: ' + resp.status + ' : ' + resp.statusText);

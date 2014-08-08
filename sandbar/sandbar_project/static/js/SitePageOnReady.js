@@ -163,12 +163,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					//do nothing
 				}
 			});
-			/*
-			$('#parameter-selection-div input[type=radio]:checked').each(function() {
-				//subParams.push($(this).val());
-				subParam = $(this).val();
-			});
-			*/
+
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
@@ -233,13 +228,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			if (errorExists === 0) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
-				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams);
-				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam);
-				/*
-				for (j = 0; j < subParam.length; j++) {
-					tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam[j]);
-					}
-				*/
+				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams, tsPlots, params);
+				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots, params);
 				}
 			else {
 				$('#parameter-errors').show();

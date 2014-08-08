@@ -9,38 +9,13 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 	var graphDivEl = function(key) {
 		return $('#' + graphId(key));
 	};
-	/*
-	timeSeriesGraph = new Dygraph (
-			document.getElementById("timeseries-plot"),
-			AREA_2D_URL,
-			{
-				xlabel: "Date",
-				ylabel: "2D Area",
-				showRangeSelector : true
-			}
-			);
-	
-	timeSeriesGraph.resize(480, 320);
-	*/
-	// public object methods
+
 	this.updatePlots = function(startDate, endDate /* String dates */,
-					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */) {
+					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarObj,
+					 		    totalParams) {
 		
-		/*
-		timeSeriesGraph = new Dygraph (
-				document.getElementById("timeseries-plot"),
-				AREA_2D_URL,
-				{
-					xlabel: "Date",
-					ylabel: "2D Area",
-					showRangeSelector : true
-				}
-				);
-		
-		timeSeriesGraph.resize(480, 320);
-		*/
 		this.graphsDivEl.children('#graphs-loading-div').show();
-		
+		var sandbarPlots = sandbarObj._graphs;
 		$.ajax({
 			url: SB.GDAWS_SERVICE + 'agg/',
 			type: 'GET',
@@ -55,10 +30,21 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 						graphDivEl(key).hide();
 						this._graphs[key].destroy();
 					}
+					for (key in sandbarPlots) {
+						var currentGraphExists = $.inArray(key, totalParams);
+						try {
+							if (currentGraphExists === -1) {
+								graphDivEl(key).hide();
+								this._graphs[key].destroy();								
+							}						
+						}
+						catch(TypeError) {
+							continue;
+						}
+					}
 					// Update the selected graphs
 					var graphs = {};
 					for (var i = 0; i < parameterNames.length; i++) {
-						console.log(parameterNames[i]);
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
 						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName);
 						graphDivEl(parameterNames[i]).show();
@@ -67,7 +53,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',
 							labelsDivWidth: 300,
 							yAxisLabelWidth: 95,
-							showRangeSelector : true							
+							showRangeSelector: true							
 						});
 					}
 					this._graphs = graphs;
