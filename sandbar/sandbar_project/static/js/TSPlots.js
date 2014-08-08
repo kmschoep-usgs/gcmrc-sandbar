@@ -11,8 +11,10 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	};
 	//var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, siteObj, totalParams) {
+		var gcmrcPlots = siteObj._graphs;
 		var graphs = {};
+		var currentGraphs = [];
 		for (j = 0; j < params.length; j++) {
 			var parentParam = params[j].paramVal;
 			var displayName = params[j].displayName;
@@ -29,20 +31,44 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 				url: SB.AREA_2D_URL,
 				async: false,
 				type: 'GET',
-				data: 'site_id=' + siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
+				data: 'site_id=' + this.siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
-					
-					if (status === 'success') {					
+					if (status === 'success') {
+						currentGraphs.push(parentParam);
 						/* destroy previously created graphs */
 						for (key in this._graphs) {
-							graphDivEl(key).hide();
-							this._graphs[key].destroy();
+							var currentGraphExists = $.inArray(key, currentGraphs);
+							try {
+								if (currentGraphExists === -1) {
+									graphDivEl(key).hide();
+									this._graphs[key].destroy();									
+								}
+								else {
+									//do nothing
+								}
+							}
+							catch(TypeError) {
+								continue;
+							}
+						}
+						for (key in gcmrcPlots) {
+							var currentGraphExists = $.inArray(key, totalParams);
+							try {
+								if (currentGraphExists === -1) {
+									graphDivEl(key).hide();
+									this._graphs[key].destroy();									
+								}
+								else {
+									//do nothing
+								}
+							}
+							catch(TypeError) {
+								continue;
+							}
 						}
 						// Update the selected graphs
-						var graphs = {};
-
 						var data = resp.responseText;
 						graphDivEl(parentParam).show();
 						graphs[parentParam] = new Dygraph(graphId(parentParam),
@@ -52,9 +78,11 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							yAxisLabelWidth: 95,
 							labelsDivWidth: 300,
 							showRangeSelector: true,
-							legend: 'always'
+							legend: 'always',
+							strokePattern: [5, 5],
+							drawPoints: true,
+							pointSize: 3
 						});
-						//this._graphs = graphs;
 					}
 					else {
 						alert('Unable to retrieve data: ' + resp.status + ' : ' + resp.statusText);
