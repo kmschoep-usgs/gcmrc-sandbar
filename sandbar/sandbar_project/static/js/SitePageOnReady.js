@@ -141,7 +141,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 						var paramUnit = 'm' + '3'.sup();
 					}
 					else {
-						paramUnit = 'Not Specified';
+						paramUnit = 'Unit Not Specified';
 					}
 					var parentFound = false;
 					for (var i = 0; i < subParam.length; i++) {

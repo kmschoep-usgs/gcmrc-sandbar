@@ -13,6 +13,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	// public object methods
 	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params) {
 		var graphs = {};
+		var currentGraphs = [];
 		for (j = 0; j < params.length; j++) {
 			var parentParam = params[j].paramVal;
 			var displayName = params[j].displayName;
@@ -33,12 +34,23 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
-					
 					if (status === 'success') {
+						currentGraphs.push(parentParam);
 						/* destroy previously created graphs */
 						for (key in this._graphs) {
-							graphDivEl(key).hide();
-							this._graphs[key].destroy();
+							var currentGraphExists = $.inArray(key, currentGraphs);
+							try {
+								if (currentGraphExists === -1) {
+									graphDivEl(key).hide();
+									this._graphs[key].destroy();									
+								}
+								else {
+									//do nothing
+								}
+							}
+							catch(TypeError) {
+								continue;
+							}
 						}
 						// Update the selected graphs
 						var data = resp.responseText;
