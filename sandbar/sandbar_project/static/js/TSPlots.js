@@ -78,7 +78,10 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							yAxisLabelWidth: 95,
 							labelsDivWidth: 300,
 							showRangeSelector: true,
-							legend: 'always'
+							legend: 'always',
+							strokePattern: [5, 5],
+							drawPoints: true,
+							pointSize: 3
 						});
 					}
 					else {

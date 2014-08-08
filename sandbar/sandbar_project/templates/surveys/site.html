@@ -63,14 +63,6 @@
 	
 	<!-- HTML Templates -->
 	{% verbatim %}
-	<script id="param_template" type="text/html">
-		<div class="parameter-group">
-			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
-			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
-			<br />
-			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
-		</div>
-	</script>
 	<script id="app_param_template" type="text/html">
 		{{#wrapperParam}}
 		<div id="{{areaParamVal}}-group" class="parameter-group">
@@ -87,6 +79,14 @@
 			{{/wrapperSubParam}}
 		</div>
 		{{/wrapperParam}}
+	</script>
+	<script id="param_template" type="text/html">
+		<div class="parameter-group">
+			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
+			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
+			<br />
+			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
+		</div>
 	</script>
 	{% endverbatim %}
 {% endblock %}
