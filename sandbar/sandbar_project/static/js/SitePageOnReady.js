@@ -87,13 +87,15 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var template = $('#app_param_template').html();
 			var respJSON = $.parseJSON(resp.responseText);
 			var area2dParam = respJSON.paramNames.area2d;
+			var area3dParam = respJSON.paramNames.area3d;
+			var volumeParam = respJSON.paramNames.volume;
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
 			var appCheckBoxParam = {
 					wrapperParam: [
-					               {areaParamVal: 'area2d', areaParam: 'Area 2D', minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'area3d', areaParam: 'Area 3D', minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'volume', areaParam: 'Volume', minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'area2d', areaParam: area2dParam, minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate},
 					               ],
 					wrapperSubParam: [
 							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
@@ -129,17 +131,19 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				else if ($(this).attr('name') === 'sb-subparam') {
 					var parentID = $(this).parent().attr('id');
 					var selectParentStr = '#' + parentID;
-					var parentCheckboxVal = $(selectParentStr).siblings('input[name="sb-param"]').val()
+					var parentSibling = $(selectParentStr).siblings('input[name="sb-param"]')
+					var parentSiblingCheckboxVal = parentSibling.val();
+					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
 					var parentFound = false;
 					for (var i = 0; i < subParam.length; i++) {
 						var paramValStr = subParam[i].paramVal;
-						if (paramValStr === parentCheckboxVal) {
+						if (paramValStr === parentSiblingCheckboxVal) {
 							subParam[i].subParamVals.push($(this).val()); 
 							parentFound = true;
 						}
 					}
 					if (parentFound === false) {
-						var mapping = {paramVal: parentCheckboxVal, subParamVals: [$(this).val()]}
+						var mapping = {paramVal: parentSiblingCheckboxVal, displayName: parentSiblingLabelText, subParamVals: [$(this).val()]}
 						subParam.push(mapping);
 					}
 				}

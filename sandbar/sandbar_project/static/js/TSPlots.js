@@ -15,6 +15,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		var graphs = {};
 		for (j = 0; j < params.length; j++) {
 			var parentParam = params[j].paramVal;
+			var displayName = params[j].displayName;
 			var calc_type = params[j].subParamVals;
 			var calcTypeParamStr = '';
 			for (i = 0; i < calc_type.length; i++) {
@@ -45,7 +46,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						graphs[parentParam] = new Dygraph(graphId(parentParam),
 								data, {
 							xlabel: "Date",
-							ylabel: parentParam,
+							ylabel: displayName,
 							yAxisLabelWidth: 95,
 							labelsDivWidth: 300,
 							showRangeSelector: true,
