@@ -134,6 +134,15 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSibling = $(selectParentStr).siblings('input[name="sb-param"]')
 					var parentSiblingCheckboxVal = parentSibling.val();
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
+					if (parentSiblingCheckboxVal === 'area2d' || parentSiblingCheckboxVal === 'area3d') {
+						var paramUnit = 'm' + '2'.sup();
+					}
+					else if (parentSiblingCheckboxVal === 'volume') {
+						var paramUnit = 'm' + '3'.sup();
+					}
+					else {
+						paramUnit = 'Not Specified';
+					}
 					var parentFound = false;
 					for (var i = 0; i < subParam.length; i++) {
 						var paramValStr = subParam[i].paramVal;
@@ -143,7 +152,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 						}
 					}
 					if (parentFound === false) {
-						var mapping = {paramVal: parentSiblingCheckboxVal, displayName: parentSiblingLabelText, subParamVals: [$(this).val()]}
+						var mapping = {paramVal: parentSiblingCheckboxVal, 
+									   displayName: parentSiblingLabelText,
+									   paramUnit: paramUnit,
+									   subParamVals: [$(this).val()]}
 						subParam.push(mapping);
 					}
 				}
