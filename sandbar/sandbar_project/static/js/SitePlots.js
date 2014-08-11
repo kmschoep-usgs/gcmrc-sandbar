@@ -11,11 +11,11 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 	};
 
 	this.updatePlots = function(startDate, endDate /* String dates */,
-					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarObj,
+					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarPlots,
 					 		    totalParams) {
 		
 		this.graphsDivEl.children('#graphs-loading-div').show();
-		var sandbarPlots = sandbarObj._graphs;
+		var sandbarPlots = sandbarPlots;
 		$.ajax({
 			url: SB.GDAWS_SERVICE + 'agg/',
 			type: 'GET',

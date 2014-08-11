@@ -227,8 +227,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			if (errorExists === 0) {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
-				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams, tsPlots, params);
-				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots, params);
+				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams, tsPlots._graphs, params);
+				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
 				}
 			else {
 				$('#parameter-errors').show();
