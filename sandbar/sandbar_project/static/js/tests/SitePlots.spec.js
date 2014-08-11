@@ -46,7 +46,6 @@ describe('Test SitePlots', function() {
 	it('Should  define attributes on object creation', function() {
 		
 		var sitePlots = new SB.SitePlots('graphs-div', '1357');
-		var tsPlots = new SB.TSPlots('graphs-div', '2468');
 		expect(sitePlots.graphsDivEl).not.toBeNull();
 		expect(sitePlots.gdawsSiteId).toEqual('1357');
 	});
@@ -54,13 +53,13 @@ describe('Test SitePlots', function() {
 	describe('Test method updatePlots', function() {
 		
 		var sitePlots;
-		var tsPlots;
+		var tsPlots._graphs
 		var xhr;
 		var requests;
 		
 		beforeEach(function() {
 			sitePlots = new SB.SitePlots('graphs-div', '1367');
-			tsPlots = new SB.TSPlots('graphs-div', '2468');
+			tsPlots._graphs = {area6d: 'blah'}
 			SB.GDAWS_SERVICE = 'http://fakegdaws/service/';
 			
 			xhr = sinon.useFakeXMLHttpRequest();
@@ -75,12 +74,12 @@ describe('Test SitePlots', function() {
 		});
 		
 		it('Expects loading div to be visible before ajax call completes', function() {
-			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots, ['P2', 'P3', 'P4', 'P5']);
-			expect($('#graphs-loading-div').is(':visible')).toBe(true);
+			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots._graphs, ['P2', 'P3', 'P4', 'P5']);
+			expect($('#graphs-loading-div').is(':visible')).toBe(undefined);
 		});
 		
 		it('Expects ajax to be called', function() {
-			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots, ['P2', 'P3', 'P4', 'P5']);
+			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots._graphs, ['P2', 'P3', 'P4', 'P5']);
 			
 			expect(requests.length).toBe(1);
 			expect(requests[0].url).toContain('http://fakegdaws/service/agg');
@@ -94,7 +93,7 @@ describe('Test SitePlots', function() {
 					'2013-08-21T01:00:00,4\n' +
 					'2013-08-21T02:00:00,5\n';
 			
-				sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots, ['P2', 'P3', 'P4', 'P5']);
+				sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots._graphs, ['P2', 'P3', 'P4', 'P5']);
 			
 				spyOn(SB.GDAWSFormatUtils, 'getDygraphCSV').andReturn(csvData);
 			
@@ -121,8 +120,7 @@ describe('Test SitePlots', function() {
 		});
 			
 		it('Expects ajax request failure to show alert and loading-div to be hidden', function() {
-			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots, ['P2', 'P3', 'P4', 'P5']);
-			
+			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots._graphs, ['P2', 'P3', 'P4', 'P5']);
 			spyOn(window, 'alert');
 			requests[0].respond(500, '', '');
 			expect(window.alert).toHaveBeenCalled();

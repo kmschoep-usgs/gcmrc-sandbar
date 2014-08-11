@@ -11,8 +11,8 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	};
 	//var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, siteObj, totalParams) {
-		var gcmrcPlots = siteObj._graphs;
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, gcmrcPlots, totalParams) {
+		var gcmrcPlots = gcmrcPlots;
 		var graphs = {};
 		var currentGraphs = [];
 		for (j = 0; j < params.length; j++) {
