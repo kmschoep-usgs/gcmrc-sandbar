@@ -61,6 +61,14 @@
 	
 	<!-- HTML Templates -->
 	{% verbatim %}
+	<script id="param_template" type="text/html">
+		<div class="parameter-group">
+			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
+			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
+			<br />
+			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
+		</div>
+	</script>
 	<script id="app_param_template" type="text/html">
 		{{#wrapperParam}}
 		<div id="{{areaParamVal}}-group" class="parameter-group">
@@ -78,14 +86,6 @@
 		</div>
 		{{/wrapperParam}}
 	</script>
-	<script id="param_template" type="text/html">
-		<div class="parameter-group">
-			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
-			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
-			<br />
-			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
-		</div>
-	</script>
 	{% endverbatim %}
 {% endblock %}
 
@@ -102,6 +102,7 @@
 				</div>
 				<form>
 				<div class="panel-body">
+					<h5 class="param-label">Sandbar Elevation Zone for Plotting:</h5>
 					<div id="parameter-checkbox-div"></div>
 					<div class="parameter-group">
 						<label for="start-date">From:&nbsp;</label>
@@ -119,6 +120,7 @@
 						<label for="ds-max">Maximum Discharge:&nbsp;</label>
 						<input type="text" id="ds-max"/>
 					</div>
+					<div id="sb-parameter-checkbox-div"></div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 					<div id="parameter-errors" class="alert alert-danger" style="display: none;"></div>
 				</div>
