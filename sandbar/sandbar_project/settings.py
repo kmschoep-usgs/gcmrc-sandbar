@@ -257,7 +257,10 @@ if os.getenv('JENKINS_URL', False):
                      'django_jenkins.tasks.with_coverage',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
-    PROJECT_APPS = ('common', 'surveys', 'jasmine',) # This is where you would add the apps that you would like tested
+    PROJECT_APPS = ('common', 
+                    'surveys', 
+                    'jasmine',
+                    ) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
           ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
           NAME = os.getenv('DBA_SQL_DB_NAME'),
