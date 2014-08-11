@@ -54,11 +54,13 @@ describe('Test SitePlots', function() {
 	describe('Test method updatePlots', function() {
 		
 		var sitePlots;
+		var tsPlots;
 		var xhr;
 		var requests;
 		
 		beforeEach(function() {
 			sitePlots = new SB.SitePlots('graphs-div', '1367');
+			tsPlots = new SB.TSPlots('graphs-div', '2468');
 			SB.GDAWS_SERVICE = 'http://fakegdaws/service/';
 			
 			xhr = sinon.useFakeXMLHttpRequest();

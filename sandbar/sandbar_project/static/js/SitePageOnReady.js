@@ -102,10 +102,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					wrapperSubParam: [
 							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
 							          {subParamValue: 'chan', subParamLabel: 'Channel'},
-							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Eddy + Channel'}
+							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Total Site'}
 							          ]
 			};
-			$('#parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
+			$('#sb-parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
 		}
 	});
