@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
 encoding//env/Lib/site-packages/factory/__init__.py=utf-8
 encoding//env/Lib/site-packages/factory/django.py=utf-8
+encoding//sandbar_project/templates/surveys/site.html=UTF-8
 encoding//surveys/migrations/0002_auto__add_site__add_unique_site_river_mile_site_name__add_survey.py=utf-8

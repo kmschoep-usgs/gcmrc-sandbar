@@ -5,10 +5,7 @@
 
 {% block title %}Sandbar - {{ site.site_name }}{% endblock %}
 
-{% block page_description %}
-	Provides data and plotting tools for sandbar {{ site.site_name }} located at 
-	river mile {{ site.river_mile }}
-{% endblock %}
+{% block page_description %}Provides data and plotting tools for sandbar {{ site.site_name }} located at river mile {{ site.river_mile }}{% endblock %}
 
 {% block page_style %}
 	{% css "lib/leaflet-0.6.4/leaflet.css" %}
@@ -51,14 +48,15 @@
 	
 	<script type="text/javascript">
 		$.webshims.polyfill();		
-				
+		var map;		
 		$(document).ready(function() {
-			var map;
 			SB.SitePageOnReady("{{ site.gdaws_site_id }}", "{{ site.id }}");
-			SB.SitePlotMap("{{ site.geom.x }}","{{ site.geom.y }}");
-		});
-		
-		
+			map = SB.SitePlotMap("{{ site.geom.x }}","{{ site.geom.y }}");
+			var lat_long = map.getCenter(); 
+				console.log(map.getCenter().toString());
+			return map;	
+			//console.log(map);
+		});	   
 	</script>
 	
 	<!-- HTML Templates -->
@@ -166,9 +164,19 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Site Map</h4>
 				</div>
+				<button type="button" id="cMbtn" class="btn btn-primary">
+  				Center Map
+				</button>
 				<div id="site-loc-map-div" class="full">		
 				</div>
-				
+				<script>
+				var myBtn = document.getElementById('site-loc-map-div');
+
+				//add event listener
+				myBtn.addEventListener('click', function(event) {
+				  map.invalidateSize();
+				});
+		  		</script>
 			</div>
 		</div>
 	</div>
