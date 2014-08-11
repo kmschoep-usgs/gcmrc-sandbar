@@ -259,7 +259,7 @@ if os.getenv('JENKINS_URL', False):
     INSTALLED_APPS += ('django_jenkins', 'jasmine', )
     PROJECT_APPS = ('common', 
                     'surveys', 
-                    'jasmine',
+                    #'jasmine',
                     ) # This is where you would add the apps that you would like tested
     DATABASES['default'].update(dict(
           ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
