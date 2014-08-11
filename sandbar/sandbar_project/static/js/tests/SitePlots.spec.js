@@ -53,13 +53,13 @@ describe('Test SitePlots', function() {
 	describe('Test method updatePlots', function() {
 		
 		var sitePlots;
-		var tsPlots;
+		var tsPlots._graphs
 		var xhr;
 		var requests;
 		
 		beforeEach(function() {
 			sitePlots = new SB.SitePlots('graphs-div', '1367');
-			//tsPlots = new SB.TSPlots('graphs-div', '2468');
+			tsPlots._graphs = {area6d: 'blah'}
 			SB.GDAWS_SERVICE = 'http://fakegdaws/service/';
 			
 			xhr = sinon.useFakeXMLHttpRequest();
@@ -74,8 +74,7 @@ describe('Test SitePlots', function() {
 		});
 		
 		it('Expects loading div to be visible before ajax call completes', function() {
-			var fakeTsPlots = {area6d: 'blah'}
-			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], fakeTsPlots, ['P2', 'P3', 'P4', 'P5']);
+			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], tsPlots._graphs, ['P2', 'P3', 'P4', 'P5']);
 			expect($('#graphs-loading-div').is(':visible')).toBe(undefined);
 		});
 		
