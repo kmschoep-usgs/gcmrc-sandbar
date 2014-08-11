@@ -1,4 +1,3 @@
-/*
 describe('Test SitePlots', function() {
 	
 	beforeEach(function() {
@@ -131,4 +130,3 @@ describe('Test SitePlots', function() {
 	});
 	
 });
-*/
