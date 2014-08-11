@@ -10,6 +10,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
 		type: 'GET',
+		async: false,
 		data: queryParams,
 		dataType: 'json',
 		complete: function(resp, status) {
@@ -76,11 +77,12 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('#page-loading-div').hide();
 			$('#site-page-content').show();
 		}
-	});
+	});	
 	
 	$.ajax({
 		url: SB.SITE_AREA_CALC_URL,
 		type: 'GET',
+		async: false,
 		data: 'site_id=' + internalSiteId,
 		dataType: 'json',
 		complete: function(resp, status) {
@@ -107,9 +109,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
 		}
 	});
-	
-	
-	
 	// Initialize dygraphs
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
