@@ -46,7 +46,6 @@ describe('Test SitePlots', function() {
 	it('Should  define attributes on object creation', function() {
 		
 		var sitePlots = new SB.SitePlots('graphs-div', '1357');
-		//var tsPlots = new SB.TSPlots('graphs-div', '2468');
 		expect(sitePlots.graphsDivEl).not.toBeNull();
 		expect(sitePlots.gdawsSiteId).toEqual('1357');
 	});
@@ -77,7 +76,7 @@ describe('Test SitePlots', function() {
 		
 		it('Expects loading div to be visible before ajax call completes', function() {
 			sitePlots.updatePlots('2013-04-01', '2013-04-04', ['P2', 'P3'], fakeTsPlots, ['P2', 'P3', 'P4', 'P5']);
-			expect($('#graphs-loading-div').is(':visible')).toBe(true);
+			expect($('#graphs-loading-div').is(':visible')).toBe(false);
 		});
 		
 		it('Expects ajax to be called', function() {
