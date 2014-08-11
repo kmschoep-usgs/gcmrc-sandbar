@@ -60,3 +60,14 @@ input[type=date] {
 .parameter-dates {
 	font-style: italic;
 }
+
+.lcol-md-3,
+.lcol-md-4,
+.lcol-md-5,
+.lcol-md-6  {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+}
