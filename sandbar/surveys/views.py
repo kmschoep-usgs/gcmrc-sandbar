@@ -1,14 +1,14 @@
 from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
-from numpy import interp
+from numpy import interp, isfinite
 import pandas as pd 
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB
+from .db_utilities import convert_datetime_to_str, AlchemDB, create_pandas_dataframe
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -76,12 +76,12 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                     df_value_name = calculation_type_full.title()
                 else:
                     df_value_name = calculation_type.title()
-                query_df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
+                query_df = create_pandas_dataframe(data=query_result_set, columns=('date', df_value_name))
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'Eddy'))
-                df_chan = pd.DataFrame(chan_results, columns=('date', 'Channel'))
+                df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', 'Eddy'), create_psuedo_column=True)
+                df_chan = create_pandas_dataframe(data=chan_results, columns=('date', 'Channel'), create_psuedo_column=True)
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
                 # separate the eddy and channel values from the date for summation
                 df_values = df_ec_merge[['Eddy', 'Channel']]
@@ -91,6 +91,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 # merge our dataframe back together based on row index
                 query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
                 query_df.drop(labels=['Eddy', 'Channel'], axis=1, inplace=True)
+                # remove any dates that are NaT (not a datetime) or NaN (not a number) in the date column
+                query_df = query_df[pd.notnull(query_df['date'])]
             df_list.append(query_df)
         df_list_len = len(df_list)
         if df_list_len == 1:
@@ -106,7 +108,10 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         ora_session.close()
         column_name_array = df_merge.columns.values
         column_name_list = list(column_name_array)
-        column_name_tuple = (column_name_list.pop(0),)
+        try:
+            column_name_tuple = (column_name_list.pop(0),)
+        except(IndexError):
+            column_name_tuple = (None,)
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
