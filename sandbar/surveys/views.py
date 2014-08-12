@@ -71,22 +71,26 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         for calculation_type in calculation_types:
             if calculation_type != 'eddy_chan_sum':
                 query_result_set = query_base.from_statement(sql_statement).params(calc_type=calculation_type).all()
-                df_value_name = '{calculation_type}_{param_type}'.format(calculation_type=calculation_type, param_type=parameter_type)
+                if calculation_type == 'chan':
+                    calculation_type_full = 'channel'
+                    df_value_name = calculation_type_full.title()
+                else:
+                    df_value_name = calculation_type.title()
                 query_df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'eddy_value'))
-                df_chan = pd.DataFrame(chan_results, columns=('date', 'chan_value'))
+                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'Eddy'))
+                df_chan = pd.DataFrame(chan_results, columns=('date', 'Channel'))
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
                 # separate the eddy and channel values from the date for summation
-                df_values = df_ec_merge[['eddy_value', 'chan_value']]
+                df_values = df_ec_merge[['Eddy', 'Channel']]
                 # create a date dataframe
                 df_dates = df_ec_merge[['date']]
-                df_values['eddy_channel_sum'] = df_values.sum(axis=1, skipna=True)
+                df_values['Total Site'] = df_values.sum(axis=1, skipna=True)
                 # merge our dataframe back together based on row index
                 query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
-                query_df.drop(labels=['eddy_value', 'chan_value'], axis=1, inplace=True)
+                query_df.drop(labels=['Eddy', 'Channel'], axis=1, inplace=True)
             df_list.append(query_df)
         df_list_len = len(df_list)
         if df_list_len == 1:
@@ -150,7 +154,6 @@ class SiteDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
-        #site_id = context['site'].pk
         return context
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
