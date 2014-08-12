@@ -93,7 +93,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 query_df.drop(labels=['Eddy', 'Channel'], axis=1, inplace=True)
                 # remove any dates that are NaT (not a datetime) or NaN (not a number) in the date column
                 query_df = query_df[pd.notnull(query_df['date'])]
-            df_list.append(query_df)
+            if len(query_df) > 0:
+                df_list.append(query_df)
         df_list_len = len(df_list)
         if df_list_len == 1:
             df_merge = df_list[0]

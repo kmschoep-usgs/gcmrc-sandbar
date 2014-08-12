@@ -96,8 +96,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var appCheckBoxParam = {
 					wrapperParam: [
 					               {areaParamVal: 'area2d', areaParam: area2dParam, minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate},
+					               //{areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate}
 					               ],
 					wrapperSubParam: [
 							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
