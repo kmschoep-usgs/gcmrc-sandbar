@@ -6,6 +6,16 @@ VMs:
 * cida-eros-sbdjqa.er.usgs.gov
 * cida-eros-sbdjprod.er.usgs.gov
 
+Databases:
+
+* devdw.er.usgs.gov
+* qadw.er.usgs.gov
+* dbdw.er.usgs.gov
+
+Schema owner is SANDBAR, appliation connects as SANDBAR_USER.
+
+The application uses South, a django database management tool to create/maintain tables.
+
 Jenkins:
 
 * http://cida-eros-sbdjdev.er.usgs.gov:8080/jenkins/
