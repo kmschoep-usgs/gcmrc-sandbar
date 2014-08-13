@@ -1,0 +1,85 @@
+.sectionWideTitle {
+	font-size: 14px;
+	height: 24px;
+	padding-top: 3px;
+	padding-bottom: 4px;
+	padding-left: 8px;
+	font-weight: bold;
+	background-color: #f1f2f6;
+	background-image: url(../images/bg_frontSections.jpg);
+	background-repeat: no-repeat;
+	background-repeat-x: no-repeat;
+	background-repeat-y: no-repeat;
+	background-position: left-top;
+	background-position-x: 0%;
+	background-position-y: 0%;
+	border: 1px solid #99cccc;
+	border-top-color: rgb(153, 204, 204);
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-right-color: rgb(153, 204, 204);
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-botton-color: rgb(153, 204, 204);
+	border-botton-style: solid;
+	border-botton-width: 1px;
+	border-left-color: rgb(153, 204, 204);
+	border-left-style: solid;
+	border-left-width: 1px;
+	clear: left;
+	color: #003366;
+	margin-top: 0px;
+}
+
+#sites-map-div {
+	min-height: 410px;
+}
+
+#sites-map-home {
+	height: 200px;
+	width: 100%;
+}
+
+#sandbar_data_links {
+	min-height: 410px;
+}
+
+#intro-text {
+	min-height: 410px;
+}
+
+#credits div.well.full {
+	min-height: 40em;
+}
+
+#credits div.well.half {
+	min-height: 17em;
+}
+
+.application-body-home {
+	min-height: 1100;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+#homepage-title {
+	margin-left: 0px;
+}
+
+.credit-header {
+	font-weight:bold;
+}
+
+.link-text {
+	color:inherit;
+}
+
+/*Links*/
+a:link {
+	color: #08c;
+}
+a:visited {
+	color:#0000FF;
+}
+
+
