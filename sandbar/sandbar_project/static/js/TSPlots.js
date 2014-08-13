@@ -21,7 +21,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			var paramUnit = params[j].paramUnit;
 			var yAxisLabel = 'Sandbar ' + displayName + ' (' + paramUnit + ')';
 			var calc_type = params[j].subParamVals;
-			console.log(calc_type);
 			var calcTypeParamStr = '';
 			for (i = 0; i < calc_type.length; i++) {
 				calcTypeParamStr += '&calc_type=' + calc_type[i];
