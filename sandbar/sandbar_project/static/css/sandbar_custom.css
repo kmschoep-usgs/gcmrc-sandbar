@@ -52,6 +52,11 @@ img.photo {
 .graph-div {
 	width: 100%!important;
 }
+
+.param-missing {
+	color: red;
+}
+
 label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
 	width: 3em;
 }

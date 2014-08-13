@@ -74,9 +74,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						var csvHeader = data.slice(0, data.indexOf('\n'));
 						var csvHeaderLineBreak = csvHeader.replace(/(\r\n|\n|\r)/gm,""); //remove line breaks
 						var headerArray = csvHeaderLineBreak.split(",");
-						console.log(headerArray);
-						console.log($.inArray("Eddy", headerArray));
-						console.log($.inArray('eddy', calc_type));
 						var columnCount = headerArray.length - 1;
 						graphDivEl(parentParam).show();
 						graphs[parentParam] = new Dygraph(graphId(parentParam),
@@ -92,18 +89,20 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							pointSize: 3
 						});
 						if (columnCount < calc_type.length) {
-							var missingDataStr = '';
+							var missingDataArr = [];
 							if ($.inArray('Eddy', headerArray) == -1 && $.inArray('eddy', calc_type) > -1) {
-								missingDataStr += 'Eddy '; 
+								missingDataArr.push('Eddy'); 
 							}
 							if ($.inArray('Channel', headerArray) == -1 && $.inArray('chan', calc_type) > -1) {
-								missingDataStr += 'Channel '; 
+								missingDataArr.push('Channel'); 
 							}
 							if ($.inArray('Total Site', headerArray) == -1 && $.inArray('eddy_chan_sum', calc_type) > -1) {
-								missingDataStr += 'Total Site '; 
+								missingDataArr.push('Total Site'); 
 							}
-							var errorDisplay = '<p>' + missingDataStr + 'data is unavailable from our database.</p>'
-							graphDivEl(parentParam).append(errorDisplay);							
+							var missingDataStr = missingDataArr.join(', ');
+							var errorDisplay = '<p class="param-missing"> The following ' + displayName + ' parameters are unavailable for this site: ' + missingDataStr + '.</p>';
+							graphDivEl(parentParam).append(errorDisplay);
+							$('<br/>').insertAfter(graphDivEl(parentParam));
 						}
 					}
 					else {
