@@ -40,8 +40,10 @@ def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
     """
     Convert a python date object to a string.
     """
-    
-    date_str = date_object.strftime(date_format)
+    try:
+        date_str = date_object.strftime(date_format)
+    except AttributeError:
+        date_str = None
     
     return date_str
 

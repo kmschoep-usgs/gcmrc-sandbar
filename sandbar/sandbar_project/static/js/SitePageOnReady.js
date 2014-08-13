@@ -93,6 +93,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var volumeParam = respJSON.paramNames.volume;
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
+			if (startDate === null && endDate === null) {
+				$('#no-data-warning').append('No sandbar data is available for this site.');
+				$('#no-data-warning').show();
+			}
 			var appCheckBoxParam = {
 					wrapperParam: [
 					               {areaParamVal: 'area2d', areaParam: area2dParam, minDate: startDate, maxDate:endDate},
