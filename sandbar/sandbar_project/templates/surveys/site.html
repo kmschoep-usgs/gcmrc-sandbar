@@ -18,6 +18,7 @@
 		SB.GDAWS_SERVICE = '{% url "surveys-gdaws" op="" %}';
 		SB.GDAWS_SERVICE = SB.GDAWS_SERVICE.slice(0, SB.GDAWS_SERVICE.length - 1);
 		SB.AREA_2D_URL = '{% url "surveys-areavolume" %}';
+		SB.DATA_DOWNLOAD = '{% url "data_download" %}';
 		SB.SITE_AREA_CALC_URL = '{% url "basic_area_info" %}';
 	</script>
 	
@@ -38,7 +39,7 @@
 	{% js "js/Config.js" %}
 	{% js "js/DateRange.js" %}
 	{% js "js/GDAWSFormatUtils.js" %}
-	
+	{% js "js/CreateDynamicLink.js" %}
 	{% js "js/SitePlots.js" %}
 	{% js "js/TSPlots.js" %}
 	{% js "js/SitePageOnReady.js" %}
@@ -118,6 +119,7 @@
 					</div>
 					<div id="sb-parameter-checkbox-div"></div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
+					<a id="download-data" class="btn btn-primary btn-block">Download Sandbar Data</a>
 					<div id="parameter-errors" class="alert alert-danger" style="display: none;"></div>
 				</div>
 				</form>
