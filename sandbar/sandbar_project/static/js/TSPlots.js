@@ -25,7 +25,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			for (i = 0; i < calc_type.length; i++) {
 				calcTypeParamStr += '&calc_type=' + calc_type[i];
 			}
-			var showArea2d = $.inArray('area2d', params);
+			
 			this.graphsDivEl.children('#plots-loading-div').show();
 			$.ajax({
 				url: SB.AREA_2D_URL,
@@ -70,6 +70,10 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						}
 						// Update the selected graphs
 						var data = resp.responseText;
+						var csvHeader = data.slice(0, data.indexOf('\n'));
+						var csvHeaderLineBreak = csvHeader.replace(/(\r\n|\n|\r)/gm,""); //remove line breaks
+						var headerArray = csvHeaderLineBreak.split(",");
+						var columnCount = headerArray.length - 1;
 						graphDivEl(parentParam).show();
 						graphs[parentParam] = new Dygraph(graphId(parentParam),
 								data, {
@@ -83,6 +87,22 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							drawPoints: true,
 							pointSize: 3
 						});
+						if (columnCount < calc_type.length) {
+							var missingDataArr = [];
+							if ($.inArray('Eddy', headerArray) == -1 && $.inArray('eddy', calc_type) > -1) {
+								missingDataArr.push('Eddy'); 
+							}
+							if ($.inArray('Channel', headerArray) == -1 && $.inArray('chan', calc_type) > -1) {
+								missingDataArr.push('Channel'); 
+							}
+							if ($.inArray('Total Site', headerArray) == -1 && $.inArray('eddy_chan_sum', calc_type) > -1) {
+								missingDataArr.push('Total Site'); 
+							}
+							var missingDataStr = missingDataArr.join(', ');
+							var errorDisplay = '<p class="param-missing"> The following ' + displayName + ' parameters are unavailable for this site: ' + missingDataStr + '.</p>';
+							graphDivEl(parentParam).append(errorDisplay);
+							$('<br/>').insertAfter(graphDivEl(parentParam));
+						}
 					}
 					else {
 						alert('Unable to retrieve data: ' + resp.status + ' : ' + resp.statusText);

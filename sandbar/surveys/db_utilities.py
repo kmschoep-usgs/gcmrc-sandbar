@@ -2,7 +2,24 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import cx_Oracle
 import numpy as np
+import pandas as pd
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
+
+def create_pandas_dataframe(data, columns=None, create_psuedo_column=False):
+    
+    try:
+        df = pd.DataFrame(data, columns=columns)
+    except ValueError:
+        if create_psuedo_column:
+            pseudo_data = tuple()
+            columns_len = len(columns)
+            while len(pseudo_data) < columns_len:
+                pseudo_data += (None,)
+            df = pd.DataFrame([pseudo_data], columns=columns)
+        else:
+            df = pd.DataFrame([])
+        
+    return df
 
 def replace_none_with_nan(query_results):
     

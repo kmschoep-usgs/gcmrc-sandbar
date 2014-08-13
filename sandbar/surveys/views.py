@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
@@ -8,7 +10,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB
+from .db_utilities import convert_datetime_to_str, AlchemDB, create_pandas_dataframe
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -43,6 +45,11 @@ class AreaVolumeCalcsTemp(TemplateView):
 
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
+    """
+    Output data that is appropriate for dygraphs
+    ingestion.
+    """
+    
     model = AreaVolume
     
     def get(self, request, *args, **kwargs):
@@ -76,12 +83,12 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                     df_value_name = calculation_type_full.title()
                 else:
                     df_value_name = calculation_type.title()
-                query_df = pd.DataFrame(query_result_set, columns=('date', df_value_name))
+                query_df = create_pandas_dataframe(data=query_result_set, columns=('date', df_value_name))
             else:
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                df_eddy = pd.DataFrame(eddy_results, columns=('date', 'Eddy'))
-                df_chan = pd.DataFrame(chan_results, columns=('date', 'Channel'))
+                df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', 'Eddy'), create_psuedo_column=True)
+                df_chan = create_pandas_dataframe(data=chan_results, columns=('date', 'Channel'), create_psuedo_column=True)
                 df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
                 # separate the eddy and channel values from the date for summation
                 df_values = df_ec_merge[['Eddy', 'Channel']]
@@ -91,7 +98,10 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 # merge our dataframe back together based on row index
                 query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
                 query_df.drop(labels=['Eddy', 'Channel'], axis=1, inplace=True)
-            df_list.append(query_df)
+                # remove any dates that are NaT (not a datetime) or NaN (not a number) in the date column
+                query_df = query_df[pd.notnull(query_df['date'])]
+            if len(query_df) > 0:
+                df_list.append(query_df)
         df_list_len = len(df_list)
         if df_list_len == 1:
             df_merge = df_list[0]
@@ -106,15 +116,117 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         ora_session.close()
         column_name_array = df_merge.columns.values
         column_name_list = list(column_name_array)
-        column_name_tuple = (column_name_list.pop(0),)
+        try:
+            column_name_tuple = (column_name_list.pop(0),)
+        except(IndexError):
+            column_name_tuple = (None,)
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
+        df_final = df_merge.where(pd.notnull(df_merge), None)
         
-        df_record = df_merge.to_dict('records')
+        df_record = df_final.to_dict('records')
         
         return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple)
+    
 
+class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
+    
+    """
+    Output data that is more appropriate for a data dump
+    rather than dygraphs.
+    """
+    
+    model = AreaVolume
+    
+    def get(self, request, *args, **kwargs):
+        
+        site = Site.objects.get(pk=request.GET.get('site_id'))
+        ds_min = float(request.GET.get('ds_min'))
+        ds_max = float(request.GET.get('ds_max'))
+        parent_params = request.GET.getlist('param_type')
+        area_2d_calc_types = request.GET.getlist('area2d_calc_type')
+        vol_calc_types = request.GET.getlist('volume_calc_type')
+        SandbarParams = namedtuple('SandbarParams', ['parameter', 'db_column', 'unit', 'sub_parameters'])
+        param_list = []
+        for parameter in parent_params:
+            if parameter == 'area2d':
+                db_column = 'interp_area2d'
+                unit = 'square meter'
+                sub_p = area_2d_calc_types
+            elif parameter == 'volume':
+                db_column = 'interp_volume'
+                unit = 'cubic meter'
+                sub_p = vol_calc_types
+            else:
+                db_column = None
+                unit = None
+                sub_p = None
+            sbp = SandbarParams(parameter=parameter, db_column=db_column, unit=unit, sub_parameters=sub_p)
+            param_list.append(sbp)
+        alchemical_sql = AlchemDB()
+        ora_session = alchemical_sql.create_session()
+        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
+        complete_dfs = []
+        for p_tuple in param_list:
+            p_name = p_tuple.parameter
+            p_column = p_tuple.db_column
+            p_subp = p_tuple.sub_parameters
+            p_unit = p_tuple.unit
+            query_base = ora_session.query('calc_date', p_column)
+            for subp in p_subp:
+                if subp != 'eddy_chan_sum':
+                    calc_qs = query_base.from_statement(sql_statement).params(calc_type=subp).all()
+                    column_name = '{parent_name}_{calc_type} ({unit})'.format(parent_name=p_name, calc_type=subp, unit=p_unit)
+                    calc_df = create_pandas_dataframe(calc_qs, ('date', column_name), True)
+                else:
+                    eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
+                    chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
+                    eddy_name = '%s_eddy' % p_name
+                    chan_name = '%s_chan' % p_name
+                    df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', eddy_name), create_psuedo_column=True)
+                    df_chan = create_pandas_dataframe(data=chan_results, columns=('date', chan_name), create_psuedo_column=True)
+                    df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
+                    df_values = df_ec_merge[[eddy_name, chan_name]]
+                    df_dates = df_ec_merge[['date']]
+                    df_total_sites_name = '{parent_name}_total_site ({unit})'.format(parent_name=p_name, unit=p_unit)
+                    df_values[df_total_sites_name] = df_values.sum(axis=1, skipna=True)                   
+                    query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
+                    query_df.drop(labels=[eddy_name, chan_name], axis=1, inplace=True)
+                    calc_df = query_df[pd.notnull(query_df['date'])]
+                if len(calc_df) > 0:
+                    complete_dfs.append(calc_df)
+        df_list_len = len(complete_dfs)
+        if df_list_len == 1:
+            df_merge = complete_dfs[0]
+        elif df_list_len == 2:
+            df_merge = pd.merge(complete_dfs[0], complete_dfs[1], how='outer', on='date')
+        elif df_list_len >= 3:
+            df_merge = pd.merge(complete_dfs[0], complete_dfs[1], how='outer', on='date')
+            for df_object in complete_dfs[2:]:
+                df_merge = pd.merge(df_merge, df_object, how='outer', on='date')
+        else:
+            df_merge = pd.DataFrame([])
+        ora_session.close()
+        column_name_array = df_merge.columns.values
+        column_name_list = list(column_name_array)
+        try:
+            column_name_tuple = (column_name_list.pop(0),)
+        except(IndexError):
+            column_name_tuple = (None,)
+        sorted_name_listed = sorted(column_name_list)
+        sorted_name_tuple = tuple(sorted_name_listed)
+        column_name_tuple += sorted_name_tuple
+        df_merge = df_merge[pd.notnull(query_df['date'])]
+        df_final = df_merge.where(pd.notnull(df_merge), None)
+
+        df_record = df_final.to_dict('records')
+        site_name = site.site_name.lower().replace(' ', '_')
+        download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
+        
+        return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple, download=True, download_name=download_name)      
+        
                                       
 class SitesListView(ListView):
     '''

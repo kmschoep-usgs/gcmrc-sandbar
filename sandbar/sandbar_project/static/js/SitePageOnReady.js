@@ -96,8 +96,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var appCheckBoxParam = {
 					wrapperParam: [
 					               {areaParamVal: 'area2d', areaParam: area2dParam, minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
-					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate},
+					               //{areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
+					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate}
 					               ],
 					wrapperSubParam: [
 							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
@@ -113,7 +113,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	
-	$('#update-plots-button').click(function(event) {
+	$('#update-plots-button, #download-data').click(function(event) {
+		var clickTrigger = $(this).attr('id');
 		if ($('form').valid()) {
 			var gcmrcParams = [];
 			var sandbarParams = [];
@@ -224,12 +225,20 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').append('Please enter a value for maximum discharge.');
 				//$('#parameter-errors').show();
 			}
-			if (errorExists === 0) {
+			if (errorExists === 0 && clickTrigger != "download-data") {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
 				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams, tsPlots._graphs, params);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
 				}
+
+			else if (errorExists === 0 && clickTrigger === "download-data") {
+				$('#parameter-errors').html('');
+				$('#parameter-errors').hide();
+				var downloadURL = createLink(siteId, $('#ds-min').val(), $('#ds-max').val(), subParam);
+				$('a#download-data').attr("href", downloadURL);
+			}
+
 			else {
 				$('#parameter-errors').show();
 			}
