@@ -11,11 +11,15 @@ class CSVResponseMixin(object):
     """
     
     
-    def render_to_csv_response(self, context, data_keys=None, download=False, **response_kwargs):
+    def render_to_csv_response(self, context, data_keys=None, download=False, download_name=None, **response_kwargs):
         
         response = HttpResponse(content_type='text/csv')
         if download:
-            response['Content-Disposition'] = 'attachment; filename="areavolumedata.csv"'
+            if download_name:
+                content_disposition = 'attachment; filename="{download_name}.csv"'.format(download_name=download_name)
+                response['Content-Disposition'] = content_disposition
+            else:
+                response['Content-Disposition'] = 'attachment; filename="areavolumedata.csv"'
         self._write_csv_content(data=context, outfile=response, data_keys=data_keys)
         
         return response

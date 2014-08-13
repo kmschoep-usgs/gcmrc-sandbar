@@ -45,6 +45,11 @@ class AreaVolumeCalcsTemp(TemplateView):
 
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
+    """
+    Output data that is appropriate for dygraphs
+    ingestion.
+    """
+    
     model = AreaVolume
     
     def get(self, request, *args, **kwargs):
@@ -127,6 +132,11 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
 
 class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
     
+    """
+    Output data that is more appropriate for a data dump
+    rather than dygraphs.
+    """
+    
     model = AreaVolume
     
     def get(self, request, *args, **kwargs):
@@ -137,19 +147,22 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         parent_params = request.GET.getlist('param_type')
         area_2d_calc_types = request.GET.getlist('area2d_calc_type')
         vol_calc_types = request.GET.getlist('volume_calc_type')
-        SandbarParams = namedtuple('SandbarParams', ['parameter', 'db_column', 'sub_parameters'])
+        SandbarParams = namedtuple('SandbarParams', ['parameter', 'db_column', 'unit', 'sub_parameters'])
         param_list = []
         for parameter in parent_params:
             if parameter == 'area2d':
                 db_column = 'interp_area2d'
+                unit = 'square meter'
                 sub_p = area_2d_calc_types
             elif parameter == 'volume':
                 db_column = 'interp_volume'
+                unit = 'cubic meter'
                 sub_p = vol_calc_types
             else:
                 db_column = None
+                unit = None
                 sub_p = None
-            sbp = SandbarParams(parameter=parameter, db_column=db_column, sub_parameters=sub_p)
+            sbp = SandbarParams(parameter=parameter, db_column=db_column, unit=unit, sub_parameters=sub_p)
             param_list.append(sbp)
         alchemical_sql = AlchemDB()
         ora_session = alchemical_sql.create_session()
@@ -160,11 +173,12 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             p_name = p_tuple.parameter
             p_column = p_tuple.db_column
             p_subp = p_tuple.sub_parameters
+            p_unit = p_tuple.unit
             query_base = ora_session.query('calc_date', p_column)
             for subp in p_subp:
                 if subp != 'eddy_chan_sum':
                     calc_qs = query_base.from_statement(sql_statement).params(calc_type=subp).all()
-                    column_name = '{parent_name}_{calc_type}'.format(parent_name=p_name, calc_type=subp)
+                    column_name = '{parent_name}_{calc_type} ({unit})'.format(parent_name=p_name, calc_type=subp, unit=p_unit)
                     calc_df = create_pandas_dataframe(calc_qs, ('date', column_name), True)
                 else:
                     eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
@@ -176,7 +190,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
                     df_values = df_ec_merge[[eddy_name, chan_name]]
                     df_dates = df_ec_merge[['date']]
-                    df_total_sites_name = '%s_total_site' % p_name
+                    df_total_sites_name = '{parent_name}_total_site ({unit})'.format(parent_name=p_name, unit=p_unit)
                     df_values[df_total_sites_name] = df_values.sum(axis=1, skipna=True)                   
                     query_df = pd.merge(df_dates, df_values, how='outer', left_index=True, right_index=True)
                     query_df.drop(labels=[eddy_name, chan_name], axis=1, inplace=True)
@@ -208,8 +222,10 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         df_final = df_merge.where(pd.notnull(df_merge), None)
 
         df_record = df_final.to_dict('records')
+        site_name = site.site_name.lower().replace(' ', '_')
+        download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
         
-        return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple, download=True)      
+        return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple, download=True, download_name=download_name)      
         
                                       
 class SitesListView(ListView):
