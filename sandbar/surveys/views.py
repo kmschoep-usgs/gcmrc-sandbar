@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db.models import Min, Max
 from django.views.generic import ListView, DetailView, View, TemplateView
-from numpy import interp, isfinite
+from numpy import interp
 import pandas as pd 
 
 from common.views import SimpleWebServiceProxyView
@@ -116,8 +116,9 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
+        df_final = df_merge.where(pd.notnull(df_merge), None)
         
-        df_record = df_merge.to_dict('records')
+        df_record = df_final.to_dict('records')
         
         return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple)
 
