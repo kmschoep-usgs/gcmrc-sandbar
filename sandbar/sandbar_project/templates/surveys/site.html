@@ -150,7 +150,7 @@
 				</div>
 				<div id="site-photo">
 				{% if site.image_name_small != "" %}
-				<a title="View full size image" href="{% static 'images/'%}{{ site.image_name }}" target="_blank"><img class="photo" src="{% static 'images/'%}{{ site.image_name_med }}" alt="Image for {{ site.site_name }}" /></a>
+				<a title="View full size image" href="{% static 'sandbar_photos/'%}{{ site.image_name }}" target="_blank"><img class="photo" src="{% static 'sandbar_photos/'%}{{ site.image_name_med }}" alt="Image for {{ site.site_name }}" /></a>
 				{% else %}
 				<p>Image for {{ site.site_name }}</p>
 				{% endif %}
