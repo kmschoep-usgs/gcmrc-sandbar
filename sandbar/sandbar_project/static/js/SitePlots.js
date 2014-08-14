@@ -45,7 +45,6 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					}
 					// Update the selected graphs
 					var graphs = {};
-					var combinedGraphs = collect(this._graphs, sandbarPlots);
 					for (var i = 0; i < parameterNames.length; i++) {
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
 						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, gcmrcStart, sandbarStart);

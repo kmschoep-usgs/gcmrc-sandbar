@@ -261,7 +261,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				var blockRedraw = false;
 				$(document).ajaxStop(function() {
 					var combinedGraphs = collect(sitePlots._graphs, tsPlots._graphs);
-					console.log(combinedGraphs);
 					for (key in combinedGraphs) {
 						combinedGraphs[key].updateOptions({
 							drawCallback: function(me, initial) {
