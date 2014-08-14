@@ -69,8 +69,6 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         df_list = []
         if parameter_type == 'area2d':
             query_base = ora_session.query('calc_date', 'interp_area2d')
-        elif parameter_type == 'area3d':
-            query_base = ora_session.query('calc_date', 'interp_area3d')
         elif parameter_type == 'volume':
             query_base = ora_session.query('calc_date', 'interp_volume')
         else:
