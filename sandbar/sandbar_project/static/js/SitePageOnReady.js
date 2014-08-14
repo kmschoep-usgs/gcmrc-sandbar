@@ -279,24 +279,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 						});
 					}					
 				});
-				/*
-				for (key in combinedGraphs) {
-					combinedGraphs[key].updateOptions({
-						drawCallback: function(me, initial) {
-							if (blockRedraw || initial) return;
-							blockRedraw = true;
-							var range = me.xAxisRange();
-							for (keyname in combinedGraphs) {
-								if (combinedGraphs[keyname] == me) continue;
-								combinedGraphs[keyname].updateOptions({
-									dateWindow: range
-								});
-							}
-							blockRedraw = false;
-						}
-					});
-				}
-				*/
 			}
 			else if (errorExists === 0 && clickTrigger === "download-data") {
 				$('#parameter-errors').html('');
