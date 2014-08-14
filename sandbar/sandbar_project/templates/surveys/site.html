@@ -100,6 +100,11 @@
 				<form>
 				<div class="panel-body">
 					<h5 class="param-label">Sandbar Elevation Zone for Plotting:</h5>
+					{% if site.deposit_type == 'SR' %}
+					<div class="parameter-group">
+						<label for="sep-reatt"><input type="checkbox" id="sep-reatt" />&nbsp;Plot separation/reattachment bars separately</label>
+					</div>
+					{% endif %}
 					<div id="parameter-checkbox-div"></div>
 					<div class="parameter-group">
 						<label for="ds-min">Minimum Discharge:&nbsp;</label>
