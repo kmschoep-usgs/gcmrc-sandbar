@@ -217,7 +217,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
-        df_final_raw = df_merge[pd.notnull(query_df['date'])]
+        df_final_raw = df_merge[pd.notnull(df_merge['date'])]
         series_list = []
         df_final_columns = df_final_raw.columns.values
         for df_final_column in df_final_columns:
