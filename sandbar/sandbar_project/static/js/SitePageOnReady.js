@@ -7,6 +7,11 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	}
 	var gcmrcStartDate;
 	var gcmrcEndDate;
+	
+	var sandbarStartDate;
+	var sandbarEndDate;
+	
+	
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -79,9 +84,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('#page-loading-div').hide();
 			$('#site-page-content').show();
 		}
-	});	
-	var sandbarStartDate;
-	var sandbarEndDate;
+	});
+	
 	$.ajax({
 		url: SB.SITE_AREA_CALC_URL,
 		type: 'GET',
@@ -116,9 +120,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			sandbarEndDate = endDate;
 		}
 	});
+	
 	// Initialize dygraphs
-	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
+	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	
 	$('#sep-reatt').click(function(event) {
 		if ($('#sep-reatt').is(':checked') && $('#ds-min').val() === '') {
@@ -149,9 +154,11 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
 					if (parentSiblingCheckboxVal === 'area2d') {
 						var paramUnit = 'm' + '2'.sup();
+						var displayName = 'Area';
 					}
 					else if (parentSiblingCheckboxVal === 'volume') {
 						var paramUnit = 'm' + '3'.sup();
+						var displayName = 'Volume';
 					}
 					else {
 						paramUnit = 'Unit Not Specified';
@@ -166,7 +173,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					}
 					if (parentFound === false) {
 						var mapping = {paramVal: parentSiblingCheckboxVal, 
-									   displayName: parentSiblingLabelText,
+									   displayName: displayName,
 									   paramUnit: paramUnit,
 									   subParamVals: [$(this).val()]}
 						subParam.push(mapping);

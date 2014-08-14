@@ -325,9 +325,9 @@ class BasicSiteInfoJSON(JSONResponseMixin, View):
         site_info = {'siteID': site_id,
                      'calcDates': {'min': area_min_date_str,
                                   'max': area_max_date_str,},
-                     'paramNames': {'area2d': 'Area 2D',
+                     'paramNames': {'area2d': 'Area of sandbar between lower and upper bound',
                                     'area3d': 'Area 3D',
-                                    'volume': 'Volume'}
+                                    'volume': 'Volume of sandbar between lower and upper bound',}
                      }
         return self.render_to_json_response(site_info)
     
