@@ -19,6 +19,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 		$.ajax({
 			url: SB.GDAWS_SERVICE + 'agg/',
 			type: 'GET',
+			async: false,
 			data: SB.GDAWSFormatUtils.getDataQueryString(this.gdawsSiteId, startDate, endDate, parameterNames),
 			context : this,
 			complete : function(resp, status) {
@@ -47,7 +48,6 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					for (var i = 0; i < parameterNames.length; i++) {
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
 						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, gcmrcStart, sandbarStart);
-						console.log(data);
 						graphDivEl(parameterNames[i]).show();
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {
