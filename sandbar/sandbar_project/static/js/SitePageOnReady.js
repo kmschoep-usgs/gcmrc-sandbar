@@ -5,7 +5,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	for (key in SB.Config.SITE_PARAMETERS) {
 		queryParams += '&groupName=' + SB.Config.SITE_PARAMETERS[key].groupName;
 	}
-	
+	var gcmrcStartDate;
+	var gcmrcEndDate;
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -56,7 +57,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					// Update the dateRange limits and set initial Dates.
 					minDateText = minDate.toISOString().slice(0,10);
 					maxDateText = maxDate.toISOString().slice(0,10);
-					
+					gcmrcStartDate = minDateText;
+					gcmrcEndDate = maxDateText;
 					dateRange = new SB.DateRange($('#start-date'), $('#end-date'), {
 						initialEnd : maxDateText,
 						minDate: minDateText,
@@ -78,7 +80,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('#site-page-content').show();
 		}
 	});	
-	
+	var sandbarStartDate;
+	var sandbarEndDate;
 	$.ajax({
 		url: SB.SITE_AREA_CALC_URL,
 		type: 'GET',
@@ -109,6 +112,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			};
 			$('#sb-parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
+			sandbarStartDate = startDate;
+			sandbarEndDate = endDate;
 		}
 	});
 	// Initialize dygraphs
@@ -249,7 +254,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			if (errorExists === 0 && clickTrigger != "download-data") {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
-				sitePlots.updatePlots(dateRange.startEl.val(), dateRange.endEl.val(), gcmrcParams, tsPlots._graphs, params);
+				var plotStartDate = createPlotDates(sandbarStartDate, gcmrcStartDate);
+				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
+				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
 				}
 

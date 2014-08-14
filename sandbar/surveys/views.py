@@ -218,19 +218,14 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
         df_final_raw = df_merge[pd.notnull(df_merge['date'])]
-        series_list = []
         df_final_columns = df_final_raw.columns.values
+        df_final_non_date_columns = []
         for df_final_column in df_final_columns:
             if df_final_column != 'date':
-                series = df_final_raw[df_final_column]
-                rounded_series = round_series_values(series, 2)
-                series_tuple = (df_final_column, rounded_series)
-                series_list.append(series_tuple)
-        series_dict = {}
-        for series_tuple in series_list:
-            series_name, series_data = series_tuple
-            series_dict[series_name] = series_data
-        df_rounded_values = pd.DataFrame(series_dict)
+                df_final_non_date_columns.append(df_final_column)
+        df_final_raw_non_dates = df_final_raw[df_final_non_date_columns]
+        df_rounded_values = df_final_raw_non_dates.apply(round_series_values, axis=1, decimal_places=2)
+        df_rounded_values.columns = df_final_non_date_columns
         df_final_raw_dates = df_final_raw[['date']]
         df_final_merged = pd.merge(df_final_raw_dates, df_rounded_values, how='outer', left_index=True, right_index=True)
         df_final = df_final_merged.where(pd.notnull(df_final_merged), None)
