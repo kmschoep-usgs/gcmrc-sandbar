@@ -115,6 +115,12 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	
+	$('#sep-reatt').click(function(event) {
+		if ($('#sep-reatt').is(':checked') && $('#ds-min').val() === '') {
+			$('#ds-min').val('8000');
+		}
+	});
+	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
 		if ($('form').valid()) {
@@ -185,6 +191,19 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').append('A subparameter must be selected for Area2D plots.');
 			}
 			
+			if ($('#sep-reatt').is(':checked')) {
+				if ($('#ds-min').val() != '' && Number($('#ds-min').val()) < 8000) {
+					if (errorExists === 0) {
+						$('#parameter-errors').html('');
+					}
+					else {
+						$('#parameter-errors').append('<br>');
+					}
+					errorExists = 1;
+					$('#parameter-errors').append('Minimum Discharge must be greater than or equal to 8000 cfs to plot separation/reattachment bars separately.');
+				}
+			}
+			
 			if (Number($('#ds-min').val()) > Number($('#ds-max').val())) {
 				if (errorExists === 0) {
 					$('#parameter-errors').html('');
@@ -193,7 +212,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					$('#parameter-errors').append('<br>');
 				}
 				errorExists = 1;
-				$('#parameter-errors').append('Maximum Discharge must be greater or equal to minimum discharge.');
+				$('#parameter-errors').append('Maximum Discharge must be greater than or equal to minimum discharge.');
 			}
 			if (isNaN(Number($('#ds-min').val())) || isNaN(Number($('#ds-max').val()))) {
 				if (errorExists === 0) {
