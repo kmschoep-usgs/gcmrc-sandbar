@@ -89,7 +89,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var template = $('#app_param_template').html();
 			var respJSON = $.parseJSON(resp.responseText);
 			var area2dParam = respJSON.paramNames.area2d;
-			var area3dParam = respJSON.paramNames.area3d;
 			var volumeParam = respJSON.paramNames.volume;
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
@@ -100,7 +99,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var appCheckBoxParam = {
 					wrapperParam: [
 					               {areaParamVal: 'area2d', areaParam: area2dParam, minDate: startDate, maxDate:endDate},
-					               //{areaParamVal: 'area3d', areaParam: area3dParam, minDate: startDate, maxDate:endDate},
 					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate}
 					               ],
 					wrapperSubParam: [
@@ -126,7 +124,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var errorExists = 0;
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				var parentClass = $(this).parent().attr('class');
-				if ($(this).val() != 'area2d' && $(this).val() != 'area3d' && $(this).val() != 'volume' && parentClass != 'sub-param-group') {
+				if ($(this).val() != 'area2d' && $(this).val() != 'volume' && parentClass != 'sub-param-group') {
 					gcmrcParams.push($(this).val());
 				}
 				else if ($(this).attr('name') === 'sb-param') {
@@ -138,7 +136,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSibling = $(selectParentStr).siblings('input[name="sb-param"]')
 					var parentSiblingCheckboxVal = parentSibling.val();
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
-					if (parentSiblingCheckboxVal === 'area2d' || parentSiblingCheckboxVal === 'area3d') {
+					if (parentSiblingCheckboxVal === 'area2d') {
 						var paramUnit = 'm' + '2'.sup();
 					}
 					else if (parentSiblingCheckboxVal === 'volume') {
