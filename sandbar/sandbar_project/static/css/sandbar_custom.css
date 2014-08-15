@@ -54,7 +54,9 @@ img.photo {
 .graph-div {
 	width: 100%!important;
 }
-
+#graphs-loading-div{
+	line-height:0.8em;
+}
 .param-missing {
 	color: red;
 }
