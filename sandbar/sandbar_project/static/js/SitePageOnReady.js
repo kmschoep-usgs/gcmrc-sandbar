@@ -14,6 +14,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	//set default discharges
 	$('#ds-min').val(8000);
 	$('#ds-max').val(60000);
+	
+	//Set Plot title
+	$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -265,8 +268,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').hide();
 				var plotStartDate = createPlotDates(sandbarStartDate, gcmrcStartDate);
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
+				$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
+				
 				var blockRedraw = false;
 				$(document).ajaxStop(function() {
 					var combinedGraphs = collect(sitePlots._graphs, tsPlots._graphs);

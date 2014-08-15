@@ -28,5 +28,5 @@ urlpatterns = patterns('',
         name='expt'),
     url(r'^datadownload',
         AreaVolumeCalcsDownloadView.as_view(),
-        name='data_download'),                 
+        name='data_download'),    
 )
