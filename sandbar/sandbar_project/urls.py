@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 )
+urlpatterns += patterns('django.contrib.flatpages.views',
+    url(r'^area_vol_calc/$', 'flatpage', {'url' : '/area_vol_calc/'}, name='area_vol_calc'));
 
 if 'jasmine' in settings.INSTALLED_APPS:
     urlpatterns += patterns('', url(r'^jasmine/$', ProjectJasmineView.as_view()))

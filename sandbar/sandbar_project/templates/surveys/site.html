@@ -101,17 +101,18 @@
 				<form>
 				<div class="panel-body">
 					<h4 class="param-label">Sandbar Elevation Zone for Plotting:</h4>
+					<p class="parameter-dates"><a title="Link to explanatory document about how the sandbar elevation zones are calculated.  Opens in a new window" href="{% url 'area_vol_calc' %}" target="_blank">What is the sandbar elevation zone?</a></p>
 					{% if site.deposit_type == 'SR' %}
 					<div class="parameter-group">
 						<label for="sep-reatt"><input type="checkbox" id="sep-reatt" />&nbsp;Plot separation/reattachment bars separately</label>
 					</div>
 					{% endif %}				
 					<div class="parameter-group">
-						<label for="ds-min">Discharge for Lower Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
+						<label for="ds-min" title="Defines lower bound of zone of interest for sandbar area and volume calculations. Plot will show sandbar Area/Volume between the elevation defined by this discharge and the upper bound. Enter value between zero and the upper bound.">Discharge for Lower Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
 						<input type="text" id="ds-min"/>
 					</div>
 					<div class="parameter-group">
-						<label for="ds-max">Discharge for Upper Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
+						<label for="ds-max" title="Defines upper bound of zone of interest for sandbar area and volume calculations. Plot will show sandbar Area/Volume between the lower bound and the elevation defined by this discharge. Enter value between lower bound and 60,000.">Discharge for Upper Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
 						<input type="text" id="ds-max"/>
 					</div>
 					<div id="no-data-warning" class="alert alert-danger" style="display: none;"></div>
@@ -129,7 +130,7 @@
 		<div class="col-md-5">
 			<div id="graphs-panel-div" class="panel panel-default">
 				<div class="panel-heading">
-					<h4 class="panel-title">Plots</h4>
+					<h4 id="panel-title"></h4>
 				</div>
 				<div id="graphs-div" class="panel-body">
 					<div id="gcmrc-plots">

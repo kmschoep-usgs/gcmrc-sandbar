@@ -39,6 +39,9 @@ img.photo {
 #graphs-div {
 	position: relative;
 }
+#panel-title{
+	text-align: center;
+}
 .loading-div {
 	text-align: center;
 	font-size: 2em;
@@ -58,6 +61,10 @@ img.photo {
 
 label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
 	width: 3em;
+}
+
+label[for=ds-min]:first-of-type, label[for=ds-max]:first-of-type {
+	cursor:help;
 }
 input[type=date] {
 	width: 160px;
