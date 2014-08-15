@@ -41,6 +41,7 @@ def round_series_values(element, decimal_places=2):
         result = element
     return result
 
+
 def datetime_to_date(element):
     """
     For each element in a dataframe, try to return
@@ -51,4 +52,14 @@ def datetime_to_date(element):
     except AttributeError:
         result = element
     return result
-        
+
+
+def convert_to_str(element):
+    try:
+        if np.isnan(element) or element is None:
+            return_str = ''
+        else:
+            return_str = str(element)
+    except TypeError:
+        return_str = element
+    return return_str        
