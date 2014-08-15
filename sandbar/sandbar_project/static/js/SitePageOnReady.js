@@ -11,7 +11,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var sandbarStartDate;
 	var sandbarEndDate;
 	
-	
+	//set default discharges
+	$('#ds-min').val(8000);
+	$('#ds-max').val(60000);
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -200,7 +202,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var sandbarSubParamsLength = subParam.length;
 			if (sandbarParamsLength >= 1 && sandbarSubParamsLength === 0) {
 				errorExists = 1;
-				$('#parameter-errors').append('A subparameter must be selected for Area2D plots.');
+				$('#parameter-errors').append('A subparameter must be selected for Area plots.');
 			}
 			
 			if ($('#sep-reatt').is(':checked')) {
