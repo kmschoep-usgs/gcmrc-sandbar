@@ -4,17 +4,16 @@
 }
 
 #site-loc-map-div {
-    height:300px;
+	height:300px;
 	width: 100%;
 	position:relative;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    margin: 0;
-    padding: 0;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin: 0;
+	padding: 0;
 }
-
 
 img.photo {
         /***  Scaling Images with the Browser Window in CSS is pretty simple to implement for both images and video.  ***/
@@ -31,11 +30,11 @@ img.photo {
 	margin-top:-15px;
 }
 .parameter-group {
-	margin: 4px;
+	margin: 12px;
 }
 
 .sub-param-group {
-	margin: 12px;
+	margin-left: 15px;
 }
 #graphs-div {
 	position: relative;
@@ -71,17 +70,6 @@ input[type=date] {
 }
 .parameter-dates {
 	font-style: italic;
-}
-
-.lcol-md-3,
-.lcol-md-4,
-.lcol-md-5,
-.lcol-md-6  {
-  position: relative;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  float: left;
 }
 
 .param-label {

@@ -69,7 +69,7 @@
 	<script id="app_param_template" type="text/html">
 		{{#wrapperParam}}
 		<div id="{{areaParamVal}}-group" class="parameter-group">
-			<input id="{{areaParamVal}}-checkbox" type="checkbox" name="sb-param" value="{{areaParamVal}}" />
+            <input id="{{areaParamVal}}-checkbox" type="checkbox" name="sb-param" value="{{areaParamVal}}" />
 			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
 			<br />
 			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
@@ -83,6 +83,7 @@
 		</div>
 		{{/wrapperParam}}
 	</script>
+	
 	{% endverbatim %}
 {% endblock %}
 
@@ -99,23 +100,25 @@
 				</div>
 				<form>
 				<div class="panel-body">
-					<h5 class="param-label">Sandbar Elevation Zone for Plotting:</h5>
+					<h4 class="param-label">Sandbar Elevation Zone for Plotting:</h4>
 					{% if site.deposit_type == 'SR' %}
 					<div class="parameter-group">
 						<label for="sep-reatt"><input type="checkbox" id="sep-reatt" />&nbsp;Plot separation/reattachment bars separately</label>
 					</div>
-					{% endif %}
-					<div id="parameter-checkbox-div"></div>
+					{% endif %}				
 					<div class="parameter-group">
-						<label for="ds-min">Minimum Discharge:&nbsp;</label>
+						<label for="ds-min">Discharge for Lower Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
 						<input type="text" id="ds-min"/>
 					</div>
 					<div class="parameter-group">
-						<label for="ds-max">Maximum Discharge:&nbsp;</label>
+						<label for="ds-max">Discharge for Upper Bound of Sandbar Elevation Zone (ft<sup>3</sup>/s):&nbsp;</label>
 						<input type="text" id="ds-max"/>
 					</div>
 					<div id="no-data-warning" class="alert alert-danger" style="display: none;"></div>
 					<div id="sb-parameter-checkbox-div"></div>
+					
+					<h4 class="param-label">Streamflow and Sediment:</h4>
+					<div id="parameter-checkbox-div"></div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 					<a id="download-data" class="btn btn-primary btn-block">Download Sandbar Data</a>
 					<div id="parameter-errors" class="alert alert-danger" style="display: none;"></div>
