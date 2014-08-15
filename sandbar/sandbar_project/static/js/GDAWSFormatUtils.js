@@ -2,7 +2,9 @@ SB.GDAWSFormatUtils = {
 	getDygraphCSV : function(jsonResp, dataKey, dataLabel) {
 		var LF = '\n';
 		var result = 'Time,' + dataLabel + LF;
-		
+		if (sbDateStart < gcmrcDateStart) {
+			result += sandbarStart + ',' + 'NaN' + LF;
+		}		
 		var data = jsonResp.success.data;
 		
 		for (var i = 0; i < data.length; i++) {
