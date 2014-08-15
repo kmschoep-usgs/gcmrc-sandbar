@@ -1,16 +1,16 @@
 SB.GDAWSFormatUtils = {
-	getDygraphCSV : function(jsonResp, dataKey, dataLabel) {
+	getDygraphCSV : function(jsonResp, dataKey, dataLabel, gcmrcStart, sandbarStart) {
 		var LF = '\n';
 		var result = 'Time,' + dataLabel + LF;
+		var sbDateStart = Date.parse(sandbarStart);
+		var gcmrcDateStart = Date.parse(gcmrcStart)		
 		if (sbDateStart < gcmrcDateStart) {
 			result += sandbarStart + ',' + 'NaN' + LF;
 		}		
 		var data = jsonResp.success.data;
-		
 		for (var i = 0; i < data.length; i++) {
 			result += data[i].time + ',' + data[i][dataKey] + LF;
 		}
-		
 		return result;
 	},
 	getDataQueryString : function(gdawsSiteId, startDate, endDate, params) {
