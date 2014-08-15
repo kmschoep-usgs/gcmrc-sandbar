@@ -29,13 +29,26 @@ def replace_none_with_nan(query_results):
     return cleaned
 
 
-def round_series_values(pandas_series, decimal_places=2):
-    rounded_values = tuple() 
-    for series_value in pandas_series:
-        try:
-            rounded_value = round(series_value, decimal_places)
-        except TypeError:
-            rounded_value = None
-        rounded_values += (rounded_value,)   
-    rounded_series = pd.Series(rounded_values)
-    return rounded_series
+def round_series_values(element, decimal_places=2):
+    """
+    For element in a dataframe, try to round the value
+    to two decimal places; will return the element value
+    otherwise.
+    """
+    try:
+        result = round(element, decimal_places)
+    except TypeError:
+        result = element
+    return result
+
+def datetime_to_date(element):
+    """
+    For each element in a dataframe, try to return
+    a date; will return the element value otherwise.
+    """
+    try:
+        result = element.date()
+    except AttributeError:
+        result = element
+    return result
+        
