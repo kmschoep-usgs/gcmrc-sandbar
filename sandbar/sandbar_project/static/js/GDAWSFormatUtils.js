@@ -25,6 +25,6 @@ SB.GDAWSFormatUtils = {
 		}
 		return 'beginPosition=' + startDate + '&endPosition=' + endDate + 
 			'&column[]=time!ISO!time' + paramsData +
-			'&every=P1M&tz=-7&noDataFilter=true&output=json&downscale=PT72H';
+			'&every=P1M&tz=-7&noDataFilter=true&output=json&downscale=PT24H';
 	}
 }
