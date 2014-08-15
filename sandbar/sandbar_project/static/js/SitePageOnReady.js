@@ -157,6 +157,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSibling = $(selectParentStr).siblings('input[name="sb-param"]')
 					var parentSiblingCheckboxVal = parentSibling.val();
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
+					
 					if (parentSiblingCheckboxVal === 'area2d') {
 						var paramUnit = 'm' + '2'.sup();
 						var displayName = 'Area';

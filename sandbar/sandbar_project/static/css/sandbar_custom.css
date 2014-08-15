@@ -66,6 +66,10 @@ label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
 label[for=ds-min]:first-of-type, label[for=ds-max]:first-of-type {
 	cursor:help;
 }
+
+label[for=area2d-checkbox], label[for=volume-checkbox]{
+	display:inline;
+}
 input[type=date] {
 	width: 160px;
 }
