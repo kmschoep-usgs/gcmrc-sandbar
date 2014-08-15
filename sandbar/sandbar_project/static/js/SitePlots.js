@@ -12,13 +12,14 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 
 	this.updatePlots = function(startDate, endDate /* String dates */,
 					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarPlots,
-					 		    totalParams) {
+					 		    totalParams, gcmrcStart, sandbarStart) {
 		
 		this.graphsDivEl.children('#graphs-loading-div').show();
 		var sandbarPlots = sandbarPlots;
 		$.ajax({
 			url: SB.GDAWS_SERVICE + 'agg/',
 			type: 'GET',
+			async: true,
 			data: SB.GDAWSFormatUtils.getDataQueryString(this.gdawsSiteId, startDate, endDate, parameterNames),
 			context : this,
 			complete : function(resp, status) {
@@ -46,14 +47,14 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					var graphs = {};
 					for (var i = 0; i < parameterNames.length; i++) {
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
-						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName);
+						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, gcmrcStart, sandbarStart);
 						graphDivEl(parameterNames[i]).show();
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',
 							labelsDivWidth: 300,
 							yAxisLabelWidth: 95,
-							showRangeSelector: true							
+							showRangeSelector: true
 						});
 					}
 					this._graphs = graphs;
