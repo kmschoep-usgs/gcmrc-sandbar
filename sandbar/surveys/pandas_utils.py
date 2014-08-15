@@ -30,6 +30,11 @@ def replace_none_with_nan(query_results):
 
 
 def round_series_values(element, decimal_places=2):
+    """
+    For element in a dataframe, try to round the value
+    to two decimal places; will return the element value
+    otherwise.
+    """
     try:
         result = round(element, decimal_places)
     except TypeError:
@@ -37,6 +42,10 @@ def round_series_values(element, decimal_places=2):
     return result
 
 def datetime_to_date(element):
+    """
+    For each element in a dataframe, try to return
+    a date; will return the element value otherwise.
+    """
     try:
         result = element.date()
     except AttributeError:
