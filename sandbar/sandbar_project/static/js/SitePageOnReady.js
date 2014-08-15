@@ -267,6 +267,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
+				var blockRedraw = false;
 				$(document).ajaxStop(function() {
 					var combinedGraphs = collect(sitePlots._graphs, tsPlots._graphs);
 					for (key in combinedGraphs) {
