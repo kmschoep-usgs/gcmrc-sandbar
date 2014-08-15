@@ -11,7 +11,7 @@ from common.utils.geojson_utils import create_geojson_point, create_geojson_feat
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB
-from .pandas_utils import create_pandas_dataframe, round_series_values
+from .pandas_utils import create_pandas_dataframe, round_series_values, datetime_to_date
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -218,18 +218,8 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
         df_final_raw = df_merge[pd.notnull(df_merge['date'])]
-        df_final_columns = df_final_raw.columns.values
-        df_final_non_date_columns = []
-        for df_final_column in df_final_columns:
-            if df_final_column != 'date':
-                df_final_non_date_columns.append(df_final_column)
-        df_final_raw_non_dates = df_final_raw[df_final_non_date_columns]
-        df_rounded_values = df_final_raw_non_dates.apply(round_series_values, axis=1, decimal_places=2)
-        df_rounded_values.columns = df_final_non_date_columns
-        df_final_raw_dates = df_final_raw[['date']]
-        df_final_merged = pd.merge(df_final_raw_dates, df_rounded_values, how='outer', left_index=True, right_index=True)
-        df_final = df_final_merged.where(pd.notnull(df_final_merged), None)
-        
+        df_final_rounded = df_final_raw.applymap(round_series_values).applymap(datetime_to_date)
+        df_final = df_final_rounded.where(pd.notnull(df_final_rounded), None)
         df_record = df_final.to_dict('records')
         site_name = site.site_name.lower().replace(' ', '_')
         download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
