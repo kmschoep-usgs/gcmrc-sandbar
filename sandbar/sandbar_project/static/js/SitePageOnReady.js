@@ -7,6 +7,13 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	}
 	var gcmrcStartDate;
 	var gcmrcEndDate;
+	
+	var sandbarStartDate;
+	var sandbarEndDate;
+	
+	//set default discharges
+	$('#ds-min').val(8000);
+	$('#ds-max').val(60000);
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -79,9 +86,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('#page-loading-div').hide();
 			$('#site-page-content').show();
 		}
-	});	
-	var sandbarStartDate;
-	var sandbarEndDate;
+	});
+	
 	$.ajax({
 		url: SB.SITE_AREA_CALC_URL,
 		type: 'GET',
@@ -116,9 +122,10 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			sandbarEndDate = endDate;
 		}
 	});
+	
 	// Initialize dygraphs
-	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
+	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	
 	$('#sep-reatt').click(function(event) {
 		if ($('#sep-reatt').is(':checked') && $('#ds-min').val() === '') {
@@ -149,9 +156,11 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
 					if (parentSiblingCheckboxVal === 'area2d') {
 						var paramUnit = 'm' + '2'.sup();
+						var displayName = 'Area';
 					}
 					else if (parentSiblingCheckboxVal === 'volume') {
 						var paramUnit = 'm' + '3'.sup();
+						var displayName = 'Volume';
 					}
 					else {
 						paramUnit = 'Unit Not Specified';
@@ -166,7 +175,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					}
 					if (parentFound === false) {
 						var mapping = {paramVal: parentSiblingCheckboxVal, 
-									   displayName: parentSiblingLabelText,
+									   displayName: displayName,
 									   paramUnit: paramUnit,
 									   subParamVals: [$(this).val()]}
 						subParam.push(mapping);
@@ -193,7 +202,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var sandbarSubParamsLength = subParam.length;
 			if (sandbarParamsLength >= 1 && sandbarSubParamsLength === 0) {
 				errorExists = 1;
-				$('#parameter-errors').append('A subparameter must be selected for Area2D plots.');
+				$('#parameter-errors').append('A subparameter must be selected for Area plots.');
 			}
 			
 			if ($('#sep-reatt').is(':checked')) {
@@ -258,27 +267,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
-				var blockRedraw = false;
-				$(document).ajaxStop(function() {
-					var combinedGraphs = collect(sitePlots._graphs, tsPlots._graphs);
-					for (key in combinedGraphs) {
-						combinedGraphs[key].updateOptions({
-							drawCallback: function(me, initial) {
-								if (blockRedraw || initial) return;
-								blockRedraw = true;
-								var range = me.xAxisRange();
-								for (keyname in combinedGraphs) {
-									if (combinedGraphs[keyname] == me) continue;
-									combinedGraphs[keyname].updateOptions({
-										dateWindow: range
-									});
-								}
-								blockRedraw = false;
-							}
-						});
-					}					
-				});
-			}
+				}
+
 			else if (errorExists === 0 && clickTrigger === "download-data") {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
