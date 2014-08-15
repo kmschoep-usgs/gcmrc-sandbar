@@ -12,7 +12,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 
 	this.updatePlots = function(startDate, endDate /* String dates */,
 					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarPlots,
-					 		    totalParams) {
+					 		    totalParams, gdawsStartDate, sandbarStartDate) {
 		
 		this.graphsDivEl.children('#graphs-loading-div').show();
 		var sandbarPlots = sandbarPlots;
@@ -46,7 +46,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					var graphs = {};
 					for (var i = 0; i < parameterNames.length; i++) {
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
-						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName);
+						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, gdawsStartDate, sandbarStartDate);
 						graphDivEl(parameterNames[i]).show();
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {

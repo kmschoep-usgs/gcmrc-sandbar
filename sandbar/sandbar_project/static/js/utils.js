@@ -15,4 +15,15 @@ function createPlotDates(dateStr, altDateStr) {
 		plotDate = null;
 	}
 	return plotDate;
+};
+
+function collect() {
+	var ret = {};
+	var len = arguments.length;
+	for (var i = 0; i < len; i++) {
+		for (p in arguments[i]) {
+			ret[p] = arguments[i][p]
+		}
+	}
+	return ret;
 }

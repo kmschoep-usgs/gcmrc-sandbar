@@ -267,8 +267,27 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
-				}
-
+				var blockRedraw = false;
+				$(document).ajaxStop(function() {
+					var combinedGraphs = collect(sitePlots._graphs, tsPlots._graphs);
+					for (key in combinedGraphs) {
+						combinedGraphs[key].updateOptions({
+							drawCallback: function(me, initial) {
+								if (blockRedraw || initial) return;
+								blockRedraw = true;
+								var range = me.xAxisRange();
+								for (keyname in combinedGraphs) {
+									if (combinedGraphs[keyname] == me) continue;
+									combinedGraphs[keyname].updateOptions({
+										dateWindow: range
+									});
+								}
+								blockRedraw = false;
+							}
+						});
+					}					
+				});
+			}
 			else if (errorExists === 0 && clickTrigger === "download-data") {
 				$('#parameter-errors').html('');
 				$('#parameter-errors').hide();
