@@ -265,7 +265,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').hide();
 				var plotStartDate = createPlotDates(sandbarStartDate, gcmrcStartDate);
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
-				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params);
+				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
 				}
 
