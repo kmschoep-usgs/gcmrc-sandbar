@@ -92,10 +92,24 @@ def replace_nat(element, replacement=np.nan):
 def col_difference(series, col_x, col_y):
     x_val = series[col_x]
     y_val = series[col_y]
-    if (x_val is None or y_val is None):
+    is_x_float = isinstance(x_val, float)
+    is_y_float = isinstance(y_val, float)
+    try:
+        if is_x_float is True and is_y_float is True:
+            x = x_val
+            y = y_val
+        elif is_x_float is True and is_y_float is False:
+            x = x_val
+            y = 0
+        elif is_x_float is False and is_y_float is True:
+            x = 0
+            y = y_val
+        else:
+            x = np.nan
+            y = np.nan
+        col_diff = np.nansum([x, y*(-1)])
+    except TypeError:
         col_diff = np.nan
-    else:
-        col_diff = x_val - y_val
     return col_diff
 
 

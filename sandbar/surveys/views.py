@@ -12,7 +12,7 @@ from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
-                           col_difference, sum_two_columns, create_dygraphs_error_str)
+                           col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
 class AreaVolumeCalcsTemp(TemplateView):
     
@@ -107,15 +107,17 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
                 df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', 'e_vol_low', 'e_vol_val', 'e_vol_high'), create_psuedo_column=True)
+                df_eddy_float = df_eddy.applymap(convert_to_float).applymap(replace_df_none)
                 df_chan = create_pandas_dataframe(data=chan_results, columns=('date', 'c_vol_low', 'c_vol_val', 'c_vol_high'), create_psuedo_column=True)
-                df_ec_merge = pd.merge(df_eddy, df_chan, how='outer', on='date')
+                df_chan_float = df_chan.applymap(convert_to_float).applymap(replace_df_none)
+                df_ec_merge = pd.merge(df_eddy_float, df_chan_float, how='outer', on='date')
                 df_ec_merge['e_low_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('e_vol_val', 'e_vol_low'))
                 df_ec_merge['e_high_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('e_vol_high', 'e_vol_val'))
                 df_ec_merge['c_low_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('c_vol_val', 'c_vol_low'))
                 df_ec_merge['c_high_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('c_vol_high', 'c_vol_val'))
                 df_ec_merge['ec_low_delta'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_low_delta', 'c_low_delta'))
                 df_ec_merge['ec_high_delta'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_high_delta', 'c_high_delta'))
-                df_ec_merge['ec_sum'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_vol_val', 'c_vol_val'))
+                df_ec_merge['ec_sum'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_vol_val', 'c_vol_val')).astype('float64')
                 df_ec_merge['ec_lower'] = df_ec_merge.apply(col_difference, axis=1, args=('ec_sum', 'ec_low_delta'))
                 df_ec_merge['ec_high'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('ec_sum', 'ec_high_delta'))
                 df_ec_merge['Total Site'] = df_ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_lower', med='ec_sum', high='ec_high')
