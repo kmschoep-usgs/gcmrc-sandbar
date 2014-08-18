@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.views.generic import ListView, DetailView, View
 from numpy import interp
 import pandas as pd 
 
