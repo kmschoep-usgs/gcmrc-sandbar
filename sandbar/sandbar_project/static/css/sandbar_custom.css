@@ -44,9 +44,9 @@ img.photo {
 }
 .loading-div {
 	text-align: center;
-	font-size: 2em;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	font-size: 1.5em;
+	margin-top: 7px;
+	margin-bottom: 7px;
 }
 .dygraph-legend {
 	text-align: left!important;
@@ -54,9 +54,11 @@ img.photo {
 .graph-div {
 	width: 100%!important;
 }
-#graphs-loading-div{
-	line-height:0.8em;
+
+#graphs-loading-div {
+	line-height:1em;
 }
+
 .param-missing {
 	color: red;
 }
