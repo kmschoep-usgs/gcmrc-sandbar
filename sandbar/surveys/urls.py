@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 
 from .views import (SitesListView, SiteDetailView, GDAWSWebServiceProxy, AreaVolumeCalcsView,
-                    SandBarSitesGeoJSON, BasicSiteInfoJSON, AreaVolumeCalcsTemp, AreaVolumeCalcsDownloadView)
+                    SandBarSitesGeoJSON, BasicSiteInfoJSON, AreaVolumeCalcsDownloadView)
 
 urlpatterns = patterns('',
     url(r'^sites/$',
@@ -23,9 +23,6 @@ urlpatterns = patterns('',
     url(r'^site_area_info',
         BasicSiteInfoJSON.as_view(),
         name='basic_area_info'),
-    url(r'^expt',
-        AreaVolumeCalcsTemp.as_view(),
-        name='expt'),
     url(r'^datadownload',
         AreaVolumeCalcsDownloadView.as_view(),
         name='data_download'),    

@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.views.generic import ListView, DetailView, View
 from numpy import interp
 import pandas as pd 
 
@@ -11,37 +11,8 @@ from common.utils.geojson_utils import create_geojson_point, create_geojson_feat
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB
-from .pandas_utils import create_pandas_dataframe, round_series_values, datetime_to_date
-
-class AreaVolumeCalcsTemp(TemplateView):
-    
-    template_name = 'surveys/expt.html'
-    
-    def get(self, request, *args, **kwargs):
-        #ds_min = 6500
-        #ds_max = 9000
-        # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
-
-        result = []
-
-        site = Site.objects.get(pk=request.GET.get('site_id'))
-        ds_min = float(request.GET.get('ds_min'))
-        ds_max = float(request.GET.get('ds_max'))
-        calculation_type = request.GET.get('calc_type', None)
-        alchemical_sql = AlchemDB()
-        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
-        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
-        ora_session = alchemical_sql.create_session()
-        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type)
-        for query_result in query_results:
-            date, interp_area_2d = query_result
-            date_str = date.strftime('%Y/%m/%d')
-            result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
-            result.append(result_dict)
-            
-        context = {'result_dict': result}
-        
-        return self.render_to_response(context)
+from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
+                           col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
 
 class AreaVolumeCalcsView(CSVResponseMixin, View):
@@ -71,7 +42,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         if parameter_type == 'area2d':
             query_base = ora_session.query('calc_date', 'interp_area2d')
         elif parameter_type == 'volume':
-            query_base = ora_session.query('calc_date', 'interp_volume')
+            query_base = ora_session.query('calc_date', 'vol_error_low', 'interp_volume', 'vol_error_high')
         else:
             raise Exception('I have no idea what you want me to query...')
         for calculation_type in calculation_types:
@@ -82,8 +53,11 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                     df_value_name = calculation_type_full.title()
                 else:
                     df_value_name = calculation_type.title()
-                query_df = create_pandas_dataframe(data=query_result_set, columns=('date', df_value_name))
-            else:
+                if parameter_type == 'volume':
+                    query_df = create_df_error_bars(data=query_result_set, final_col_name=df_value_name)
+                else:
+                    query_df = create_pandas_dataframe(data=query_result_set, columns=('date', df_value_name))
+            elif calculation_type == 'eddy_chan_sum' and parameter_type == 'area2d':
                 eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
                 chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
                 df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', 'Eddy'), create_psuedo_column=True)
@@ -99,6 +73,28 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 query_df.drop(labels=['Eddy', 'Channel'], axis=1, inplace=True)
                 # remove any dates that are NaT (not a datetime) or NaN (not a number) in the date column
                 query_df = query_df[pd.notnull(query_df['date'])]
+            elif calculation_type == 'eddy_chan_sum' and parameter_type == 'volume':
+                eddy_results = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
+                chan_results = query_base.from_statement(sql_statement).params(calc_type='chan').all()
+                df_eddy = create_pandas_dataframe(data=eddy_results, columns=('date', 'e_vol_low', 'e_vol_val', 'e_vol_high'), create_psuedo_column=True)
+                df_eddy_float = df_eddy.applymap(convert_to_float).applymap(replace_df_none)
+                df_chan = create_pandas_dataframe(data=chan_results, columns=('date', 'c_vol_low', 'c_vol_val', 'c_vol_high'), create_psuedo_column=True)
+                df_chan_float = df_chan.applymap(convert_to_float).applymap(replace_df_none)
+                df_ec_merge = pd.merge(df_eddy_float, df_chan_float, how='outer', on='date')
+                df_ec_merge['e_low_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('e_vol_val', 'e_vol_low'))
+                df_ec_merge['e_high_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('e_vol_high', 'e_vol_val'))
+                df_ec_merge['c_low_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('c_vol_val', 'c_vol_low'))
+                df_ec_merge['c_high_delta'] = df_ec_merge.apply(col_difference, axis=1, args=('c_vol_high', 'c_vol_val'))
+                df_ec_merge['ec_low_delta'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_low_delta', 'c_low_delta'))
+                df_ec_merge['ec_high_delta'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_high_delta', 'c_high_delta'))
+                df_ec_merge['ec_sum'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('e_vol_val', 'c_vol_val')).astype('float64')
+                df_ec_merge['ec_lower'] = df_ec_merge.apply(col_difference, axis=1, args=('ec_sum', 'ec_low_delta'))
+                df_ec_merge['ec_high'] = df_ec_merge.apply(sum_two_columns, axis=1, args=('ec_sum', 'ec_high_delta'))
+                df_ec_merge['Total Site'] = df_ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_lower', med='ec_sum', high='ec_high')
+                df_ec_merge_clean = df_ec_merge[pd.notnull(df_ec_merge['date'])]
+                query_df = df_ec_merge_clean[['date', 'Total Site']]
+            else:
+                raise Exception('Something went terribly wrong...')          
             if len(query_df) > 0:
                 df_list.append(query_df)
         df_list_len = len(df_list)
@@ -123,7 +119,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
         df_final = df_merge.where(pd.notnull(df_merge), None)
-        
+        # do a final cleaning
+        df_final = df_final[pd.notnull(df_final['date'])]
         df_record = df_final.to_dict('records')
         
         return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple)
