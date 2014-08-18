@@ -44,15 +44,19 @@ img.photo {
 }
 .loading-div {
 	text-align: center;
-	font-size: 2em;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	font-size: 1.5em;
+	margin-top: 7px;
+	margin-bottom: 7px;
 }
 .dygraph-legend {
 	text-align: left!important;
 }
 .graph-div {
 	width: 100%!important;
+}
+
+#graphs-loading-div {
+	line-height:1em;
 }
 
 .param-missing {
@@ -65,6 +69,10 @@ label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
 
 label[for=ds-min]:first-of-type, label[for=ds-max]:first-of-type {
 	cursor:help;
+}
+
+label[for=area2d-checkbox], label[for=volume-checkbox]{
+	display:inline;
 }
 input[type=date] {
 	width: 160px;

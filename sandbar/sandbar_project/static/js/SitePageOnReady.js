@@ -136,6 +136,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		}
 	});
 	
+	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
 		if ($('form').valid()) {
@@ -157,6 +158,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var parentSibling = $(selectParentStr).siblings('input[name="sb-param"]')
 					var parentSiblingCheckboxVal = parentSibling.val();
 					var parentSiblingLabelText = $(selectParentStr).siblings('label').text()
+					
 					if (parentSiblingCheckboxVal === 'area2d') {
 						var paramUnit = 'm' + '2'.sup();
 						var displayName = 'Area';

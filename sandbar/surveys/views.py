@@ -65,7 +65,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         parameter_type = request.GET.get('param_type')
         calculation_types = request.GET.getlist('calc_type', None)
         alchemical_sql = AlchemDB()
-        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         ora_session = alchemical_sql.create_session()
         df_list = []
@@ -191,7 +191,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             param_list.append(sbp)
         alchemical_sql = AlchemDB()
         ora_session = alchemical_sql.create_session()
-        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         complete_dfs = []
         for p_tuple in param_list:

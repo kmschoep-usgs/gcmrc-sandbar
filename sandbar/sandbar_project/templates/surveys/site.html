@@ -70,7 +70,7 @@
 		{{#wrapperParam}}
 		<div id="{{areaParamVal}}-group" class="parameter-group">
             <input id="{{areaParamVal}}-checkbox" type="checkbox" name="sb-param" value="{{areaParamVal}}" />
-			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}-title">{{areaParam}}</label>
+			<label for="{{areaParamVal}}-checkbox" title="{{areaParamVal}}">{{areaParam}}</label>
 			<br />
 			<span class="parameter-dates">{{minDate}} to {{maxDate}}</span>
 			<br />
@@ -118,7 +118,7 @@
 					<div id="no-data-warning" class="alert alert-danger" style="display: none;"></div>
 					<div id="sb-parameter-checkbox-div"></div>
 					
-					<h4 class="param-label">Streamflow and Sediment:</h4>
+					<h4 class="param-label">Streamflow and Sediment for {{ site.gdaws_site_display }}:</h4>
 					<div id="parameter-checkbox-div"></div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 					<a id="download-data" class="btn btn-primary btn-block">Download Sandbar Data</a>
@@ -133,15 +133,15 @@
 					<h4 id="panel-title"></h4>
 				</div>
 				<div id="graphs-div" class="panel-body">
-					<div id="gcmrc-plots">
-						<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
-						<div id="cumulSandLoad-graph-div" class="graph-div"></div>
-						<div id="discharge-graph-div" class="graph-div"></div>
-					</div>
 					<div id="sandbar-plots">
-						<div id="plots-loading-div" class="loading-div well" style="display: none;"><span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
+						<div id="plots-loading-div" class="loading-div well" style="display: none;"><span>Loading Sandbar Plots...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
 						<div id="area2d-graph-div" class="graph-div"></div>
 						<div id="volume-graph-div" class="graph-div"></div>
+					</div>
+					<div id="gcmrc-plots">
+						<div id="graphs-loading-div" class="loading-div well" style="display: none;"><span>Loading Streamflow and Sediment Plots...<br /><span style="font-size:0.7em;font-style:italic;">Due to the length of your request, Discharge data may take up to several minutes to load.</span></span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/></div>
+						<div id="cumulSandLoad-graph-div" class="graph-div"></div>
+						<div id="discharge-graph-div" class="graph-div"></div>
 					</div>
 				</div>
 			</div>		
