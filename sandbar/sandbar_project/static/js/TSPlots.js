@@ -17,6 +17,12 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		var currentGraphs = [];
 		for (j = 0; j < params.length; j++) {
 			var parentParam = params[j].paramVal;
+			if (parentParam === 'volume') {
+				var eBars = true;
+			}
+			else {
+				var eBars = false;
+			}
 			var displayName = params[j].displayName;
 			var paramUnit = params[j].paramUnit;
 			var yAxisLabel = 'Sandbar ' + displayName + ' (' + paramUnit + ')';
@@ -85,7 +91,8 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							legend: 'always',
 							strokePattern: [5, 5],
 							drawPoints: true,
-							pointSize: 3
+							pointSize: 3,
+							customBars: eBars
 						});
 						if (columnCount < calc_type.length) {
 							var missingDataArr = [];
