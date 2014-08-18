@@ -153,4 +153,5 @@ def create_df_error_bars(data, final_col_name, columns=('date', 'val_low', 'val_
     df = create_pandas_dataframe(data, columns, create_psuedo_column=True)
     df[final_col_name] = df.apply(create_dygraphs_error_str, axis=1, low='val_low', med='val_med', high='val_high')
     df_clean = df[['date', final_col_name]]
-    return df_clean     
+    df_final = df_clean[pd.notnull(df_clean['date'])]
+    return df_final     

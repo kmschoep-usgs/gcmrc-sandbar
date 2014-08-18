@@ -93,8 +93,6 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 df_ec_merge['Total Site'] = df_ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_lower', med='ec_sum', high='ec_high')
                 df_ec_merge_clean = df_ec_merge[pd.notnull(df_ec_merge['date'])]
                 query_df = df_ec_merge_clean[['date', 'Total Site']]
-                print(df_ec_merge_clean)
-                print(query_df)
             else:
                 raise Exception('Something went terribly wrong...')          
             if len(query_df) > 0:
