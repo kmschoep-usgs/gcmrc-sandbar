@@ -136,6 +136,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		}
 	});
 	
+	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
 		if ($('form').valid()) {
