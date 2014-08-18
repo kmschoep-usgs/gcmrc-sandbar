@@ -14,36 +14,6 @@ from .db_utilities import convert_datetime_to_str, AlchemDB
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
                            col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
-class AreaVolumeCalcsTemp(TemplateView):
-    
-    template_name = 'surveys/expt.html'
-    
-    def get(self, request, *args, **kwargs):
-        #ds_min = 6500
-        #ds_max = 9000
-        # NOTE: will eventually pass in the ds_min/max as request.GET.get('ds_min')
-
-        result = []
-
-        site = Site.objects.get(pk=request.GET.get('site_id'))
-        ds_min = float(request.GET.get('ds_min'))
-        ds_max = float(request.GET.get('ds_max'))
-        calculation_type = request.GET.get('calc_type', None)
-        alchemical_sql = AlchemDB()
-        sql_base = 'SELECT * FROM TABLE(get_area_vol_tf({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
-        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
-        ora_session = alchemical_sql.create_session()
-        query_results = ora_session.query('calc_date', 'interp_area2d').from_statement(sql_statement).params(calc_type=calculation_type)
-        for query_result in query_results:
-            date, interp_area_2d = query_result
-            date_str = date.strftime('%Y/%m/%d')
-            result_dict = {'Time': date_str, 'Area2d': interp_area_2d}
-            result.append(result_dict)
-            
-        context = {'result_dict': result}
-        
-        return self.render_to_response(context)
-
 
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
@@ -123,6 +93,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
                 df_ec_merge['Total Site'] = df_ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_lower', med='ec_sum', high='ec_high')
                 df_ec_merge_clean = df_ec_merge[pd.notnull(df_ec_merge['date'])]
                 query_df = df_ec_merge_clean[['date', 'Total Site']]
+                print(df_ec_merge_clean)
+                print(query_df)
             else:
                 raise Exception('Something went terribly wrong...')          
             if len(query_df) > 0:
@@ -149,7 +121,8 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
         df_final = df_merge.where(pd.notnull(df_merge), None)
-        
+        # do a final cleaning
+        df_final = df_final[pd.notnull(df_final['date'])]
         df_record = df_final.to_dict('records')
         
         return self.render_to_csv_response(context=df_record, data_keys=column_name_tuple)

@@ -142,7 +142,7 @@ def create_dygraphs_error_str(series, low, med, high):
     med_val = series[med]
     high_val = series[high]
     value_list = [low_val, med_val, high_val]
-    if np.nan in value_list or pd.NaT in value_list:
+    if np.nan in value_list or pd.NaT in value_list or None in value_list:
         err_str = None
     else:
         err_str = '{low};{med};{high}'.format(low=low_val, med=med_val, high=high_val)
@@ -150,7 +150,7 @@ def create_dygraphs_error_str(series, low, med, high):
 
 
 def create_df_error_bars(data, final_col_name, columns=('date', 'val_low', 'val_med', 'val_high')):
-    df = create_pandas_dataframe(data, columns)
+    df = create_pandas_dataframe(data, columns, create_psuedo_column=True)
     df[final_col_name] = df.apply(create_dygraphs_error_str, axis=1, low='val_low', med='val_med', high='val_high')
     df_clean = df[['date', final_col_name]]
     return df_clean     
