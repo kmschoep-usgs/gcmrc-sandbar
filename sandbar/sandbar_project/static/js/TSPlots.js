@@ -19,9 +19,11 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			var parentParam = params[j].paramVal;
 			if (parentParam === 'volume') {
 				var eBars = true;
+				var plotter = SB.DotPlotter;
 			}
 			else {
 				var eBars = false;
+				var plotter = null;
 			}
 			var displayName = params[j].displayName;
 			var paramUnit = params[j].paramUnit;
@@ -90,9 +92,11 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							showRangeSelector: true,
 							legend: 'always',
 							strokePattern: [5, 5],
+							highlightCircleSize: 4,
 							drawPoints: true,
 							pointSize: 3,
-							customBars: eBars
+							customBars: eBars,
+							plotter: plotter
 						});
 						if (columnCount < calc_type.length) {
 							var missingDataArr = [];
