@@ -237,7 +237,7 @@ class AreaVolumeCalcsSetTestCase(TestCase):
                                                             'ds_max': self.ds_max, 
                                                             'calc_type': 'eddy'})
         response = self.test_view.get(request)
-        expected_value = 1986.26 # not sure if this should be a positive or negative value
+        expected_value = 1392 # not sure if this should be a positive or negative value
         self.assertContains(response, expected_value)
     
     def test_get_queryset_outside_lower_bounds(self):

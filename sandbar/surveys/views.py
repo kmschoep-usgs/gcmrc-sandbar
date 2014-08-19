@@ -119,7 +119,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
         df_final = df_merge.where(pd.notnull(df_merge), None)
-        # do a final cleaning
+        # do a final cleaning for good measure
         df_final = df_final[pd.notnull(df_final['date'])]
         df_record = df_final.to_dict('records')
         
