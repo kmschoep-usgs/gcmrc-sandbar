@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load load_static %}
 
 {% block title %}{{ flatpage.title }}{% endblock %}
 
@@ -9,5 +10,5 @@
 {% endblock  %}
 
 {% block page_content %}
-    {{ flatpage.content }}
+    {{ flatpage.content|load_static}}
 {% endblock %}
