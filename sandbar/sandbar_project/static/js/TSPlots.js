@@ -92,9 +92,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							strokePattern: [5, 5],
 							drawPoints: true,
 							pointSize: 3,
-							customBars: eBars,
-							highlightCircleSize: 4,
-							strokeWidth: 0
+							customBars: eBars
 						});
 						if (columnCount < calc_type.length) {
 							var missingDataArr = [];
