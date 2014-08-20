@@ -1,7 +1,10 @@
 from datetime import date
+import numpy as np
+import pandas as pd
 from pandas.util.testing import assert_frame_equal
 from django.test import TestCase
-from ..pandas_utils import create_pandas_dataframe, round_series_values, col_difference, sum_two_columns, create_dygraphs_error_str
+from ..pandas_utils import (create_pandas_dataframe, round_series_values, col_difference, sum_two_columns, 
+                            create_dygraphs_error_str, check_for_nans_and_none)
 
 
 class TestCreatePandasDataFrame(TestCase):
@@ -80,3 +83,60 @@ class TestSumColumns(TestCase):
         # returns None if dataframes are equal
         df_equals = assert_frame_equal(df, df_expected)
         self.assertIsNone(df_equals)
+        
+
+class TestDygraphsErrorString(TestCase):
+    
+    def setUp(self):
+        
+        self.fake_data = [
+                          (date(2013, 2, 1), 10.12, 12.56, 15.67),
+                          (date(2013, 2, 2), 21.22, 24.56, 27.99),
+                          (date(2013, 2, 3), None, 31.46, 34.01),
+                          (date(2013, 2, 4), None, None, None)
+                          ]
+        self.columns = ('date', 'A', 'B', 'C')
+        
+    def test_dygraphs_err_str(self):
+        
+        df = create_pandas_dataframe(self.fake_data, self.columns)
+        df['D'] = df.apply(create_dygraphs_error_str, axis=1, low='A', med='B', high='C')
+        expected_data = [
+                          (date(2013, 2, 1), 10.12, 12.56, 15.67, '10.12;12.56;15.67'),
+                          (date(2013, 2, 2), 21.22, 24.56, 27.99, '21.22;24.56;27.99'),
+                          (date(2013, 2, 3), None, 31.46, 34.01, None),
+                          (date(2013, 2, 4), None, None, None, None)
+                          ]
+        df_expected = create_pandas_dataframe(expected_data, ('date', 'A', 'B', 'C', 'D'))
+        df_equals = assert_frame_equal(df, df_expected)
+        self.assertIsNone(df_equals)
+        
+
+class TestCheckForNaNs(TestCase):
+    
+    def setUp(self):
+        
+        self.no_nans = [23.91, 23.12, 82.33]
+        self.single_nan = [np.nan, 17.84, 99.12]
+        self.single_nat = [pd.NaT, 90.21, 0.391]
+        self.single_none = [None, 390.231, 1.23]
+        
+    def test_no_nan(self):
+        
+        result = check_for_nans_and_none(self.no_nans)
+        self.assertFalse(result)
+        
+    def test_nan(self):
+        
+        result = check_for_nans_and_none(self.single_nan)
+        self.assertTrue(result)
+        
+    def test_nat(self):
+        
+        result = check_for_nans_and_none(self.single_nat)
+        self.assertTrue(result)
+        
+    def test_none(self):
+        
+        result = check_for_nans_and_none(self.single_none)
+        self.assertTrue(result)
