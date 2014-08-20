@@ -19,7 +19,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			var parentParam = params[j].paramVal;
 			if (parentParam === 'volume') {
 				var eBars = true;
-				var plotter = SB.DotPlotter;
+				var plotter = [SB.DotPlotter, Dygraph.Plotters.linePlotter];
 			}
 			else {
 				var eBars = false;
