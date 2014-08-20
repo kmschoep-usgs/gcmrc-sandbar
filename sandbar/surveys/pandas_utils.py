@@ -151,13 +151,13 @@ def check_for_nans_and_none(values):
     return nans_exist
         
 
-
 def create_dygraphs_error_str(series, low, med, high):
     low_val = series[low]
     med_val = series[med]
     high_val = series[high]
     value_list = [low_val, med_val, high_val]
-    if check_for_nans_and_none(value_list):
+    nans_exist = check_for_nans_and_none(value_list)
+    if nans_exist:
         err_str = None
     else:
         err_str = '{low};{med};{high}'.format(low=low_val, med=med_val, high=high_val)
