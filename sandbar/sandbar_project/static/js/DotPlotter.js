@@ -33,7 +33,7 @@ SB.DotPlotter = function(e) {
 				x === undefined ||
 				isNaN(x));
 	};
-	var prevPoint;
+	var prevPoint = null;
 	while (iter.hasNext) {
 		var point = iter.next();
 		if (!isNullUndefinedOrNaN(point.canvasy)) {
