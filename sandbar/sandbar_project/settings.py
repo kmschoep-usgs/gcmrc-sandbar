@@ -234,6 +234,9 @@ LOGGING = {
     }
 }
 
+# Code to be used for google analytics. If tracking is desired for a server, set to the track code in local_settings.py.
+GA_TRACKING_CODE = ''
+
 GDAWS_SERVICE_URL = 'http://www.gcmrc.gov/discharge_qw_sediment/services/'
 
 LOCAL_LOGGERS = None
