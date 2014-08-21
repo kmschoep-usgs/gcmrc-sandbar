@@ -11,6 +11,7 @@ from common.utils.geojson_utils import create_geojson_point, create_geojson_feat
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB
+from .db_mappings import AreaVolumeCalcBase
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
                            col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
@@ -118,6 +119,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
+        # find all the np.nan or pd.NaT objects and replace with None
         df_final = df_merge.where(pd.notnull(df_merge), None)
         # do a final cleaning for good measure
         df_final = df_final[pd.notnull(df_final['date'])]
@@ -309,11 +311,22 @@ class BasicSiteInfoJSON(JSONResponseMixin, View):
         area_min_date_str = convert_datetime_to_str(area_calc_date_min['calc_date__min'])
         area_calc_date_max = site_filter_set.aggregate(Max('calc_date'))
         area_max_date_str = convert_datetime_to_str(area_calc_date_max['calc_date__max'])
+        # check to see if site has separation and reattachment information
+        acdb = AlchemDB()
+        ora_session = acdb.create_session()
+        query_results = ora_session.query(AreaVolumeCalcBase.sandbar_id).filter(AreaVolumeCalcBase.site_id==site_id).distinct()
+        distinct_sandbar_results = [result[0] for result in query_results if result[0] is not None]
+        ora_session.close()
+        if len(distinct_sandbar_results) > 0:
+            sr_list = distinct_sandbar_results
+        else:
+            sr_list = None
         site_info = {'siteID': site_id,
                      'calcDates': {'min': area_min_date_str,
                                   'max': area_max_date_str,},
                      'paramNames': {'area2d': 'Area of sandbar between lower and upper bound',
-                                    'volume': 'Volume of sandbar between lower and upper bound'}
+                                    'volume': 'Volume of sandbar between lower and upper bound'},
+                     'sandbarIDs': sr_list
                      }
         return self.render_to_json_response(site_info)
     

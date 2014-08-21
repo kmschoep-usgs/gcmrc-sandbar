@@ -16,6 +16,7 @@ def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
     
     return date_str
 
+
 class AlchemDB(object): 
     
     def __init__(self, schema=SCHEMA_USER, password=DB_PWD, db_name=DB_NAME):

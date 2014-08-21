@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Numeric, Date
 
 Base = declarative_base()
 
+
 class SitesBase(Base):
     
     __tablename__ = 'SITES'
@@ -24,6 +25,7 @@ class SitesBase(Base):
     stage_discharge_coeff_a = Column(Numeric)
     stage_discharge_coeff_b = Column(Numeric)
     stage_discharge_coeff_b = Column(Numeric)
+
 
 class AreaVolumeCalcBase(Base):
     

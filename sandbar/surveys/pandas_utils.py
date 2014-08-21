@@ -137,12 +137,27 @@ def sum_two_columns(series, col_x, col_y):
     return sum_result
 
 
+def check_for_nans_and_none(values):
+    nans = []
+    for value in values:
+        if pd.isnull(value):
+            nans.append(True)
+        else:
+            nans.append(False)
+    if any(nan for nan in nans):
+        nans_exist = True
+    else:
+        nans_exist= False
+    return nans_exist
+        
+
 def create_dygraphs_error_str(series, low, med, high):
     low_val = series[low]
     med_val = series[med]
     high_val = series[high]
     value_list = [low_val, med_val, high_val]
-    if np.nan in value_list or pd.NaT in value_list or None in value_list:
+    nans_exist = check_for_nans_and_none(value_list)
+    if nans_exist:
         err_str = None
     else:
         err_str = '{low};{med};{high}'.format(low=low_val, med=med_val, high=high_val)
