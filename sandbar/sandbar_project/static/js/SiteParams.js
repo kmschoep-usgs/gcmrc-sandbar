@@ -28,6 +28,20 @@ function disableField(checkedStatus, parentVal) {
 	}
 };
 
+function disableChanTotalSite(){
+	$('#area2d-chan-checkbox').attr('disabled', true);
+	$('#area2d-eddy_chan_sum-checkbox').attr('disabled', true);
+	$('#volume-chan-checkbox').attr('disabled', true);
+	$('#volume-eddy_chan_sum-checkbox').attr('disabled', true);
+};
+
+function enableChanTotalSite(){
+	$('#area2d-chan-checkbox').attr('disabled', false);
+	$('#area2d-eddy_chan_sum-checkbox').attr('disabled', false);
+	$('#volume-chan-checkbox').attr('disabled', false);
+	$('#volume-eddy_chan_sum-checkbox').attr('disabled', false);
+};
+
 $(document).ready(function() {
 	$(this).on('click', 'input[name="sb-param"]', function() {
 		var checkedStatus = $(this).is(':checked');
@@ -35,7 +49,14 @@ $(document).ready(function() {
 		selectDefaultSubParam(checkedStatus, parentVal);
 		//disable checkbox buttons if Area 2D is unchecked; enable if checked
 		disableField(checkedStatus, parentVal);		
+		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
+			disableChanTotalSite();
+		}
+		else {
+			enableChanTotalSite();
+		}
 	});
+	
 	/*
 	$(this).on('click', 'div.sub-param-group input:checkbox', function() {
 		var checkedStatus = $('#area2d-checkbox').is(':checked');

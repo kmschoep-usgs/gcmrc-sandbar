@@ -14,6 +14,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	//set default discharges
 	$('#ds-min').val(8000);
 	$('#ds-max').val(60000);
+
 	
 	//Set Plot title
 	$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
@@ -130,9 +131,22 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	
+	
 	$('#sep-reatt').click(function(event) {
-		if ($('#sep-reatt').is(':checked') && $('#ds-min').val() === '') {
-			$('#ds-min').val('8000');
+		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
+			disableChanTotalSite();
+		}
+		else {
+			enableChanTotalSite();
+		}	
+	});
+	
+	$('#ds-min').change(function(event) {
+		if ($('#ds-min').val() < '8000') {
+			enableChanTotalSite();
+		}
+		else {
+			disableChanTotalSite();
 		}
 	});
 	
