@@ -115,9 +115,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					               {areaParamVal: 'volume', areaParam: volumeParam, minDate: startDate, maxDate:endDate}
 					               ],
 					wrapperSubParam: [
-							          {subParamValue: 'eddy', subParamLabel: 'Eddy'},
-							          {subParamValue: 'chan', subParamLabel: 'Channel'},
-							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Total Site'}
+							          {subParamValue: 'eddy', subParamLabel: 'Eddy', subParamTitle: 'Eddy'},
+							          {subParamValue: 'chan', subParamLabel: 'Channel', subParamTitle: 'Channel area and/or volume can only be plotted for discharges less than 8000 cfs.'},
+							          {subParamValue: 'eddy_chan_sum', subParamLabel: 'Total Site', subParamTitle: 'Total Site area and/or volume can only be plotted for discharges less than 8000 cfs.'}
 							          ]
 			};
 			$('#sb-parameter-checkbox-div').append(Mustache.render(template, appCheckBoxParam));
