@@ -1,10 +1,11 @@
 from datetime import date
+from decimal import Decimal
 import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
 from django.test import TestCase
 from ..pandas_utils import (create_pandas_dataframe, round_series_values, col_difference, sum_two_columns, 
-                            create_dygraphs_error_str, check_for_nans_and_none)
+                            create_dygraphs_error_str, check_for_nans_and_none, convert_to_float)
 
 
 class TestCreatePandasDataFrame(TestCase):
@@ -140,3 +141,28 @@ class TestCheckForNaNs(TestCase):
         
         result = check_for_nans_and_none(self.single_none)
         self.assertTrue(result)
+        
+
+class TestConvertToFloat(TestCase):
+    
+    def setUp(self):
+        
+        self.fake_data = [
+                          (date(2013, 8, 9), Decimal(15.06), Decimal(70.81), 'Apple'),
+                          (date(2013, 8, 10), None, Decimal(0.998), 'Mango'),
+                          (date(2013, 8, 11), 84.55, 82.32, 'Durian')
+                          ]
+        self.columns = ('date', 'A', 'B', 'C')
+        
+    def test_convert_to_float(self):
+        
+        df = create_pandas_dataframe(self.fake_data, self.columns)
+        df_float = df.applymap(convert_to_float)
+        expected_data = [
+                         (date(2013, 8, 9), 15.06, 70.81, 'Apple'),
+                         (date(2013, 8, 10), None, 0.998, 'Mango'),
+                         (date(2013, 8, 11), 84.55, 82.32, 'Durian')
+                         ]
+        df_expected = create_pandas_dataframe(expected_data, self.columns)
+        df_equals = assert_frame_equal(df_float, df_expected)
+        self.assertIsNone(df_equals)
