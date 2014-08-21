@@ -118,6 +118,7 @@ class AreaVolumeCalcsView(CSVResponseMixin, View):
         sorted_name_listed = sorted(column_name_list)
         sorted_name_tuple = tuple(sorted_name_listed)
         column_name_tuple += sorted_name_tuple
+        # find all the np.nan or pd.NaT objects and replace with None
         df_final = df_merge.where(pd.notnull(df_merge), None)
         # do a final cleaning for good measure
         df_final = df_final[pd.notnull(df_final['date'])]
