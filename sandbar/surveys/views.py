@@ -10,7 +10,7 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists
+from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
                            col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
@@ -45,6 +45,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         eddy_total = 'Eddy Total'
         total_site = 'Total Site'
         col_names = ('date',)
+        site_survey_types = determine_site_survey_types(site.id)
         if parameter_type == 'area2d':
             query_base = ora.query('calc_date', 'sandbar_id', 'interp_area2d')
             eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
@@ -151,16 +152,17 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         df_final = df_final[pd.notnull(df_final['date'])]
         plot_parameters = ('date',)
         # get the pertinent columns from the dataframe
-        if 'eddy' in calculation_types:
+        if 'eddy' in calculation_types and 'eddy' in site_survey_types:
             plot_parameters += (eddy_total,)
-        if 'chan' in calculation_types:
+        if 'chan' in calculation_types and 'chan' in site_survey_types:
             plot_parameters += (channel_total,)
-        if 'eddy_chan_sum' in calculation_types:
+        if 'eddy_chan_sum' in calculation_types and ('eddy' in site_survey_types or 'chan' in site_survey_types):
             plot_parameters += (total_site,)
         df_pertinent = df_final[list(plot_parameters)]
         df_pert_records = df_pertinent.to_dict('records')
         
         return self.render_to_csv_response(df_pert_records, plot_parameters)
+
 
 # This view is deprecated.
 class AreaVolumeCalcsView(CSVResponseMixin, View):

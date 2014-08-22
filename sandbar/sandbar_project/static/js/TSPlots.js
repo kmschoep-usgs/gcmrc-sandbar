@@ -100,10 +100,10 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 						});
 						if (columnCount < calc_type.length) {
 							var missingDataArr = [];
-							if ($.inArray('Eddy', headerArray) == -1 && $.inArray('eddy', calc_type) > -1) {
+							if ($.inArray('Eddy Total', headerArray) == -1 && $.inArray('eddy', calc_type) > -1) {
 								missingDataArr.push('Eddy'); 
 							}
-							if ($.inArray('Channel', headerArray) == -1 && $.inArray('chan', calc_type) > -1) {
+							if ($.inArray('Channel Total', headerArray) == -1 && $.inArray('chan', calc_type) > -1) {
 								missingDataArr.push('Channel'); 
 							}
 							if ($.inArray('Total Site', headerArray) == -1 && $.inArray('eddy_chan_sum', calc_type) > -1) {
