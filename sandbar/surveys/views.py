@@ -109,7 +109,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 sr_col_names = tuple()
                 for sr_id in sr_ids:
                     df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                    sr_col_name = 'Sandbar ID: {0}'.format(sr_id)
+                    sr_col_name = create_sep_reatt_name(sr_id)
                     sr_col_names += (sr_col_name,)
                     df_sr[sr_col_name] = df_sr.apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
                     eddy_df_srs.append(df_sr)
