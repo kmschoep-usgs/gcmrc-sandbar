@@ -2,7 +2,8 @@
 from django.conf.urls import patterns, url
 
 from .views import (SitesListView, SiteDetailView, GDAWSWebServiceProxy, AreaVolumeCalcsView,
-                    SandBarSitesGeoJSON, BasicSiteInfoJSON, AreaVolumeCalcsDownloadView)
+                    SandBarSitesGeoJSON, BasicSiteInfoJSON, AreaVolumeCalcsDownloadView,
+                    AreaVolumeCalcsVw)
 
 urlpatterns = patterns('',
     url(r'^sites/$',
@@ -15,7 +16,7 @@ urlpatterns = patterns('',
         GDAWSWebServiceProxy.as_view(),
         name='surveys-gdaws'),
     url(r'^areavolume',
-        AreaVolumeCalcsView.as_view(),
+        AreaVolumeCalcsVw.as_view(),
         name='surveys-areavolume'),  
     url(r'^sites_geo_json/$',
         SandBarSitesGeoJSON.as_view(),
