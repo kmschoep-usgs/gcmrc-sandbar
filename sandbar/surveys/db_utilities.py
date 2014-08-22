@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import exists
 import cx_Oracle
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
+from surveys.db_mappings import AreaVolumeCalcBase
 
 
 def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
@@ -15,6 +17,28 @@ def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
         date_str = None
     
     return date_str
+
+
+def determine_if_sep_reatt_exists(site_id):
+    acdb = AlchemDB()
+    ora_session = acdb.create_session()
+    result = ora_session.query(AreaVolumeCalcBase.sandbar_id).filter(AreaVolumeCalcBase.site_id==site_id, AreaVolumeCalcBase.sandbar_id != None).distinct()
+    len_result = result.count()
+    if len_result > 0:
+        sr_exists = True
+    else:
+        sr_exists = False
+    ora_session.close()
+    return sr_exists
+
+
+def get_sep_reatt_ids(site_id):
+    acdb = AlchemDB()
+    ora_session = acdb.create_session()
+    query_results = ora_session.query(AreaVolumeCalcBase.sandbar_id).filter(AreaVolumeCalcBase.site_id==site_id, AreaVolumeCalcBase.sandbar_id != None).distinct()
+    distinct_sandbar_results = [result[0] for result in query_results if result[0] is not None]
+    ora_session.close()
+    return distinct_sandbar_results
 
 
 class AlchemDB(object): 

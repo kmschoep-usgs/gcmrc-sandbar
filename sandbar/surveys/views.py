@@ -10,12 +10,159 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB
-from .db_mappings import AreaVolumeCalcBase
+from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
                            col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
 
 
+class AreaVolumeCalcsVw(CSVResponseMixin, View):
+    
+    """
+    New view to supersede AreaVolumeCalcsView that
+    better handles parameter permutations
+    """
+    
+    model = AreaVolume
+    
+    def get(self, request, *args, **kwargs):
+        
+        site = Site.objects.get(pk=request.GET.get('site_id'))
+        ds_min = float(request.GET.get('ds_min'))
+        ds_max = float(request.GET.get('ds_max'))
+        parameter_type = request.GET.get('param_type')
+        plot_sep = request.GET.get('sep_plot')
+        if plot_sep == 'true':
+            ps = True
+        else:
+            ps = False
+        calculation_types = request.GET.getlist('calc_type', None)
+        sr_exists = determine_if_sep_reatt_exists(site.id) # check if separation/reattachment exists
+        acdb = AlchemDB()
+        ora = acdb.create_session()
+        sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
+        channel_total = 'Channel Total'
+        eddy_total = 'Eddy Total'
+        total_site = 'Total Site'
+        col_names = ('date',)
+        if parameter_type == 'area2d':
+            query_base = ora.query('calc_date', 'sandbar_id', 'interp_area2d')
+            eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
+            chan_result_set = query_base.from_statement(sql_statement).params(calc_type='chan').all()
+            e_df0 = create_pandas_dataframe(eddy_result_set, columns=('date', 'sr_id', 'Eddy'), create_psuedo_column=True)
+            e_df0_float = e_df0.applymap(convert_to_float)
+            c_df0 = create_pandas_dataframe(chan_result_set, columns=('date', 'sr_id', 'Channel'), create_psuedo_column=True)
+            c_df0_float = c_df0.applymap(convert_to_float)
+            c_df0_float[channel_total] = c_df0_float['Channel']
+            c_df1 = c_df0_float[['date', channel_total]]
+            if sr_exists:
+                sr_ids = get_sep_reatt_ids(site.id)
+                eddy_df_srs = []
+                sr_col_names = tuple()
+                for sr_id in sr_ids:
+                    eddy_df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
+                    col_name = 'Sandbar ID: {0}'.format(sr_id)
+                    col_names += (col_name,)
+                    sr_col_names += (col_name, )
+                    eddy_df_sr[col_name] = eddy_df_sr['Eddy']
+                    eddy_df_srs.append(eddy_df_sr)
+                eddy_df_srs_len = len(eddy_df_srs)
+                col_names += (eddy_total,)
+                if eddy_df_srs_len == 1:
+                    df_sr = eddy_df_srs[0]
+                    df_sr[eddy_total] = df_sr[sr_col_names[0]]
+                elif eddy_df_srs_len == 2:
+                    df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date')
+                    df_sr[eddy_total] = df_sr.apply(sum_two_columns, axis=1, col_x=sr_col_names[0], col_y=sr_col_names[1])
+                else:
+                    raise Exception('Getting the separation/reattachment data went wrong...')
+                e_df1 = df_sr[list(col_names)]
+            else:
+                e_df0_float[eddy_total] = e_df0_float['Eddy']
+                e_df1 = e_df0_float[['date', eddy_total]]
+            ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
+            ec_merge[total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x='Eddy Total', col_y='Channel Total')
+            df_final = ec_merge.where(pd.notnull(ec_merge), None)
+        elif parameter_type == 'volume':
+            query_base = ora.query('calc_date', 'sandbar_id', 'vol_error_low', 'interp_volume', 'vol_error_high')
+            eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
+            chan_result_set = query_base.from_statement(sql_statement).params(calc_type='chan').all()
+            e_df0 = create_pandas_dataframe(eddy_result_set, columns=('date', 'sr_id', 'e_low', 'e_med', 'e_high'), create_psuedo_column=True)
+            e_df0_float = e_df0.applymap(convert_to_float)
+            c_df0 = create_pandas_dataframe(chan_result_set, columns=('date', 'sr_id', 'c_low', 'c_med', 'c_high'), create_psuedo_column=True)
+            c_df0_float = c_df0.applymap(convert_to_float)
+            c_df0_float[channel_total] = c_df0_float.apply(create_dygraphs_error_str, axis=1, low='c_low', med='c_med', high='c_high')
+            c_df1 = c_df0_float[['date', 'c_low', 'c_med', 'c_high', channel_total]]
+            sr_eddy_low = 'sr_eddy_low'
+            sr_eddy_med = 'sr_eddy_med'
+            sr_eddy_high = 'sr_eddy_high'
+            eddy_col_names = (sr_eddy_low, sr_eddy_med, sr_eddy_high, eddy_total)
+            if sr_exists:
+                sr_ids = get_sep_reatt_ids(site.id)
+                eddy_df_srs = []
+                sr_col_names = tuple()
+                for sr_id in sr_ids:
+                    df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
+                    sr_col_name = 'Sandbar ID: {0}'.format(sr_id)
+                    sr_col_names += (sr_col_name,)
+                    df_sr[sr_col_name] = df_sr.apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
+                    eddy_df_srs.append(df_sr)
+                eddy_df_srs_len = len(eddy_df_srs)
+                col_names += (sr_eddy_low, sr_eddy_med, sr_eddy_high, eddy_total)
+                if eddy_df_srs_len == 1:
+                    df_sr = eddy_df_srs[0]
+                    df_sr[sr_eddy_low] = df_sr['e_low']
+                    df_sr[sr_eddy_med] = df_sr['e_med']
+                    df_sr[sr_eddy_high] = df_sr['e_high']
+                    sep_reatt_col = sr_col_names[0]
+                    df_sr[eddy_total] = df_sr[sep_reatt_col] # the dygraphs error string for combined separation/reattachment sandbars
+                elif eddy_df_srs_len == 2:
+                    df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date') # combined separation/reattachment dataframe
+                    df_sr[sr_eddy_low] = df_sr.apply(sum_two_columns, axis=1, col_x='e_low_x', col_y='e_low_y')
+                    df_sr[sr_eddy_med] = df_sr.apply(sum_two_columns, axis=1, col_x='e_med_x', col_y='e_med_y')
+                    df_sr[sr_eddy_high] = df_sr.apply(sum_two_columns, axis=1, col_x='e_high_x', col_y='e_high_y')
+                    df_sr[eddy_total] = df_sr.apply(create_dygraphs_error_str, axis=1, low='sr_eddy_low', med='sr_eddy_med', high='sr_eddy_high') # the dygraphs error string for combined separation/reattachment sandbars
+                else:
+                    raise Exception('Getting the separation/reattachment data went wrong...')
+                full_col_names = ('date',) + sr_col_names + eddy_col_names
+                e_df1 = df_sr[list(full_col_names)]
+            else:
+                e_df0_float[sr_eddy_low] = e_df0_float['e_low']
+                e_df0_float[sr_eddy_med] = e_df0_float['e_med']
+                e_df0_float[sr_eddy_high] = e_df0_float['e_high']
+                e_df0_float[eddy_total] = e_df0_float.apply(create_dygraphs_error_str, axis=1, low=sr_eddy_low, med=sr_eddy_med, high=sr_eddy_high) # the dygraphs error string if separation/reattachment doesn't apply 
+                full_col_names = ('date', sr_eddy_low, sr_eddy_med, sr_eddy_high, eddy_total)
+                e_df1 = e_df0_float[list(full_col_names)]
+            ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
+            ec_merge['ec_low'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_low, col_y='c_low')
+            ec_merge['ec_med'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_med, col_y='c_med')
+            ec_merge['ec_high'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_high, col_y='c_high')
+            ec_merge[total_site] = ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_low', med='ec_med', high='ec_high') # this is eddy + channel
+            df_raw = ec_merge.where(pd.notnull(ec_merge), None)
+            unneeded_columns = ('ec_low', 'ec_med', 'ec_high', sr_eddy_low, sr_eddy_med, sr_eddy_high, 'c_low', 'c_med', 'c_high')
+            df_raw_columns = df_raw.columns.values
+            needed_columns = tuple()
+            for df_raw_col in df_raw_columns:
+                if df_raw_col not in unneeded_columns:
+                    needed_columns += (df_raw_col,)
+            df_final = df_raw[list(needed_columns)]
+        else:     
+            raise Exception('I have no idea what you want me to query...')
+        df_final = df_final[pd.notnull(df_final['date'])]
+        plot_parameters = ('date',)
+        # get the pertinent columns from the dataframe
+        if 'eddy' in calculation_types:
+            plot_parameters += (eddy_total,)
+        if 'chan' in calculation_types:
+            plot_parameters += (channel_total,)
+        if 'eddy_chan_sum' in calculation_types:
+            plot_parameters += (total_site,)
+        df_pertinent = df_final[list(plot_parameters)]
+        df_pert_records = df_pertinent.to_dict('records')
+        
+        return self.render_to_csv_response(df_pert_records, plot_parameters)
+
+# This view is deprecated.
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
     """
@@ -312,11 +459,7 @@ class BasicSiteInfoJSON(JSONResponseMixin, View):
         area_calc_date_max = site_filter_set.aggregate(Max('calc_date'))
         area_max_date_str = convert_datetime_to_str(area_calc_date_max['calc_date__max'])
         # check to see if site has separation and reattachment information
-        acdb = AlchemDB()
-        ora_session = acdb.create_session()
-        query_results = ora_session.query(AreaVolumeCalcBase.sandbar_id).filter(AreaVolumeCalcBase.site_id==site_id).distinct()
-        distinct_sandbar_results = [result[0] for result in query_results if result[0] is not None]
-        ora_session.close()
+        distinct_sandbar_results = get_sep_reatt_ids(site_id)
         if len(distinct_sandbar_results) > 0:
             sr_list = distinct_sandbar_results
         else:
