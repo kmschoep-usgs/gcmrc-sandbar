@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import exists
 import cx_Oracle
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
 from surveys.db_mappings import AreaVolumeCalcBase
@@ -30,6 +29,16 @@ def determine_if_sep_reatt_exists(site_id):
         sr_exists = False
     ora_session.close()
     return sr_exists
+
+def determine_site_survey_types(site_id):
+    acdb = AlchemDB()
+    ora_session = acdb.create_session()
+    result = ora_session.query(AreaVolumeCalcBase.calc_type).filter(AreaVolumeCalcBase.site_id==site_id).distinct()
+    result_list = []
+    for record in result:
+        result_list.append(record.calc_type)
+    ora_session.close()
+    return result_list
 
 
 def get_sep_reatt_ids(site_id):

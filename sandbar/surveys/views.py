@@ -10,9 +10,10 @@ from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists
+from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
-                           col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, replace_df_none)
+                           col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, 
+                           replace_df_none, create_sep_reatt_name)
 
 
 class AreaVolumeCalcsVw(CSVResponseMixin, View):
@@ -30,9 +31,13 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
         parameter_type = request.GET.get('param_type')
-        plot_sep = request.GET.get('sep_plot')
-        if plot_sep == 'true':
+        plot_sep = request.GET.getlist('sr_id', None)
+        sandbar_id_names = []
+        if plot_sep:
             ps = True
+            for sandbar_id in plot_sep:
+                sandbar_id_name = create_sep_reatt_name(sandbar_id)
+                sandbar_id_names.append(sandbar_id_name)
         else:
             ps = False
         calculation_types = request.GET.getlist('calc_type', None)
@@ -45,6 +50,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         eddy_total = 'Eddy Total'
         total_site = 'Total Site'
         col_names = ('date',)
+        site_survey_types = determine_site_survey_types(site.id)
         if parameter_type == 'area2d':
             query_base = ora.query('calc_date', 'sandbar_id', 'interp_area2d')
             eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
@@ -61,7 +67,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 sr_col_names = tuple()
                 for sr_id in sr_ids:
                     eddy_df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                    col_name = 'Sandbar ID: {0}'.format(sr_id)
+                    col_name = create_sep_reatt_name(sr_id)
                     col_names += (col_name,)
                     sr_col_names += (col_name, )
                     eddy_df_sr[col_name] = eddy_df_sr['Eddy']
@@ -103,7 +109,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 sr_col_names = tuple()
                 for sr_id in sr_ids:
                     df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                    sr_col_name = 'Sandbar ID: {0}'.format(sr_id)
+                    sr_col_name = create_sep_reatt_name(sr_id)
                     sr_col_names += (sr_col_name,)
                     df_sr[sr_col_name] = df_sr.apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
                     eddy_df_srs.append(df_sr)
@@ -151,18 +157,23 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         df_final = df_final[pd.notnull(df_final['date'])]
         plot_parameters = ('date',)
         # get the pertinent columns from the dataframe
-        if 'eddy' in calculation_types:
-            plot_parameters += (eddy_total,)
-        if 'chan' in calculation_types:
-            plot_parameters += (channel_total,)
-        if 'eddy_chan_sum' in calculation_types:
-            plot_parameters += (total_site,)
+        if ps:
+            plot_parameters += tuple(sandbar_id_names)
+        else:
+            if 'eddy' in calculation_types and 'eddy' in site_survey_types:
+                plot_parameters += (eddy_total,)
+            if 'chan' in calculation_types and 'chan' in site_survey_types:
+                plot_parameters += (channel_total,)
+            if 'eddy_chan_sum' in calculation_types and ('eddy' in site_survey_types or 'chan' in site_survey_types):
+                plot_parameters += (total_site,)
         df_pertinent = df_final[list(plot_parameters)]
         df_pert_records = df_pertinent.to_dict('records')
         
         return self.render_to_csv_response(df_pert_records, plot_parameters)
 
+
 # This view is deprecated.
+# Superseded by AreaVolumeCalcsVw
 class AreaVolumeCalcsView(CSVResponseMixin, View):
     
     """

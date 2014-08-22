@@ -1,5 +1,6 @@
 SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var dateRange;
+	var srIDs;
 	var queryParams = 'site=' + gdawsSiteId;
 	var internalSiteId = siteId;
 	for (key in SB.Config.SITE_PARAMETERS) {
@@ -91,7 +92,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('#site-page-content').show();
 		}
 	});
-	
+
 	$.ajax({
 		url: SB.SITE_AREA_CALC_URL,
 		type: 'GET',
@@ -105,6 +106,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var volumeParam = respJSON.paramNames.volume;
 			var startDate = respJSON.calcDates.min;
 			var endDate = respJSON.calcDates.max;
+			var siteSrIDs = respJSON.sandbarIDs;
 			if (startDate === null && endDate === null) {
 				$('#no-data-warning').append('No sandbar data is available for this site.');
 				$('#no-data-warning').show();
@@ -124,6 +126,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			$('div.sub-param-group input:checkbox').attr('disabled', true);
 			sandbarStartDate = startDate;
 			sandbarEndDate = endDate;
+			srIDs = siteSrIDs;
 		}
 	});
 	
@@ -157,11 +160,17 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var gcmrcParams = [];
 			var sandbarParams = [];
 			var subParam = [];
+			var srParam = {srPlot: false, srIDs: null};
 			var errorExists = 0;
+			console.log(srIDs);
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				var parentClass = $(this).parent().attr('class');
-				if ($(this).val() != 'area2d' && $(this).val() != 'volume' && parentClass != 'sub-param-group') {
+				if ($(this).val() != 'area2d' && $(this).val() != 'volume' && parentClass != 'sub-param-group' && $(this).attr('id') != 'sep-reatt') {
 					gcmrcParams.push($(this).val());
+				}
+				else if ($(this).attr('id') === 'sep-reatt') {
+					srParam.srPlot = true;
+					srParam.srIDs = srIDs;
 				}
 				else if ($(this).attr('name') === 'sb-param') {
 					sandbarParams.push($(this).val());
@@ -204,7 +213,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					//do nothing
 				}
 			});
-
+			console.log(srParam);
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
@@ -286,7 +295,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
 				$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
-				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params);
+				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params, srParam);
 				
 				var blockRedraw = false;
 				$(document).ajaxStop(function() {
