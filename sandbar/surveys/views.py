@@ -158,7 +158,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         plot_parameters = ('date',)
         # get the pertinent columns from the dataframe
         if ps:
-            plot_parameters += tuple(sandbar_id_names) + (total_site,)
+            plot_parameters += tuple(sandbar_id_names)
         else:
             if 'eddy' in calculation_types and 'eddy' in site_survey_types:
                 plot_parameters += (eddy_total,)
