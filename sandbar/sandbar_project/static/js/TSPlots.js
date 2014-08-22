@@ -11,12 +11,21 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 	};
 	//var graphDivEl = $('#timeseries-plot');
 	// public object methods
-	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, gcmrcPlots, totalParams) {
+	this.updatePlots = function(dischargeMin, dischargeMax /* String discharge inputs */, params, gcmrcPlots, totalParams, srParams) {
 		var gcmrcPlots = gcmrcPlots;
 		var graphs = {};
 		var currentGraphs = [];
+		var srIDs;
+		var srIDurlParams = '';
+		var plotSR = srParams.srPlot;
+		if (plotSR) {
+			srIDs = srParams.srIDs;
+			for (k = 0; k < srIDs.length; k++) {
+				srIDurlParams += '&sr_id=' + srIDs[k];
+			}
+		}
 		for (j = 0; j < params.length; j++) {
-			var parentParam = params[j].paramVal;
+			var parentParam = params[j].paramVal; // eddy, channel, total
 			if (parentParam === 'volume') {
 				var eBars = true;
 				var plotter = [SB.DotPlotter, Dygraph.Plotters.linePlotter];
@@ -33,13 +42,12 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 			for (i = 0; i < calc_type.length; i++) {
 				calcTypeParamStr += '&calc_type=' + calc_type[i];
 			}
-			
 			this.graphsDivEl.children('#plots-loading-div').show();
 			$.ajax({
 				url: SB.AREA_2D_URL,
 				async: false,
 				type: 'GET',
-				data: 'site_id=' + this.siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr,
+				data: 'site_id=' + this.siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr + srIDurlParams,
 				context : this,
 				complete : function(resp, status) {
 					this.graphsDivEl.children('#plots-loading-div').hide();
