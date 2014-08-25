@@ -143,17 +143,16 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			enableChanTotalSite();
 		}	
 	});
-/*
+
 	$('#ds-min').change(function(event) {
-		if ($('#ds-min').val() < '8000') {
+		var checkedStatusSBParam = $('input[name="sb-param"]').is(':checked');
+		if ($('#ds-min').val() < '8000' && checkedStatusSBParam) {
 			enableChanTotalSite();
 		}
 		else {
 			disableChanTotalSite();
 		}
 	});
-
-*/
 	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
