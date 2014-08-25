@@ -162,7 +162,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var subParam = [];
 			var srParam = {srPlot: false, srIDs: null};
 			var errorExists = 0;
-			console.log(srIDs);
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				var parentClass = $(this).parent().attr('class');
 				if ($(this).val() != 'area2d' && $(this).val() != 'volume' && parentClass != 'sub-param-group' && $(this).attr('id') != 'sep-reatt') {
@@ -213,7 +212,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					//do nothing
 				}
 			});
-			console.log(srParam);
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {
