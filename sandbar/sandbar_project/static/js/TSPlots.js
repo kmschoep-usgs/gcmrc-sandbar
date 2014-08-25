@@ -347,6 +347,5 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		}
 		*/
 		this._graphs = graphs;
-		console.log(this._graphs);
 	};
 };
