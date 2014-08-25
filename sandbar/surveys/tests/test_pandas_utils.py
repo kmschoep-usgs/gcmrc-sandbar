@@ -5,7 +5,7 @@ import pandas as pd
 from pandas.util.testing import assert_frame_equal
 from django.test import TestCase
 from ..pandas_utils import (create_pandas_dataframe, round_series_values, col_difference, sum_two_columns, 
-                            create_dygraphs_error_str, check_for_nans_and_none, convert_to_float)
+                            create_dygraphs_error_str, check_for_nans_and_none, convert_to_float, create_sep_reatt_name)
 
 
 class TestCreatePandasDataFrame(TestCase):
@@ -166,3 +166,16 @@ class TestConvertToFloat(TestCase):
         df_expected = create_pandas_dataframe(expected_data, self.columns)
         df_equals = assert_frame_equal(df_float, df_expected)
         self.assertIsNone(df_equals)
+        
+        
+class TestCreateSepReattName(TestCase):
+    
+    def setUp(self):
+        
+        self.sandbar_id = 90
+        
+    def test_create_sep_reatt_name(self):
+        
+        result = create_sep_reatt_name(self.sandbar_id)
+        expected = 'Sandbar ID: 90'
+        self.assertEqual(result, expected)

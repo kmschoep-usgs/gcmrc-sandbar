@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import cx_Oracle
 from sandbar_project.local_settings import SCHEMA_USER, DB_PWD, DB_NAME
-from surveys.db_mappings import AreaVolumeCalcBase
+from .models import Sandbar
+from .db_mappings import AreaVolumeCalcBase
 
 
 def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
@@ -30,6 +31,7 @@ def determine_if_sep_reatt_exists(site_id):
     ora_session.close()
     return sr_exists
 
+
 def determine_site_survey_types(site_id):
     acdb = AlchemDB()
     ora_session = acdb.create_session()
@@ -42,11 +44,8 @@ def determine_site_survey_types(site_id):
 
 
 def get_sep_reatt_ids(site_id):
-    acdb = AlchemDB()
-    ora_session = acdb.create_session()
-    query_results = ora_session.query(AreaVolumeCalcBase.sandbar_id).filter(AreaVolumeCalcBase.site_id==site_id, AreaVolumeCalcBase.sandbar_id != None).distinct()
-    distinct_sandbar_results = [result[0] for result in query_results if result[0] is not None]
-    ora_session.close()
+    qs = Sandbar.objects.filter(site_id=site_id)
+    distinct_sandbar_results = [record.id for record in qs]
     return distinct_sandbar_results
 
 

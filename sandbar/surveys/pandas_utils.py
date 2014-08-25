@@ -16,6 +16,7 @@ def create_pandas_dataframe(data, columns=None, create_psuedo_column=False):
             df = pd.DataFrame([])        
     return df
 
+
 # function is deprecated
 def replace_none_with_nan(query_results):
     cleaned = []
