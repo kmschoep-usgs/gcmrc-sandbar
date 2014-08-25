@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
 from django.test import TestCase
+from .factories import SiteModelFactory, SandbarModelFactory
 from ..pandas_utils import (create_pandas_dataframe, round_series_values, col_difference, sum_two_columns, 
                             create_dygraphs_error_str, check_for_nans_and_none, convert_to_float, create_sep_reatt_name)
 
@@ -172,10 +173,41 @@ class TestCreateSepReattName(TestCase):
     
     def setUp(self):
         
-        self.sandbar_id = 90
+        self.site_id = 90
+        self.river_mile = 98.78
+        self.site_record = SiteModelFactory(
+                                            pk=self.site_id,
+                                            river_mile=self.river_mile,
+                                            river_side='R',
+                                            site_name='Some Site',
+                                            gdaws_site_id='7182',
+                                            gcmrc_site_id='0312A',
+                                            deposit_type='U',
+                                            eddy_size=750,
+                                            exp_ratio_8000=1.4,
+                                            exp_ratio_45000=1.6,
+                                            stage_change=4.5,
+                                            sed_budget_reach='Death Star',
+                                            cur_stage_relation='y=ax+b',
+                                            campsite='No',
+                                            geom=None,
+                                            stage_discharge_coeff_a=1,
+                                            stage_discharge_coeff_b=2,
+                                            stage_discharge_coeff_c=3
+                                            )
+        self.separation_id = 3
+        self.reattachment_id = 4
+        self.separation_record = SandbarModelFactory(pk=self.separation_id, site=self.site_record, sandbar_name='sep')
+        self.reattachment_record = SandbarModelFactory(pk=self.reattachment_id, site=self.site_record, sandbar_name='reatt')
         
-    def test_create_sep_reatt_name(self):
+    def test_create_separation_name(self):
         
-        result = create_sep_reatt_name(self.sandbar_id)
-        expected = 'Sandbar ID: 90'
+        result = create_sep_reatt_name(self.separation_id)
+        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Separation')
+        self.assertEqual(result, expected)
+        
+    def test_create_reattachment_name(self):
+        
+        result = create_sep_reatt_name(self.reattachment_id)
+        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Reattachment')
         self.assertEqual(result, expected)

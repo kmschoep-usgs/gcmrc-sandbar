@@ -6,6 +6,13 @@ from .models import Sandbar
 from .db_mappings import AreaVolumeCalcBase
 
 
+def get_sep_reattch_data(sr_id):
+    
+    record = Sandbar.objects.get(id=sr_id)
+    river_mile = record.river_mile
+    return float(river_mile)
+
+
 def convert_datetime_to_str(date_object, date_format='%Y-%m-%d'):
     
     """

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from .models import Sandbar
 
 def create_pandas_dataframe(data, columns=None, create_psuedo_column=False):    
     try:
@@ -174,5 +175,14 @@ def create_df_error_bars(data, final_col_name, columns=('date', 'val_low', 'val_
 
 
 def create_sep_reatt_name(sandbar_id):
-    sr_name = 'Sandbar ID: {0}'.format(sandbar_id)
+    sandbar_record = Sandbar.objects.get(id=sandbar_id)
+    river_mile = sandbar_record.river_mile
+    sandbar_name = sandbar_record.sandbar_name
+    if sandbar_name == 'sep':
+        sb_name = 'Separation'
+    elif sandbar_name == 'reatt':
+        sb_name = 'Reattachment'
+    else:
+        sb_name = None
+    sr_name = 'River mile: {river_mile} ({sb_name})'.format(river_mile=river_mile, sb_name=sb_name)
     return sr_name     

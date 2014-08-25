@@ -8,7 +8,7 @@ import pandas as pd
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
-from .models import Site, Survey, AreaVolume
+from .models import Site, Survey, AreaVolume, Sandbar
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
@@ -46,9 +46,9 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         ora = acdb.create_session()
         sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
-        channel_total = 'Channel Total'
-        eddy_total = 'Eddy Total'
-        total_site = 'Total Site'
+        channel_total = 'Channel Total - {0}'.format(site.river_mile)
+        eddy_total = 'Eddy Total - {0}'.format(site.river_mile)
+        total_site = 'Total Site - {0}'.format(site.river_mile)
         col_names = ('date',)
         site_survey_types = determine_site_survey_types(site.id)
         if parameter_type == 'area2d':
@@ -87,7 +87,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 e_df0_float[eddy_total] = e_df0_float['Eddy']
                 e_df1 = e_df0_float[['date', eddy_total]]
             ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
-            ec_merge[total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x='Eddy Total', col_y='Channel Total')
+            ec_merge[total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x=eddy_total, col_y=channel_total)
             df_final = ec_merge.where(pd.notnull(ec_merge), None)
         elif parameter_type == 'volume':
             query_base = ora.query('calc_date', 'sandbar_id', 'vol_error_low', 'interp_volume', 'vol_error_high')
