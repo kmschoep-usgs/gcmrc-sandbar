@@ -10,3 +10,8 @@ class AreaVolumeCalcsFactory(DjangoModelFactory):
 class SiteModelFactory(DjangoModelFactory):
     
     FACTORY_FOR = 'surveys.Site'
+    
+
+class SandbarModelFactory(DjangoModelFactory):
+    
+    FACTORY_FOR = 'surveys.Sandbar'

@@ -69,7 +69,8 @@ class Site(models.Model):
         
         #result.append(str(result_min))
         #result.append(str(result_max))
-        return result  
+        return result
+    
     
 class Survey(models.Model):
     
@@ -86,6 +87,7 @@ class Survey(models.Model):
     def __unicode__(self):
         return str(self.site) + ' on ' + str(self.survey_date)
     
+    
 class Sandbar(models.Model):
     
     site = models.ForeignKey(Site)
@@ -97,6 +99,19 @@ class Sandbar(models.Model):
     
     def __unicode__(self):
         return str(self.sandbar_name) + ' on ' + str(self.site)
+    
+    def _get_river_mile(self):
+        
+        river_mile = float(self.site.river_mile)
+        return river_mile
+    river_mile = property(_get_river_mile)
+    
+    def _get_site_name(self):
+        
+        site_name = self.site.site_name
+        return site_name
+    site_name = property(_get_site_name)
+    
 
 class AreaVolume(models.Model):
     site = models.ForeignKey(Site)
@@ -116,6 +131,7 @@ class AreaVolume(models.Model):
         
     def __unicode__(self):
         return 'Site: ' + str(self.site) + '; Sandbar: ' + str(self.sandbar) + '; Date: ' + str(self.calc_date) + '; Plane Height:' + str(self.plane_height)
+    
  
 class AreaVolumeStg(models.Model):
     dataset = models.CharField(max_length=100, blank=True)

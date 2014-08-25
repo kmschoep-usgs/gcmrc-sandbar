@@ -9,6 +9,7 @@ function selectDefaultSubParam(checkedStatus, parentVal) {
 	}
 };
 
+/*
 function clearRadios(checkedStatus) {
 	if (checkedStatus) {
 		$('div.sub-param-group input:checkbox').prop('checked', false);
@@ -17,6 +18,7 @@ function clearRadios(checkedStatus) {
 		$(targetStr).prop('checked', true);
 	}
 };
+*/
 
 function disableField(checkedStatus, parentVal) {
 	var selectStr = 'div#' + parentVal + '-subgroup' + ' input:checkbox';
@@ -29,9 +31,15 @@ function disableField(checkedStatus, parentVal) {
 };
 
 function disableChanTotalSite(){
+	// deal with area check boxes
+	$('#area2d-chan-checkbox').prop('checked', false);
 	$('#area2d-chan-checkbox').attr('disabled', true);
+	$('#area2d-eddy_chan_sum-checkbox').prop('checked', false);
 	$('#area2d-eddy_chan_sum-checkbox').attr('disabled', true);
+	// deal with volume checkboxes
+	$('#volume-chan-checkbox').prop('checked', false);
 	$('#volume-chan-checkbox').attr('disabled', true);
+	$('#volume-eddy_chan_sum-checkbox').prop('checked', false)
 	$('#volume-eddy_chan_sum-checkbox').attr('disabled', true);
 };
 
@@ -42,26 +50,34 @@ function enableChanTotalSite(){
 	$('#volume-eddy_chan_sum-checkbox').attr('disabled', false);
 };
 
+
 $(document).ready(function() {
-	$(this).on('click', 'input[name="sb-param"]', function() {
-		var checkedStatus = $(this).is(':checked');
+	$(this).on('click', 'input[name="sb-param"], #sep-reatt', function() {
+		var checkedStatusSBParam = $('input[name="sb-param"]').is(':checked');
+		var checkedStatusSR = $('#sep-reatt').is(':checked');
 		var parentVal = $(this).val();
-		selectDefaultSubParam(checkedStatus, parentVal);
+		var dsMinVal = $('#ds-min').val();
+		if (dsMinVal < 8000) {
+			chanEnableOkay = true;
+		}
+		else {
+			chanEnableOkay = false;
+		}
+		selectDefaultSubParam(checkedStatusSBParam, parentVal);
+		var sepReattChecked = $('#sep-reatt').is(':checked');
 		//disable checkbox buttons if Area 2D is unchecked; enable if checked
-		disableField(checkedStatus, parentVal);		
-		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
+		disableField(checkedStatusSBParam, parentVal);		
+		if (sepReattChecked) {
+			disableChanTotalSite();
+		}
+		else if (!sepReattChecked && checkedStatusSBParam && chanEnableOkay) {
+			enableChanTotalSite();
+		}
+		else if (!sepReattChecked && checkedStatusSBParam && !chanEnableOkay) {
 			disableChanTotalSite();
 		}
 		else {
-			enableChanTotalSite();
+			// do nothing
 		}
 	});
-	
-	/*
-	$(this).on('click', 'div.sub-param-group input:checkbox', function() {
-		var checkedStatus = $('#area2d-checkbox').is(':checked');
-		// clear all the radio buttons and then populate the button that triggered the clear action
-		clearRadios(checkedStatus);		
-	});
-	*/
-})
+});

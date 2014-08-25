@@ -134,7 +134,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	
-	
+
 	$('#sep-reatt').click(function(event) {
 		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
 			disableChanTotalSite();
@@ -143,16 +143,16 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			enableChanTotalSite();
 		}	
 	});
-	
+
 	$('#ds-min').change(function(event) {
-		if ($('#ds-min').val() < '8000') {
+		var checkedStatusSBParam = $('input[name="sb-param"]').is(':checked');
+		if ($('#ds-min').val() < '8000' && checkedStatusSBParam) {
 			enableChanTotalSite();
 		}
 		else {
 			disableChanTotalSite();
 		}
 	});
-	
 	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
@@ -162,7 +162,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			var subParam = [];
 			var srParam = {srPlot: false, srIDs: null};
 			var errorExists = 0;
-			console.log(srIDs);
 			$('#parameter-selection-div input[type=checkbox]:checked').each(function() {
 				var parentClass = $(this).parent().attr('class');
 				if ($(this).val() != 'area2d' && $(this).val() != 'volume' && parentClass != 'sub-param-group' && $(this).attr('id') != 'sep-reatt') {
@@ -213,7 +212,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					//do nothing
 				}
 			});
-			console.log(srParam);
 			var params = gcmrcParams.concat(sandbarParams);
 			if (params.length === 0) {
 				if (errorExists === 0) {

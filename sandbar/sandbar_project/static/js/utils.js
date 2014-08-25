@@ -26,4 +26,4 @@ function collect() {
 		}
 	}
 	return ret;
-}
+};

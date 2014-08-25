@@ -16,7 +16,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		var graphs = {};
 		var currentGraphs = [];
 		var srIDs;
-		//var srIDurlParams = '';
 		var plotSR = srParams.srPlot;
 		if (plotSR) {
 			srIDs = srParams.srIDs;
@@ -55,7 +54,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							this.graphsDivEl.children('#plots-loading-div').hide();
 							if (status === 'success') {
 								currentGraphs.push(parentParamSR);
-								console.log(parentParamSR);
 								// destroy previously created graphs
 								for (key in this._graphs) {
 									var currentGraphExists = $.inArray(key, currentGraphs);
@@ -94,7 +92,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 								var headerArray = csvHeaderLineBreak.split(",");
 								var columnCount = headerArray.length - 1;
 								graphDivEl(parentParamSR).show();
-								console.log(graphId(parentParamSR));
 								graphs[parentParamSR] = new Dygraph(graphId(parentParamSR),
 										data, {
 									xlabel: "Date",
@@ -350,6 +347,5 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		}
 		*/
 		this._graphs = graphs;
-		console.log(this._graphs);
 	};
 };
