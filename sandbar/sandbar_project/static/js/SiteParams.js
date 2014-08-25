@@ -9,6 +9,7 @@ function selectDefaultSubParam(checkedStatus, parentVal) {
 	}
 };
 
+/*
 function clearRadios(checkedStatus) {
 	if (checkedStatus) {
 		$('div.sub-param-group input:checkbox').prop('checked', false);
@@ -17,6 +18,7 @@ function clearRadios(checkedStatus) {
 		$(targetStr).prop('checked', true);
 	}
 };
+*/
 
 function disableField(checkedStatus, parentVal) {
 	var selectStr = 'div#' + parentVal + '-subgroup' + ' input:checkbox';
@@ -42,6 +44,7 @@ function enableChanTotalSite(){
 	$('#volume-eddy_chan_sum-checkbox').attr('disabled', false);
 };
 
+
 $(document).ready(function() {
 	$(this).on('click', 'input[name="sb-param"]', function() {
 		var checkedStatus = $(this).is(':checked');
@@ -49,19 +52,11 @@ $(document).ready(function() {
 		selectDefaultSubParam(checkedStatus, parentVal);
 		//disable checkbox buttons if Area 2D is unchecked; enable if checked
 		disableField(checkedStatus, parentVal);		
-		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
+		if ($('#sep-reatt').is(':checked')) {
 			disableChanTotalSite();
 		}
-		else {
-			enableChanTotalSite();
-		}
+		//else {
+		//	enableChanTotalSite();
+		//}
 	});
-	
-	/*
-	$(this).on('click', 'div.sub-param-group input:checkbox', function() {
-		var checkedStatus = $('#area2d-checkbox').is(':checked');
-		// clear all the radio buttons and then populate the button that triggered the clear action
-		clearRadios(checkedStatus);		
-	});
-	*/
-})
+});

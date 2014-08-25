@@ -134,7 +134,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
 	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
 	
-	
+
 	$('#sep-reatt').click(function(event) {
 		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
 			disableChanTotalSite();
@@ -143,7 +143,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			enableChanTotalSite();
 		}	
 	});
-	
+/*
 	$('#ds-min').change(function(event) {
 		if ($('#ds-min').val() < '8000') {
 			enableChanTotalSite();
@@ -152,7 +152,8 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			disableChanTotalSite();
 		}
 	});
-	
+
+*/
 	
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
