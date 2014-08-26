@@ -185,5 +185,5 @@ def create_sep_reatt_name(sandbar_id):
         sb_name = 'Reattachment'
     else:
         sb_name = None
-    sr_name = 'River mile: {river_mile} {river_side} ({sb_name})'.format(river_mile=river_mile, river_side=river_side, sb_name=sb_name)
+    sr_name = 'River mile: {river_mile} {river_side} ({sb_name})'.format(river_mile=river_mile, sb_name=sb_name, river_side=river_side)
     return sr_name     
