@@ -136,11 +136,22 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	
 
 	$('#sep-reatt').click(function(event) {
+		var checkboxIdArr = [];
+		$('#parameter-selection-div input[name="sb-param"]:checked').each(function() {
+			var checkboxIdVal = $(this).val();
+			var checkboxIdChan = checkboxIdVal + '-chan-checkbox';
+			var checkboxIdTotalSite = checkboxIdVal + '-eddy_chan_sum-checkbox';
+			checkboxIdArr.push(checkboxIdChan);
+			checkboxIdArr.push(checkboxIdTotalSite);
+		});
 		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
 			disableChanTotalSite();
 		}
 		else {
-			enableChanTotalSite();
+			for (i = 0; i < checkboxIdArr.length; i++) {
+				var checkboxID = checkboxIdArr[i];
+				enableChanTotalSite(checkboxID);
+			}
 		}	
 	});
 
