@@ -157,7 +157,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 		if ($('#ds-min').val() < '8000' && checkedStatusSBParam) {
 			for (i = 0; i < checkboxIdArr.length; i++) {
 				var checkboxID = checkboxIdArr[i];
-				console.log(checkboxID);
 				enableChanTotalSite(checkboxID);
 			}
 		}
