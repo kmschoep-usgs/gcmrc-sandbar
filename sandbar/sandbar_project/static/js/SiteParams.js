@@ -71,7 +71,7 @@ $(document).ready(function() {
 			disableChanTotalSite();
 		}
 		else if (!sepReattChecked && checkedStatusSBParam && chanEnableOkay) {
-			enableChanTotalSite();
+			//enableChanTotalSite();
 		}
 		else if (!sepReattChecked && checkedStatusSBParam && !chanEnableOkay) {
 			disableChanTotalSite();
