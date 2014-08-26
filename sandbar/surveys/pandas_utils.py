@@ -177,6 +177,7 @@ def create_df_error_bars(data, final_col_name, columns=('date', 'val_low', 'val_
 def create_sep_reatt_name(sandbar_id):
     sandbar_record = Sandbar.objects.get(id=sandbar_id)
     river_mile = sandbar_record.river_mile
+    river_side = sandbar_record.river_side
     sandbar_name = sandbar_record.sandbar_name
     if sandbar_name == 'sep':
         sb_name = 'Separation'
@@ -184,5 +185,5 @@ def create_sep_reatt_name(sandbar_id):
         sb_name = 'Reattachment'
     else:
         sb_name = None
-    sr_name = 'River mile: {river_mile} ({sb_name})'.format(river_mile=river_mile, sb_name=sb_name)
+    sr_name = 'River mile: {river_mile} {river_side} ({sb_name})'.format(river_mile=river_mile, sb_name=sb_name, river_side=river_side)
     return sr_name     

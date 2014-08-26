@@ -203,11 +203,11 @@ class TestCreateSepReattName(TestCase):
     def test_create_separation_name(self):
         
         result = create_sep_reatt_name(self.separation_id)
-        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Separation')
+        expected = 'River mile: {0} {1} ({2})'.format(self.river_mile, self.river_side, 'Separation')
         self.assertEqual(result, expected)
         
     def test_create_reattachment_name(self):
         
         result = create_sep_reatt_name(self.reattachment_id)
-        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Reattachment')
+        expected = 'River mile: {0} {1} ({2})'.format(self.river_mile, self.river_side, 'Reattachment')
         self.assertEqual(result, expected)
