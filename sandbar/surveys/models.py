@@ -105,7 +105,7 @@ class Sandbar(models.Model):
         river_mile = float(self.site.river_mile)
         return river_mile
     river_mile = property(_get_river_mile)
-    
+      
     def _get_river_side(self):
         
         river_side = str(self.site.river_side)

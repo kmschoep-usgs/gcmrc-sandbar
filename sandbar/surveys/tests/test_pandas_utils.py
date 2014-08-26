@@ -175,10 +175,11 @@ class TestCreateSepReattName(TestCase):
         
         self.site_id = 90
         self.river_mile = 98.78
+        self.river_side = 'R'
         self.site_record = SiteModelFactory(
                                             pk=self.site_id,
                                             river_mile=self.river_mile,
-                                            river_side='R',
+                                            river_side=self.river_side,
                                             site_name='Some Site',
                                             gdaws_site_id='7182',
                                             gcmrc_site_id='0312A',

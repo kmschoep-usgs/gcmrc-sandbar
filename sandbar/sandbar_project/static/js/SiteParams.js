@@ -43,17 +43,18 @@ function disableChanTotalSite(){
 	$('#volume-eddy_chan_sum-checkbox').attr('disabled', true);
 };
 
-function enableChanTotalSite(){
-	$('#area2d-chan-checkbox').attr('disabled', false);
-	$('#area2d-eddy_chan_sum-checkbox').attr('disabled', false);
-	$('#volume-chan-checkbox').attr('disabled', false);
-	$('#volume-eddy_chan_sum-checkbox').attr('disabled', false);
+function enableChanTotalSite(checkboxID){
+	var selector = '#' + checkboxID;
+	$(selector).attr('disabled', false);
+	$(selector).attr('disabled', false);
 };
 
 
 $(document).ready(function() {
 	$(this).on('click', 'input[name="sb-param"], #sep-reatt', function() {
-		var checkedStatusSBParam = $('input[name="sb-param"]').is(':checked');
+		var paramId = $(this).attr('id');
+		var idStr = '#' + paramId;
+		var checkedStatusSBParam = $(idStr).is(':checked');
 		var checkedStatusSR = $('#sep-reatt').is(':checked');
 		var parentVal = $(this).val();
 		var dsMinVal = $('#ds-min').val();
@@ -66,12 +67,12 @@ $(document).ready(function() {
 		selectDefaultSubParam(checkedStatusSBParam, parentVal);
 		var sepReattChecked = $('#sep-reatt').is(':checked');
 		//disable checkbox buttons if Area 2D is unchecked; enable if checked
-		disableField(checkedStatusSBParam, parentVal);		
+		disableField(checkedStatusSBParam, parentVal);
 		if (sepReattChecked) {
 			disableChanTotalSite();
 		}
 		else if (!sepReattChecked && checkedStatusSBParam && chanEnableOkay) {
-			enableChanTotalSite();
+			//enableChanTotalSite();
 		}
 		else if (!sepReattChecked && checkedStatusSBParam && !chanEnableOkay) {
 			disableChanTotalSite();
