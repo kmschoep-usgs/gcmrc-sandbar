@@ -46,9 +46,9 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         ora = acdb.create_session()
         sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
-        channel_total = 'Channel Total - {0}'.format(site.river_mile)
-        eddy_total = 'Eddy Total - {0}'.format(site.river_mile)
-        total_site = 'Total Site - {0}'.format(site.river_mile)
+        channel_total = 'Channel Total - {0} {1}'.format(site.river_mile,site.river_side)
+        eddy_total = 'Eddy Total - {0} {1}'.format(site.river_mile,site.river_side)
+        total_site = 'Total Site - {0} {1}'.format(site.river_mile,site.river_side)
         col_names = ('date',)
         site_survey_types = determine_site_survey_types(site.id)
         if parameter_type == 'area2d':
