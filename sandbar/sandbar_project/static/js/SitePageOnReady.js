@@ -146,14 +146,26 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 
 	$('#ds-min').change(function(event) {
 		var checkedStatusSBParam = $('input[name="sb-param"]').is(':checked');
+		var checkboxIdArr = []
+		$('#parameter-selection-div input[name="sb-param"]:checked').each(function() {
+			var checkboxIdVal = $(this).val();
+			var checkboxIdChan = checkboxIdVal + '-chan-checkbox';
+			var checkboxIdTotalSite = checkboxIdVal + '-eddy_chan_sum-checkbox';
+			checkboxIdArr.push(checkboxIdChan);
+			checkboxIdArr.push(checkboxIdTotalSite);
+		});
 		if ($('#ds-min').val() < '8000' && checkedStatusSBParam) {
-			enableChanTotalSite();
+			for (i = 0; i < checkboxIdArr.length; i++) {
+				var checkboxID = checkboxIdArr[i];
+				console.log(checkboxID);
+				enableChanTotalSite(checkboxID);
+			}
 		}
 		else {
 			disableChanTotalSite();
 		}
 	});
-	
+
 	$('#update-plots-button, #download-data').click(function(event) {
 		var clickTrigger = $(this).attr('id');
 		if ($('form').valid()) {
