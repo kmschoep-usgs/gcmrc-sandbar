@@ -1,4 +1,4 @@
-function sandbarDataPlot(url, siteId, parentParam, dischargeMin, dischargeMax, calcTypeParamStr, parentParam, 
+SB.TimeSeriesPlot = function (url, siteId, parentParam, dischargeMin, dischargeMax, calcTypeParamStr, parentParam, 
 						 gcmrcPlots, currentGraphs, totalParams, yAxisLabel, eBars, plotter, srIDurlParam=null) {
 	.ajax({
 		url: url,
@@ -61,7 +61,25 @@ function sandbarDataPlot(url, siteId, parentParam, dischargeMin, dischargeMax, c
 					customBars: eBars,
 					plotter: plotter
 				});
-				
+				if (columnCount < calc_type.length) {
+					var missingDataArr = [];
+					if (!searchForSubString('Eddy Total', headerArray) && $.inArray('eddy', calc_type) > -1) {
+						missingDataArr.push('Eddy'); 
+					}
+					if (!searchForSubString('Channel Total', headerArray) && $.inArray('chan', calc_type) > -1) {
+						missingDataArr.push('Channel'); 
+					}
+					if (!searchForSubString('Total Site', headerArray) && $.inArray('eddy_chan_sum', calc_type) > -1) {
+						missingDataArr.push('Total Site'); 
+					}
+					var missingDataStr = missingDataArr.join(', ');
+					var errorDisplay = '<p class="param-missing"> The following ' + displayName + ' parameters are unavailable for this site: ' + missingDataStr + '.</p>';
+					graphDivEl(parentParam).append(errorDisplay);
+					$('<br/>').insertAfter(graphDivEl(parentParam));
+				}
+				else {
+					alert('Unable to retrieve data: ' + resp.status + ' : ' + resp.statusText);
+				}
 			}
 		}
 	});
