@@ -175,10 +175,11 @@ class TestCreateSepReattName(TestCase):
         
         self.site_id = 90
         self.river_mile = 98.78
+        self.river_side = 'R'
         self.site_record = SiteModelFactory(
                                             pk=self.site_id,
                                             river_mile=self.river_mile,
-                                            river_side='R',
+                                            river_side=self.river_side,
                                             site_name='Some Site',
                                             gdaws_site_id='7182',
                                             gcmrc_site_id='0312A',
@@ -203,11 +204,11 @@ class TestCreateSepReattName(TestCase):
     def test_create_separation_name(self):
         
         result = create_sep_reatt_name(self.separation_id)
-        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Separation')
+        expected = 'River mile: {0} {1} ({2})'.format(self.river_mile, self.river_side, 'Separation')
         self.assertEqual(result, expected)
         
     def test_create_reattachment_name(self):
         
         result = create_sep_reatt_name(self.reattachment_id)
-        expected = 'River mile: {0} ({1})'.format(self.river_mile, 'Reattachment')
+        expected = 'River mile: {0} {1} ({2})'.format(self.river_mile, self.river_side, 'Reattachment')
         self.assertEqual(result, expected)

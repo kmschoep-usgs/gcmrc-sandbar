@@ -27,3 +27,10 @@ function collect() {
 	}
 	return ret;
 };
+
+function searchForSubString(subString, strArray) {
+	for (i = 0; i < strArray.length; i++) {
+		var value = strArray[i];
+		
+	}
+};

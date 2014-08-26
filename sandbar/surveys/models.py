@@ -106,6 +106,11 @@ class Sandbar(models.Model):
         return river_mile
     river_mile = property(_get_river_mile)
     
+    def _get_river_side(self):
+        river_side = self.site.river_side
+        return river_side
+    river_side = property(_get_river_side)
+    
     def _get_site_name(self):
         
         site_name = self.site.site_name
