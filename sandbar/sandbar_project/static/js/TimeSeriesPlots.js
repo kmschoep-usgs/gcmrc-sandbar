@@ -1,13 +1,36 @@
-SB.TimeSeriesPlot = function (url, siteId, parentParam, dischargeMin, dischargeMax, calcTypeParamStr, parentParam, 
-						 gcmrcPlots, currentGraphs, totalParams, yAxisLabel, eBars, plotter, srIDurlParam=null) {
-	.ajax({
+function graphDivEl(graphsDivId) {
+	var str = $('#' + graphsDivId);
+	return str;
+};
+
+function graphId(key) {
+	return $('#' + graphId(key));
+};
+
+function TimeSeriesPlot(options) {
+	 var url = options.url;
+	 var siteID = options.siteID;
+	 var parentParam = options.parentParam;
+	 var dischargeMin = options.dischargeMin;
+	 var dischargeMax = options.dischargeMax;
+	 var calcTypeParamStr = options.calcTypeParamStr;
+	 var graphChildren = options.graphChildren;
+	 var gcmrcPlots = options.gcmrcPlots;
+	 var totalParams = options.totalParams;
+	 var yAxisLabel = options.yAxisLabel;
+	 var eBars = options.eBars;
+	 var plotter = options.plotter;
+	 var currentGraphs = options.currentGraphs;
+	 var graphs = options.graphs;
+	 var srIDurlParam = options.srIDurlParam || '';
+	$.ajax({
 		url: url,
 		async: false,
 		type: 'GET',
-		data: 'site_id=' + this.siteId + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr + srIDurlParam,
+		data: 'site_id=' + siteID + '&param_type=' + parentParam + '&ds_min=' + dischargeMin + '&ds_max=' + dischargeMax + calcTypeParamStr + srIDurlParam,
 		context: this,
 		complete: function(resp, status) {
-			this.graphsDivE1.children('#plots-loading-div').hide();
+			graphChildren.hide();
 			if (status === 'success') {
 				currentGraphs.push(parentParam);
 				for (key in this._graphs) {
@@ -45,8 +68,8 @@ SB.TimeSeriesPlot = function (url, siteId, parentParam, dischargeMin, dischargeM
 				var csvHeaderLineBreak = csvHeader.replace(/(\r\n|\n|\r)/gm,"");
 				var headerArray = csvHeaderLineBreak.split(",");
 				var columnCount = headerArray.length - 1;
-				graphDivEl(parentParamSR).show();
-				graphs[parentParam] = new Dygraph(graphId(parentParam)
+				graphDivEl(parentParam).show();
+				graphs[parentParam] = new Dygraph(graphId(parentParam),
 						data, {
 					xlabel: "Date",
 					ylabel: yAxisLabel,
@@ -83,4 +106,5 @@ SB.TimeSeriesPlot = function (url, siteId, parentParam, dischargeMin, dischargeM
 			}
 		}
 	});
+	return graphs;
 };
