@@ -309,7 +309,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         sr_col_name = '{p_name} Eddy {sr_designation} ({unit})'.format(p_name=vol_display_name, 
                                                                                        sr_designation=create_sep_reatt_name(sr_id), unit=volume_unit)
                         sr_col_names += (sr_col_name,)
-                        df_sr[sr_col_name] = df_sr.apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
+                        df_sr[sr_col_name] = df_sr.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
                         eddy_df_srs.append(df_sr)
                         if 'eddy' in sub_params:
                             display_columns.append(sr_col_name)
@@ -323,7 +323,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         sep_reatt_col = sr_col_names[0]
                         df_sr[v_eddy_total] = df_sr[sep_reatt_col] # the dygraphs error string for combined separation/reattachment sandbars
                     elif eddy_df_srs_len == 2:
-                        df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date') # combined separation/reattachment dataframe
+                        df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date').applymap(round_series_values) # combined separation/reattachment dataframe
                         df_sr[sr_eddy_low] = df_sr.apply(sum_two_columns, axis=1, col_x='e_low_x', col_y='e_low_y')
                         df_sr[sr_eddy_med] = df_sr.apply(sum_two_columns, axis=1, col_x='e_med_x', col_y='e_med_y')
                         df_sr[sr_eddy_high] = df_sr.apply(sum_two_columns, axis=1, col_x='e_high_x', col_y='e_high_y')
@@ -339,7 +339,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     e_df0_float[v_eddy_total] = e_df0_float.apply(create_dygraphs_error_str, axis=1, low=sr_eddy_low, med=sr_eddy_med, high=sr_eddy_high) # the dygraphs error string if separation/reattachment doesn't apply 
                     full_col_names = ('date', sr_eddy_low, sr_eddy_med, sr_eddy_high, v_eddy_total)
                     e_df1 = e_df0_float[list(full_col_names)]
-                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date').applymap(round_series_values)
+                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
                 ec_merge['ec_low'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_low, col_y='c_low')
                 ec_merge['ec_med'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_med, col_y='c_med')
                 ec_merge['ec_high'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_high, col_y='c_high')
@@ -367,22 +367,12 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         else:
             df_merge = pd.DataFrame([])
         ora.close()
-        column_name_array = df_merge.columns.values
-        column_name_list = list(column_name_array)
-        try:
-            column_name_tuple = (column_name_list.pop(0),)
-        except(IndexError):
-            column_name_tuple = (None,)
-        sorted_name_listed = sorted(column_name_list)
-        sorted_name_tuple = tuple(sorted_name_listed)
-        column_name_tuple += sorted_name_tuple
         df_raw = df_merge[pd.notnull(df_merge['date'])]
         df_rounded = df_raw.applymap(round_series_values).applymap(datetime_to_date)
         df_ready = df_rounded.where(pd.notnull(df_rounded), None)
         display_column_list = ['date'] + sorted(display_columns)
         df_final = df_ready[display_column_list]
         df_record = df_final.to_dict('records')
-        print(df_record)
         site_name = site.site_name.lower().replace(' ', '_')
         download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
         
