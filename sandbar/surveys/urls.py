@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url
 
-from .views import (SitesListView, SiteDetailView, GDAWSWebServiceProxy, AreaVolumeCalcsView,
+from .views import (SitesListView, SiteDetailView, GDAWSWebServiceProxy,
                     SandBarSitesGeoJSON, BasicSiteInfoJSON, AreaVolumeCalcsDownloadView,
                     AreaVolumeCalcsVw)
 
