@@ -336,10 +336,10 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     e_df0_float[sr_eddy_low] = e_df0_float['e_low']
                     e_df0_float[sr_eddy_med] = e_df0_float['e_med']
                     e_df0_float[sr_eddy_high] = e_df0_float['e_high']
-                    e_df0_float[v_eddy_total] = e_df0_float.apply(create_dygraphs_error_str, axis=1, low=sr_eddy_low, med=sr_eddy_med, high=sr_eddy_high) # the dygraphs error string if separation/reattachment doesn't apply 
+                    e_df0_float[v_eddy_total] = e_df0_float.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low=sr_eddy_low, med=sr_eddy_med, high=sr_eddy_high) # the dygraphs error string if separation/reattachment doesn't apply 
                     full_col_names = ('date', sr_eddy_low, sr_eddy_med, sr_eddy_high, v_eddy_total)
                     e_df1 = e_df0_float[list(full_col_names)]
-                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
+                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date').applymap(round_series_values)
                 ec_merge['ec_low'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_low, col_y='c_low')
                 ec_merge['ec_med'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_med, col_y='c_med')
                 ec_merge['ec_high'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_high, col_y='c_high')
