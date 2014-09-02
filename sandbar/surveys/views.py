@@ -11,9 +11,8 @@ from common.utils.geojson_utils import create_geojson_point, create_geojson_feat
 from .models import Site, Survey, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
-from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, create_df_error_bars, 
-                           col_difference, sum_two_columns, create_dygraphs_error_str, convert_to_float, 
-                           replace_df_none, create_sep_reatt_name)
+from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date,
+                           sum_two_columns, create_dygraphs_error_str, convert_to_float, create_sep_reatt_name)
 
 
 class AreaVolumeCalcsVw(CSVResponseMixin, View):
