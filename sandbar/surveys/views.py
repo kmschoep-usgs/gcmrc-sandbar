@@ -275,7 +275,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 ec_merge[a_total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x=a_eddy_total, col_y=a_channel_total)
                 df_area = ec_merge.where(pd.notnull(ec_merge), None)
                 complete_dfs.append(df_area)
-            if p_name == 'volume':
+            elif p_name == 'volume':
                 vol_display_name = 'Volume'
                 volume_unit = 'cubic meter'
                 v_channel_total = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
@@ -408,6 +408,7 @@ class SitesListView(ListView):
                                                                                  max_date=Max('survey_date'))})
         return result    
 
+
 class SiteDetailView(DetailView):
 
     template_name = 'surveys/site.html'
@@ -418,6 +419,7 @@ class SiteDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
         return context
+
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     ''' 
@@ -431,6 +433,7 @@ def _interpolateCalcs(xp, fp, Z):
     result = interp(Z, xp, fp);
     
     return result
+
 
 class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
