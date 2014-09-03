@@ -194,7 +194,15 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					srParam.srIDs = srIDs;
 				}
 				else if ($(this).attr('name') === 'sb-param') {
-					sandbarParams.push($(this).val());
+					if (srParam.srPlot === true) {
+						var separationParam = $(this).val() + '-sr-sep';
+						var reattachmentParam = $(this).val() + '-sr-reatt';
+						sandbarParams.push(separationParam);
+						sandbarParams.push(reattachmentParam);
+					}
+					else {
+						sandbarParams.push($(this).val());
+					}
 				}
 				else if ($(this).attr('name') === 'sb-subparam') {
 					var parentID = $(this).parent().attr('id');
