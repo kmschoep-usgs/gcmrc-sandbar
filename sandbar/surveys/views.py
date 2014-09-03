@@ -48,7 +48,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         channel_total = 'Channel Total - {0} {1}'.format(site.river_mile, site.river_side)
         eddy_total = 'Eddy Total - {0} {1}'.format(site.river_mile, site.river_side)
         total_site = 'Total Site - {0} {1}'.format(site.river_mile, site.river_side)
-        col_names = ('date',)
+        col_names = ('date',) # keep track of the columns that are needed for final data display
         site_survey_types = determine_site_survey_types(site.id)
         if parameter_type == 'area2d':
             query_base = ora.query('calc_date', 'sandbar_id', 'interp_area2d')
@@ -63,7 +63,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
             if sr_exists:
                 sr_ids = get_sep_reatt_ids(site.id)
                 eddy_df_srs = []
-                sr_col_names = tuple()
+                sr_col_names = tuple() # keep track of intermediate columns needed to do math
                 for sr_id in sr_ids:
                     eddy_df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
                     col_name = create_sep_reatt_name(sr_id)
@@ -165,7 +165,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 plot_parameters += (channel_total,)
             if 'eddy_chan_sum' in calculation_types and ('eddy' in site_survey_types or 'chan' in site_survey_types):
                 plot_parameters += (total_site,)
-        df_pertinent = df_final[list(plot_parameters)]
+        df_pertinent = df_final[list(plot_parameters)].sort(['date'])
         df_pert_records = df_pertinent.to_dict('records')
         
         return self.render_to_csv_response(df_pert_records, plot_parameters)
@@ -205,18 +205,19 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 sub_p = None
             sbp = SandbarParams(parameter=parameter, db_column=db_column, unit=unit, sub_parameters=sub_p)
             param_list.append(sbp)
-        alchemical_sql = AlchemDB()
-        ora = alchemical_sql.create_session()
+        acdb = AlchemDB()
+        ora = acdb.create_session()
         sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
         eddy_total_str = '{p_name} Eddy Total - {river_mile} {river_side} ({unit})'
         total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
         complete_dfs = []
-        col_names = ('date',)
         sr_exists = determine_if_sep_reatt_exists(site.id)
-        display_columns = []
+        display_columns = [] # these are the columns that the user has specified for download
         for p_tuple in param_list:
+            col_names = ('date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
+            sr_col_names = tuple() # keep track of intermediate columns needed to do math
             p_name = p_tuple.parameter
             p_column = p_tuple.db_column
             sub_params = p_tuple.sub_parameters
@@ -246,7 +247,6 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 if sr_exists:
                     sr_ids = get_sep_reatt_ids(site.id)
                     eddy_df_srs = []
-                    sr_col_names = tuple()
                     for sr_id in sr_ids:
                         eddy_df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
                         col_name = '{p_name} Eddy {sr_designation} ({unit})'.format(p_name=area_display_name, 
@@ -274,8 +274,8 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
                 ec_merge[a_total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x=a_eddy_total, col_y=a_channel_total)
                 df_area = ec_merge.where(pd.notnull(ec_merge), None)
-                complete_dfs.append(df_area)
-            if p_name == 'volume':
+                complete_dfs.append(df_area.applymap(round_series_values))
+            elif p_name == 'volume':
                 vol_display_name = 'Volume'
                 volume_unit = 'cubic meter'
                 v_channel_total = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
@@ -303,11 +303,11 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 if sr_exists:
                     sr_ids = get_sep_reatt_ids(site.id)
                     eddy_df_srs = []
-                    sr_col_names = tuple()
                     for sr_id in sr_ids:
                         df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
                         sr_col_name = '{p_name} Eddy {sr_designation} ({unit})'.format(p_name=vol_display_name, 
                                                                                        sr_designation=create_sep_reatt_name(sr_id), unit=volume_unit)
+                        col_names += (sr_col_name,)
                         sr_col_names += (sr_col_name,)
                         df_sr[sr_col_name] = df_sr.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
                         eddy_df_srs.append(df_sr)
@@ -368,10 +368,10 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             df_merge = pd.DataFrame([])
         ora.close()
         df_raw = df_merge[pd.notnull(df_merge['date'])]
-        df_rounded = df_raw.applymap(round_series_values).applymap(datetime_to_date)
-        df_ready = df_rounded.where(pd.notnull(df_rounded), None)
+        df_date = df_raw.applymap(datetime_to_date)
+        df_ready = df_date.where(pd.notnull(df_date), None)
         display_column_list = ['date'] + sorted(display_columns)
-        df_final = df_ready[display_column_list]
+        df_final = df_ready[display_column_list].sort(['date'])
         df_record = df_final.to_dict('records')
         site_name = site.site_name.lower().replace(' ', '_')
         download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
@@ -408,6 +408,7 @@ class SitesListView(ListView):
                                                                                  max_date=Max('survey_date'))})
         return result    
 
+
 class SiteDetailView(DetailView):
 
     template_name = 'surveys/site.html'
@@ -418,6 +419,7 @@ class SiteDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SiteDetailView, self).get_context_data(**kwargs)
         return context
+
 
 class GDAWSWebServiceProxy(SimpleWebServiceProxyView):
     ''' 
@@ -431,6 +433,7 @@ def _interpolateCalcs(xp, fp, Z):
     result = interp(Z, xp, fp);
     
     return result
+
 
 class SandBarSitesGeoJSON(JSONResponseMixin, View):
     
