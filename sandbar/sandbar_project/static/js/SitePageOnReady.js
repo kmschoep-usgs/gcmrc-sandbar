@@ -144,7 +144,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			checkboxIdArr.push(checkboxIdChan);
 			checkboxIdArr.push(checkboxIdTotalSite);
 		});
-		if ($('#sep-reatt').is(':checked') || $('#ds-min').val() >= '8000') {
+		if ($('#sep-reatt').is(':checked') || parseFloat($('#ds-min').val()) >= 8000) {
 			disableChanTotalSite();
 		}
 		else {
@@ -165,7 +165,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 			checkboxIdArr.push(checkboxIdChan);
 			checkboxIdArr.push(checkboxIdTotalSite);
 		});
-		if ($('#ds-min').val() < '8000' && checkedStatusSBParam) {
+		if (parseFloat($('#ds-min').val()) < 8000 && checkedStatusSBParam) {
 			for (i = 0; i < checkboxIdArr.length; i++) {
 				var checkboxID = checkboxIdArr[i];
 				enableChanTotalSite(checkboxID);
