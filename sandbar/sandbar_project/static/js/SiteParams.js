@@ -57,7 +57,7 @@ $(document).ready(function() {
 		var checkedStatusSBParam = $(idStr).is(':checked');
 		var checkedStatusSR = $('#sep-reatt').is(':checked');
 		var parentVal = $(this).val();
-		var dsMinVal = $('#ds-min').val();
+		var dsMinVal = parseFloat($('#ds-min').val());
 		if (dsMinVal < 8000) {
 			chanEnableOkay = true;
 		}
