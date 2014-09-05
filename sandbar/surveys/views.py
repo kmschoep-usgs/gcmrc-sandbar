@@ -276,15 +276,20 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 df_area = ec_merge.where(pd.notnull(ec_merge), None)
                 complete_dfs.append(df_area.applymap(round_series_values))
             elif p_name == 'volume':
+                display_name_base = '{param_frag} {error_desc}'
+                error_bar_desc = '(lower error bound; measured value; upper error bound)'
                 vol_display_name = 'Volume'
                 volume_unit = 'cubic meter'
-                v_channel_total = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_channel_total_frag = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_channel_total = display_name_base.format(param_frag=v_channel_total_frag, error_desc=error_bar_desc)
                 if 'chan' in sub_params:
                     display_columns.append(v_channel_total)
-                v_eddy_total = eddy_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_eddy_total_frag = eddy_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_eddy_total = display_name_base.format(param_frag=v_eddy_total_frag, error_desc=error_bar_desc)
                 if 'eddy' in sub_params:
                     display_columns.append(v_eddy_total)
-                v_total_site = total_site_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_total_site_frag = total_site_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
+                v_total_site = display_name_base.format(param_frag=v_total_site_frag, error_desc=error_bar_desc)
                 if 'eddy_chan_sum' in sub_params:
                     display_columns.append(v_total_site)
                 query_base = ora.query('calc_date', 'sandbar_id', 'vol_error_low', 'interp_volume', 'vol_error_high')
@@ -305,8 +310,12 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     eddy_df_srs = []
                     for sr_id in sr_ids:
                         df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                        sr_col_name = '{p_name} Eddy {sr_designation} ({unit})'.format(p_name=vol_display_name, 
-                                                                                       sr_designation=create_sep_reatt_name(sr_id), unit=volume_unit)
+                        sr_col_name = '{p_name} Eddy {sr_designation} ({unit}) {error_desc}'.format(
+                                                                                                    p_name=vol_display_name, 
+                                                                                                    sr_designation=create_sep_reatt_name(sr_id), 
+                                                                                                    unit=volume_unit,
+                                                                                                    error_desc=error_bar_desc
+                                                                                                    )
                         col_names += (sr_col_name,)
                         sr_col_names += (sr_col_name,)
                         df_sr[sr_col_name] = df_sr.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
