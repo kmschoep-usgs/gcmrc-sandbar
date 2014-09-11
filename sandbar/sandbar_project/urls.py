@@ -10,7 +10,7 @@ from common.views import SandbarHome
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$',
+    url(r'^home/$',
         SandbarHome.as_view(),
         name='home'),
     url(r'^surveys/', include('surveys.urls')),
