@@ -24,7 +24,7 @@ class SitesBase(Base):
     stage_change = Column(Numeric)
     stage_discharge_coeff_a = Column(Numeric)
     stage_discharge_coeff_b = Column(Numeric)
-    stage_discharge_coeff_b = Column(Numeric)
+    stage_discharge_coeff_c = Column(Numeric)
 
 
 class AreaVolumeCalcBase(Base):
