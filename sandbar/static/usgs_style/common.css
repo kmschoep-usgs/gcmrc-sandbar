@@ -1,0 +1,140 @@
+#usgscolorband {
+    background: url("http://www.usgs.gov/images/headers/hazards.jpg") no-repeat scroll 178px 0 #006633;
+    font: 14px Verdana,Arial,Helvetica,sans-serif;
+    height: 5.14em;
+    min-height: 72px;
+    width: 100%;
+}
+#usgsbanner {
+    height: 72px;
+    width: 100%;
+}
+#usgsidentifier {
+    background-color: black;
+    float: left;
+    height: 5.14em;
+    width: 178px;
+}
+#usgsidentifier img {
+    border: medium none;
+}
+#usgscoop {
+    background-color: black;
+    float: left;
+    height: 5.14em;
+    min-height: 72px;
+    padding-left: 18px;
+    position: relative;
+}
+#usgscoop img {
+    border: medium none;
+    margin-right: 3px;
+}
+#usgstitle {
+    background-color: #006633;
+    border-bottom: 1px solid #FFFFFF;
+    border-top: 1px solid #FFFFFF;
+    clear: both;
+    color: #FFFFFF;
+    font: 14px Verdana,Arial,Helvetica,sans-serif;
+    height: 29px;
+    width: 100%;
+}
+#usgstitle span{
+    font: bold 1.2em Verdana,Arial,Helvetica,sans-serif;
+    
+}
+#usgstitle label {
+    font-size: small;
+    font-weight: bold;
+}
+#usgstitle form {
+    float: right;
+    margin: 0;
+    padding: 5px;
+}
+#usgstitle form input {
+    margin: 0;
+}
+#usgstitle #sa {
+    font-size: small !important;
+}
+#usgsccsabox {
+    background-color: #000000;
+    float: right;
+    min-height: 72px;
+}
+#usgsccsa {
+    font: 1em/0.5em Verdana,Arial,Helvetica,sans-serif;
+    height: 5.14em;
+    width: 10.5em;
+}
+#usgsccsa a:link, #usgsccsa a:visited {
+    color: #FFFFFF;
+    font: bold 1em/1.3em Verdana,Arial,Helvetica,sans-serif;
+    margin-left: 4px;
+    text-decoration: none;
+}
+#usgsccsa a:hover {
+    color: #FFFFFF;
+    font: bold 1em/1.3em Verdana,Arial,Helvetica,sans-serif;
+    margin-left: 4px;
+    text-decoration: underline;
+}
+#usgsccsa a:active {
+    color: #FFFFFF;
+    font: bold 1em/1.3em Verdana,Arial,Helvetica,sans-serif;
+    margin-left: 4px;
+    text-decoration: none;
+}
+body {
+    background-color: #FFFFFF;
+    color: #000000;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: small;
+}
+#usgsfooter {
+    clear: both;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: small;
+    margin: 0;
+}
+#usgsfooterbar {
+    background-color: #666666;
+    margin: 0;
+    padding: 4px;
+}
+#usgsfooterbar a:link, #usgsfooterbar a:visited {
+    color: #FFFFFF;
+    margin-right: 40px;
+    text-decoration: none;
+}
+#usgsfooterbar a:hover {
+    color: #FFFFFF;
+    margin-right: 40px;
+    text-decoration: underline;
+}
+#usgsfooterbar a:active {
+    color: #FFFFFF;
+    margin-right: 40px;
+    text-decoration: none;
+}
+#usgsfootertext {
+    margin: 0;
+    padding: 4px;
+}
+#usgsfootertext img {
+    border: medium none;
+    float: right;
+    margin-right: 5px;
+}
+
+#usgsheader, #usgsbanner, #usgsfootertext {
+    margin: 0;
+    padding: 0;
+}
+#usgstitle span {
+	position: relative;
+	top: 4px;
+	left: 4px;
+}
