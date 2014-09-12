@@ -381,7 +381,10 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         df_ready = df_date.where(pd.notnull(df_date), None)
         display_column_list = ['date'] + sorted(display_columns)
         df_final = df_ready[display_column_list].sort(['date'])
-        df_record = df_final.to_dict('records')
+        try:
+            df_record = df_final.to_dict('records')
+        except AttributeError:
+            df_record = {}
         site_name = site.site_name.lower().replace(' ', '_')
         download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
         
