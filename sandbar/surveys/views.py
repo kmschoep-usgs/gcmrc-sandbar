@@ -376,7 +376,10 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         else:
             df_merge = pd.DataFrame([])
         ora.close()
-        df_raw = df_merge[pd.notnull(df_merge['date'])]
+        try:
+            df_raw = df_merge[pd.notnull(df_merge['date'])]
+        except KeyError: # catch instances where df_merge is an empty dataframe
+            df_raw = df_merge.copy()
         df_date = df_raw.applymap(datetime_to_date)
         df_ready = df_date.where(pd.notnull(df_date), None)
         display_column_list = ['date'] + sorted(display_columns)
