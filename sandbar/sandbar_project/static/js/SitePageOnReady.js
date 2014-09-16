@@ -18,7 +18,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 
 	
 	//Set Plot title
-	$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
+	$('#panel-title').html('Sandbar Metrics Between Stage Elevations Associated with Discharges of ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 	// Fetch the parameter display information from GCMRC
 	$.ajax({
 		url: SB.GDAWS_SERVICE + 'service/param/json/param/', 
@@ -321,7 +321,7 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 				$('#parameter-errors').hide();
 				var plotStartDate = createPlotDates(sandbarStartDate, gcmrcStartDate);
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
-				$('#panel-title').html('Sandbar Metrics Between ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
+				$('#panel-title').html('Sandbar Metrics Between Stage Elevations Associated with Discharges of ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params, srParam);
 				
