@@ -10,7 +10,6 @@ class CSVResponseMixin(object):
     Mixin used to create a CSV response.
     """
     
-    
     def render_to_csv_response(self, context, data_keys=None, download=False, download_name=None, **response_kwargs):
         
         response = HttpResponse(content_type='text/csv')
