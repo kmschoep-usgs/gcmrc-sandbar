@@ -1,8 +1,10 @@
-SB.SitePageOnReady = function(gdawsSiteId, siteId) {
+SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 	var dateRange;
 	var srIDs;
-	var queryParams = 'site=' + gdawsSiteId;
+	var queryParams = 'site=' + gdawsSiteId + '&site=' + dischargeSite;
 	var internalSiteId = siteId;
+	SB.Config.SITE_PARAMETERS.discharge.site = dischargeSite;
+	SB.Config.SITE_PARAMETERS.cumulSandLoad.site = gdawsSiteId;
 	for (key in SB.Config.SITE_PARAMETERS) {
 		queryParams += '&groupName=' + SB.Config.SITE_PARAMETERS[key].groupName;
 	}
@@ -15,8 +17,6 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 	//set default discharges
 	$('#ds-min').val(8000);
 	$('#ds-max').val(60000);
-
-	
 	//Set Plot title
 	$('#panel-title').html('Sandbar Metrics Between Stage Elevations Associated with Discharges of ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
 	// Fetch the parameter display information from GCMRC
@@ -36,10 +36,9 @@ SB.SitePageOnReady = function(gdawsSiteId, siteId) {
 					var maxDate;
 
 					var template = $('#param_template').html();
-
 					for (var i = 0; i < data.length; i++) {
 						for (key in SB.Config.SITE_PARAMETERS) {
-							if (SB.Config.SITE_PARAMETERS[key].groupName === data[i].groupName) {
+							if (SB.Config.SITE_PARAMETERS[key].groupName === data[i].groupName && SB.Config.SITE_PARAMETERS[key].site === data[i].site) {
 								SB.Config.SITE_PARAMETERS[key].description = data[i];
 								// Only really want date portion of time strings
 								SB.Config.SITE_PARAMETERS[key].description.beginPosition = data[i].beginPosition.slice(0, 10);

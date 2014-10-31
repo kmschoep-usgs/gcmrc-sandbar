@@ -24,7 +24,6 @@
 	
 	<script type="text/javascript">
 		var PAGE_URL = window.location.pathname;
-		
 	</script>
 	
  	{% js "lib/modernizr.custom.45705.js" %}
@@ -52,7 +51,9 @@
 		$.webshims.polyfill();				
 		$(document).ready(function() {
 			var map;
-			SB.SitePageOnReady("{{ site.gdaws_site_id }}", "{{ site.id }}");
+			var dischargeSite = "{{ site.secondary_gdaws_site_id }}";
+			var sedimentSite = "{{ site.gdaws_site_id }}";
+			SB.SitePageOnReady(sedimentSite, dischargeSite, "{{ site.id }}");
 			map = SB.SitePlotMap("{{ site.geom.x }}","{{ site.geom.y }}");
 		});	  
 	</script>

@@ -459,12 +459,15 @@ class SandBarSitesGeoJSON(JSONResponseMixin, View):
         sites = Site.objects.all()
         feature_list = []
         for site_object in sites:
-            latitude = site_object.geom.x
-            longitude = site_object.geom.y
-            point = create_geojson_point(latitude, longitude)
-            feature_id = site_object.id
-            feature = create_geojson_feature(point=point, feature_id=feature_id)
-            feature_list.append(feature)
+            try:
+                latitude = site_object.geom.x
+                longitude = site_object.geom.y
+                point = create_geojson_point(latitude, longitude)
+                feature_id = site_object.id
+                feature = create_geojson_feature(point=point, feature_id=feature_id)
+                feature_list.append(feature)
+            except AttributeError: # handle instances where there is no geom data
+                continue
         feature_collection = create_geojson_feature_collection(feature_list)
         
         return self.render_to_json_response(context=feature_collection)
@@ -496,4 +499,3 @@ class BasicSiteInfoJSON(JSONResponseMixin, View):
                      'sandbarIDs': sr_list
                      }
         return self.render_to_json_response(site_info)
-    
