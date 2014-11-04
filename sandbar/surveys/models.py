@@ -37,6 +37,7 @@ class Site(models.Model):
     p_day = models.CharField(max_length=2, blank=True)
     p_year = models.CharField(max_length=4, blank=True)
     gdaws_site_display = models.CharField(max_length=100, blank=True)
+    secondary_gdaws_site_id = models.CharField(max_length=40, blank=True)
     
     class Meta:
         db_table = 'sites'
