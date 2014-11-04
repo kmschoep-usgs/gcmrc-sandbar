@@ -21,7 +21,7 @@ class TestCreatePandasDataFrame(TestCase):
         
         df = create_pandas_dataframe(self.fake_data, self.columns)
         df_shape = df.shape
-        expected_shape = (2, 2)
+        expected_shape = (2, 3)
         self.assertEqual(df_shape, expected_shape)
         df_columns = df.columns.values
         self.assertEqual(len(df_columns), 3)
@@ -106,7 +106,7 @@ class TestDygraphsErrorString(TestCase):
         expected_data = [
                           (date(2013, 2, 1), 10.12, 12.56, 15.67, '10.12;12.56;15.67'),
                           (date(2013, 2, 2), 21.22, 24.56, 27.99, '21.22;24.56;27.99'),
-                          (date(2013, 2, 3), None, 31.46, 34.01, None),
+                          (date(2013, 2, 3), None, 31.46, 34.01, '31.46;31.46;31.46'),
                           (date(2013, 2, 4), None, None, None, None)
                           ]
         df_expected = create_pandas_dataframe(expected_data, ('date', 'A', 'B', 'C', 'D'))
