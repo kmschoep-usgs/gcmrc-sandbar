@@ -1,6 +1,6 @@
 import datetime
 import json
-from unittest2 import skip
+from unittest2 import expectedFailure, skip
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from django.test.client import Client
@@ -271,7 +271,7 @@ class SiteDetailViewTestCase(TestCase):
                                          stage_discharge_coeff_b=2,
                                          stage_discharge_coeff_c=3)
         
-    @skip('Causing decimal problems on Python 2.6... CI uses 2.6')
+    @expectedFailure
     def test_return_site_id_in_context(self):
         
         """
@@ -282,7 +282,7 @@ class SiteDetailViewTestCase(TestCase):
         response = self.c.get(reverse('surveys-site', kwargs={'pk': test_pk}))
         context = response.context[1]
         site = context['site']
-        self.assertEqual(str(site.id), test_pk)
+        self.assertEqual(str(site.id), test_pk, 'Failed likely due to compatibility problems with Python 2.6')
 
         
 class TestSandBarSitesGeoJSON(TestCase):
