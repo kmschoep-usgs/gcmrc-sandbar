@@ -196,8 +196,8 @@ class TestCreateSepReattName(TestCase):
                                             stage_discharge_coeff_b='2',
                                             stage_discharge_coeff_c='3'
                                             )
-        self.separation_id = 3
-        self.reattachment_id = 4
+        self.separation_id = '3'
+        self.reattachment_id = '4'
         self.separation_record = SandbarModelFactory(pk=self.separation_id, site=self.site_record, sandbar_name='sep')
         self.reattachment_record = SandbarModelFactory(pk=self.reattachment_id, site=self.site_record, sandbar_name='reatt')
         
