@@ -149,8 +149,8 @@ class TestConvertToFloat(TestCase):
     def setUp(self):
         
         self.fake_data = [
-                          (date(2013, 8, 9), Decimal(15.06), Decimal(70.81), 'Apple'),
-                          (date(2013, 8, 10), None, Decimal(0.998), 'Mango'),
+                          (date(2013, 8, 9), Decimal('15.06'), Decimal('70.81'), 'Apple'),
+                          (date(2013, 8, 10), None, Decimal('0.998'), 'Mango'),
                           (date(2013, 8, 11), 84.55, 82.32, 'Durian')
                           ]
         self.columns = ('date', 'A', 'B', 'C')
@@ -192,9 +192,9 @@ class TestCreateSepReattName(TestCase):
                                             cur_stage_relation='y=ax+b',
                                             campsite='No',
                                             geom=None,
-                                            stage_discharge_coeff_a=1,
-                                            stage_discharge_coeff_b=2,
-                                            stage_discharge_coeff_c=3
+                                            stage_discharge_coeff_a='1',
+                                            stage_discharge_coeff_b='2',
+                                            stage_discharge_coeff_c='3'
                                             )
         self.separation_id = 3
         self.reattachment_id = 4

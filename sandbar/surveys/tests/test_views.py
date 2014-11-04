@@ -1,6 +1,6 @@
 import datetime
 import json
-from unittest import skip
+from unittest2 import skip
 from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from django.test.client import Client
