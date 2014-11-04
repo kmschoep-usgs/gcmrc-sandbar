@@ -30,15 +30,18 @@ describe('Tests for GDAWSFormatUtils', function() {
 				SITE_PARAMETERS : {
 					P1 : {
 						groupName: 'parameter 1',
-						colName: 'Param1'
+						colName: 'Param1',
+						site: '1357'
 					},
 					P2 : {
 						groupName: 'parameter 2',
-						colName: 'Param2'
+						colName: 'Param2',
+						site: '1235'
 					},
 					P3 : {
 						groupName: 'parameter 3',
 						colName: 'Param3'
+						site: '2468'
 					}
 				}
 			};
@@ -53,7 +56,7 @@ describe('Tests for GDAWSFormatUtils', function() {
 		
 		it('Expects params to be set correctly', function() {
 			expect(result).toContain('column[]=inst!parameter 1!1357!Param1');
-			expect(result).toContain('column[]=inst!parameter 3!1357!Param3');
+			expect(result).toContain('column[]=inst!parameter 3!2468!Param3');
 			expect(result).not.toContain('Param2');
 		});
 	});
