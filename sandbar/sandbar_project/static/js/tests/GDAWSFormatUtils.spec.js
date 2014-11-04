@@ -43,7 +43,7 @@ describe('Tests for GDAWSFormatUtils', function() {
 				}
 			};
 			
-			result = SB.GDAWSFormatUtils.getDataQueryString('1357', '2013-04-01', '2013-04-04', ['P1', 'P3']);
+			result = SB.GDAWSFormatUtils.getDataQueryString('1357', '2468', '2013-04-01', '2013-04-04', ['P1', 'P3']);
 		});
 				
 		it('Expects date range to be set correctly in returned string', function() {

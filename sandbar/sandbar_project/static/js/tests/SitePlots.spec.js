@@ -83,7 +83,7 @@ describe('Test SitePlots', function() {
 			
 			expect(requests.length).toBe(1);
 			expect(requests[0].url).toContain('http://fakegdaws/service/agg');
-			expect(requests[0].url).toContain(SB.GDAWSFormatUtils.getDataQueryString('1367', '2013-04-01', '2013-04-04', ['P2', 'P3']));
+			expect(requests[0].url).toContain(SB.GDAWSFormatUtils.getDataQueryString('1367', '2468', '2013-04-01', '2013-04-04', ['P2', 'P3']));
 		});
 		
 		describe('Successful ajax call', function() {

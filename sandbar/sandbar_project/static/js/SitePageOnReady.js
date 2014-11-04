@@ -131,7 +131,7 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 	
 	// Initialize dygraphs
 	var tsPlots = new SB.TSPlots('sandbar-plots', siteId);
-	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId);
+	var sitePlots = new SB.SitePlots('gcmrc-plots', gdawsSiteId, dischargeSite);
 	
 
 	$('#sep-reatt').click(function(event) {

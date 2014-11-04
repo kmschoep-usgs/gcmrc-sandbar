@@ -5,13 +5,13 @@ SB.Config.SITE_PARAMETERS = {
 		groupName : 'S Sand Cumul Load',
 		colName : 'cumulLoad',
 		description: {}, /* Filled in when page is loaded */
-		site: null
+		site: null /* Filled in on page load */
 	},
 	discharge : {
 		groupName : 'Discharge',
 		colName: 'discharge',
 		description: {}, /* Filled in when page is loaded */
-		site: null
+		site: null /* Filled on on page load */
 	}
 };
 

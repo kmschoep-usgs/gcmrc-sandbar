@@ -1,7 +1,8 @@
-SB.SitePlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, gdawsSiteId /* String */) {
+SB.SitePlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, gdawsSiteId /* String */, dischargeSite /*String*/) {
 	this.graphsDivEl = $('#' + graphsDivId);
 	this._graphs = {}; // Holds current dygraphs
 	this.gdawsSiteId = gdawsSiteId;
+	this.dischargeSite = dischargeSite;
 	
 	var graphId = function(key) {
 		return key + '-graph-div';
@@ -19,7 +20,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 		$.ajax({
 			url: SB.GDAWS_SERVICE + 'agg/',
 			type: 'GET',
-			data: SB.GDAWSFormatUtils.getDataQueryString(this.gdawsSiteId, startDate, endDate, parameterNames),
+			data: SB.GDAWSFormatUtils.getDataQueryString(this.gdawsSiteId, this.dischargeSite, startDate, endDate, parameterNames),
 			context : this,
 			complete : function(resp, status) {
 				this.graphsDivEl.children('#graphs-loading-div').hide();
