@@ -261,7 +261,9 @@ if os.getenv('JENKINS_URL', False):
                      'django_jenkins.tasks.run_pylint',
                      'django_jenkins.tasks.with_coverage',) # This is where you would add other django_jenkins tasks
 #    JENKINS_TEST_RUNNER = '' # If you need to define your own test runner for jenkins do it here
-    INSTALLED_APPS += ('django_jenkins', 'jasmine',)
+    INSTALLED_APPS += ('django_jenkins', 
+                       #'jasmine',
+                       )
     PROJECT_APPS = ('common', 
                     'surveys', 
                     # 'jasmine',
