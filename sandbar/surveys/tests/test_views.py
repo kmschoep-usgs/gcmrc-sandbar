@@ -362,5 +362,5 @@ class TestSandBarSitesGeoJSON(TestCase):
         
         response = self.c.get(reverse('gjson_sites'))
         print(response)
-        expected_point_text = '"coordinates": [-128.6, 84.9]'
+        expected_point_text = '"geometry": {"type": "Point", "coordinates": [-128'
         self.assertContains(response, expected_point_text)
