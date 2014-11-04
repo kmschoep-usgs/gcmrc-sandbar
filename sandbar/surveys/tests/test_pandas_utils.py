@@ -21,7 +21,7 @@ class TestCreatePandasDataFrame(TestCase):
         
         df = create_pandas_dataframe(self.fake_data, self.columns)
         df_shape = df.shape
-        expected_shape = (2, 3)
+        expected_shape = (2, 2)
         self.assertEqual(df_shape, expected_shape)
         df_columns = df.columns.values
         self.assertEqual(len(df_columns), 3)
