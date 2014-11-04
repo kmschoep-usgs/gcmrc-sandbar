@@ -181,20 +181,20 @@ class TestCreateSepReattName(TestCase):
                                             river_mile=self.river_mile,
                                             river_side=self.river_side,
                                             site_name='Some Site',
-                                            gdaws_site_id='7182',
+                                            gdaws_site_id=str(7182),
                                             gcmrc_site_id='0312A',
                                             deposit_type='U',
                                             eddy_size=750,
-                                            exp_ratio_8000='1.4',
-                                            exp_ratio_45000='1.6',
-                                            stage_change='4.5',
+                                            exp_ratio_8000=str(1.4),
+                                            exp_ratio_45000=str(1.6),
+                                            stage_change=str(4.5),
                                             sed_budget_reach='Death Star',
                                             cur_stage_relation='y=ax+b',
                                             campsite='No',
                                             geom=None,
-                                            stage_discharge_coeff_a='1',
-                                            stage_discharge_coeff_b='2',
-                                            stage_discharge_coeff_c='3'
+                                            stage_discharge_coeff_a=str(1),
+                                            stage_discharge_coeff_b=str(2),
+                                            stage_discharge_coeff_c=str(3)
                                             )
         self.separation_id = '3'
         self.reattachment_id = '4'
