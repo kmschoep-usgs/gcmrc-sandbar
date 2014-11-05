@@ -5,7 +5,7 @@ SB.GDAWSFormatUtils = {
 		var sbDateStart = Date.parse(sandbarStart);
 		var data = jsonResp.success.data;
 		var dataStartTime = data[0].time; // get the earliest time from the returned data set
-		var dataStartTimeParse = Date.parse(dataStartTime)
+		var dataStartTimeParse = Date.parse(dataStartTime);
 		if (sbDateStart < dataStartTimeParse) {
 			result += sandbarStart + ',' + 'NaN' + LF; // ensure that discharge or sediment plot has the same x-axis domain as the sandbar survey data
 		}

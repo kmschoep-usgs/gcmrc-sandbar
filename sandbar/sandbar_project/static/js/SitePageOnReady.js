@@ -66,6 +66,7 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 					}
 				
 					// Update the dateRange limits and set initial Dates.
+					console.log(minDate);
 					minDateText = minDate.toISOString().slice(0,10);
 					maxDateText = maxDate.toISOString().slice(0,10);
 					gcmrcStartDate = minDateText;

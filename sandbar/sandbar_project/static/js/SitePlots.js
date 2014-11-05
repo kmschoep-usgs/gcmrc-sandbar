@@ -13,7 +13,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 
 	this.updatePlots = function(startDate, endDate /* String dates */,
 					 		    parameterNames /* array of parameter names to draw graphs, must match name in Config.SITE_PARAMETERS */, sandbarPlots,
-					 		    totalParams, gdawsStartDate, sandbarStartDate) {
+					 		    totalParams, sandbarStartDate) {
 		
 		this.graphsDivEl.children('#graphs-loading-div').show();
 		var sandbarPlots = sandbarPlots;
