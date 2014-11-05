@@ -47,7 +47,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 					var graphs = {};
 					for (var i = 0; i < parameterNames.length; i++) {
 						var thisConfig = SB.Config.SITE_PARAMETERS[parameterNames[i]];
-						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, gdawsStartDate, sandbarStartDate);
+						var data = SB.GDAWSFormatUtils.getDygraphCSV($.parseJSON(resp.responseText), thisConfig.colName, thisConfig.description.displayName, sandbarStartDate);
 						graphDivEl(parameterNames[i]).show();
 						graphs[parameterNames[i]] = new Dygraph(graphId(parameterNames[i]),
 								data, {

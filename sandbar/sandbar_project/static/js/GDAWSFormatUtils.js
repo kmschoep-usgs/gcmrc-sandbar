@@ -1,13 +1,14 @@
 SB.GDAWSFormatUtils = {
-	getDygraphCSV : function(jsonResp, dataKey, dataLabel, gcmrcStart, sandbarStart) {
+	getDygraphCSV : function(jsonResp, dataKey, dataLabel, sandbarStart) {
 		var LF = '\n';
 		var result = 'Time,' + dataLabel + LF;
 		var sbDateStart = Date.parse(sandbarStart);
-		var gcmrcDateStart = Date.parse(gcmrcStart)		
-		if (sbDateStart < gcmrcDateStart) {
-			result += sandbarStart + ',' + 'NaN' + LF;
-		}		
 		var data = jsonResp.success.data;
+		var dataStartTime = data[0].time; // get the earliest time from the returned data set
+		var dataStartTimeParse = Date.parse(dataStartTime)
+		if (sbDateStart < dataStartTimeParse) {
+			result += sandbarStart + ',' + 'NaN' + LF; // ensure that discharge or sediment plot has the same x-axis domain as the sandbar survey data
+		}
 		for (var i = 0; i < data.length; i++) {
 			result += data[i].time + ',' + data[i][dataKey] + LF;
 		}

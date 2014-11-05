@@ -321,7 +321,7 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 				var plotStartDate = createPlotDates(sandbarStartDate, gcmrcStartDate);
 				var plotEndDate = createPlotDates(sandbarEndDate, gcmrcEndDate);
 				$('#panel-title').html('Sandbar Metrics Between Stage Elevations Associated with Discharges of ' + $('#ds-min').val() + ' and ' + $('#ds-max').val() + ' cfs (ft<sup>3</sup>/s)');
-				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, gcmrcStartDate, sandbarStartDate);
+				sitePlots.updatePlots(plotStartDate, plotEndDate, gcmrcParams, tsPlots._graphs, params, sandbarStartDate);
 				tsPlots.updatePlots($('#ds-min').val(), $('#ds-max').val(), subParam, sitePlots._graphs, params, srParam);
 				
 				var blockRedraw = false;
