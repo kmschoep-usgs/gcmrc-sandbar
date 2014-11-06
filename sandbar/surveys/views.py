@@ -8,7 +8,7 @@ import pandas as pd
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
-from .models import Site, Survey, AreaVolume
+from .models import Site, AreaVolume
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
 from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date,
@@ -419,8 +419,8 @@ class SitesListView(ListView):
         result = []
         for site in qs:
             result.append({'site' : site,
-                           'survey' : Survey.objects.filter(site=site).aggregate(min_date=Min('survey_date'),
-                                                                                 max_date=Max('survey_date'))})
+                           'survey' : AreaVolume.objects.filter(site=site).aggregate(min_date=Min('calc_date'),
+                                                                                 max_date=Max('calc_date'))})
         return result    
 
 
