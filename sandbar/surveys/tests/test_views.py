@@ -174,7 +174,7 @@ class SitesViewTestCase(TestCase):
                                         plane_height='1000',
                                         prev_plane_height='900',
                                         next_plane_height='1100')
-        self.avc2 = AreaVolume.objects.create(site=self.site1,
+        self.avc2 = AreaVolume.objects.create(site_id=self.site1,
                                         survey_date=datetime.date(2013, 7, 1),
                                         calc_type='eddy',
                                         volume_amt='231',
@@ -183,7 +183,7 @@ class SitesViewTestCase(TestCase):
                                         plane_height='1000',
                                         prev_plane_height='900',
                                         next_plane_height='1100')
-        self.avc3 = AreaVolume.objects.create(site=self.site1,
+        self.avc3 = AreaVolume.objects.create(site_id=self.site1,
                                         survey_date=datetime.date(2013, 6, 1),
                                         calc_type='eddy',
                                         volume_amt='231',
@@ -192,7 +192,7 @@ class SitesViewTestCase(TestCase):
                                         plane_height='1000',
                                         prev_plane_height='900',
                                         next_plane_height='1100')
-        self.avc4 = AreaVolume.objects.create(site=self.site2,
+        self.avc4 = AreaVolume.objects.create(site_id=self.site2,
                                         survey_date=datetime.date(2013, 7, 1),
                                         calc_type='eddy',
                                         volume_amt='231',
