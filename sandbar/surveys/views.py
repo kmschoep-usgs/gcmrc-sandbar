@@ -419,8 +419,8 @@ class SitesListView(ListView):
         result = []
         for site in qs:
             result.append({'site' : site,
-                           'survey' : Survey.objects.filter(site=site).aggregate(min_date=Min('survey_date'),
-                                                                                 max_date=Max('survey_date'))})
+                           'survey' : AreaVolume.objects.filter(site=site).aggregate(min_date=Min('calc_date'),
+                                                                                 max_date=Max('calc_date'))})
         return result    
 
 
