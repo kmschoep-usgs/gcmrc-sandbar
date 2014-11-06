@@ -5,7 +5,7 @@ from django.contrib.gis.geos import Point
 from django.test import TestCase, RequestFactory
 from django.test.client import Client
 from django.core.urlresolvers import reverse
-from ..models import Site, Survey
+from ..models import Site, AreaVolume
 from ..views import SitesListView, _interpolateCalcs, AreaVolumeCalcsVw
 
 from factories import AreaVolumeCalcsFactory, SiteModelFactory
@@ -165,30 +165,42 @@ class SitesViewTestCase(TestCase):
                          geom=Point(-90.0, 35.0))
         self.site3.save()
         
-        self.survey1 = Survey.objects.create(site=self.site1, 
-                                        survey_date=datetime.date(2013, 8, 30),
-                                        survey_method='method1',
-                                        uncrt_a_8000='231',
-                                        uncrt_b_8000='999',
-                                        discharge='389723.32')
-        self.survey2 = Survey.objects.create(site=self.site1,
-                                        survey_date=datetime.date(2013, 7, 1),
-                                        survey_method='method1',
-                                        uncrt_a_8000='90',
-                                        uncrt_b_8000='99',
-                                        discharge='38973.3')
-        self.survey3 = Survey.objects.create(site=self.site1,
-                                        survey_date=datetime.date(2013, 6, 1),
-                                        survey_method='method1',
-                                        uncrt_a_8000='100',
-                                        uncrt_b_8000='998',
-                                        discharge='3893.02')
-        self.survey4 = Survey.objects.create(site=self.site2,
-                                        survey_date=datetime.date(2013, 7, 1),
-                                        survey_method='method1',
-                                        uncrt_a_8000='2',
-                                        uncrt_b_8000='1',
-                                        discharge='383.0')
+        self.avc1 = AreaVolume.objects.create(site=self.site1, 
+                                        calc_date=datetime.date(2013, 8, 30),
+                                        calc_type='eddy',
+                                        volume_amt='231',
+                                        area_2d_amt='999',
+                                        area_3d_amt='389723.32',
+                                        plane_height='1000',
+                                        prev_plane_height='900',
+                                        next_plane_height='1100')
+        self.avc2 = AreaVolume.objects.create(site=self.site1,
+                                        calc_date=datetime.date(2013, 7, 1),
+                                        calc_type='eddy',
+                                        volume_amt='231',
+                                        area_2d_amt='999',
+                                        area_3d_amt='389723.32',
+                                        plane_height='1000',
+                                        prev_plane_height='900',
+                                        next_plane_height='1100')
+        self.avc3 = AreaVolume.objects.create(site=self.site1,
+                                        calc_date=datetime.date(2013, 6, 1),
+                                        calc_type='eddy',
+                                        volume_amt='231',
+                                        area_2d_amt='999',
+                                        area_3d_amt='389723.32',
+                                        plane_height='1000',
+                                        prev_plane_height='900',
+                                        next_plane_height='1100')
+        self.avc4 = AreaVolume.objects.create(site=self.site2,
+                                        calc_date=datetime.date(2013, 7, 1),
+                                        calc_type='eddy',
+                                        volume_amt='231',
+                                        area_2d_amt='999',
+                                        area_3d_amt='389723.32',
+                                        plane_height='1000',
+                                        prev_plane_height='900',
+                                        next_plane_height='1100')
         
         self.test_view = SitesListView()
        
