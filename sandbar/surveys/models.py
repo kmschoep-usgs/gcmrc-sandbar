@@ -10,7 +10,7 @@ class Site(models.Model):
         ('YES','Yes'),
         ('NO', 'No')
     )
-    river_mile = models.DecimalField(max_digits=5, decimal_places=2)
+    river_mile = models.FloatField()
     river_side = models.CharField(max_length=1)
     site_name = models.CharField(max_length=128)
     gdaws_site_id = models.CharField(max_length=40, blank=True)
