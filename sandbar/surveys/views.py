@@ -34,9 +34,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         parameter_type = request.GET.get('param_type')
         plot_sep = request.GET.get('sr_id', None)
         sr_exists = site.deposit_type
-        calculation_types = request.GET.getlist('calc_type', None)
-        sandbar_record = Sandbar.objects.get(id=plot_sep)
-        sandbar_name = sandbar_record.sandbar_name
+        calculation_types = request.GET.getlist('calc_type', None)       
         #sr_exists = determine_if_sep_reatt_exists(site.id) # check if separation/reattachment exists
         #acdb = AlchemDB()
         #ora = acdb.create_session()
@@ -45,15 +43,11 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         channel_total = 'Channel Total - {0} {1}'.format(site.river_mile, site.river_side)
         eddy_total = 'Eddy Total - {0} {1}'.format(site.river_mile, site.river_side)
         total_site = 'Total Site - {0} {1}'.format(site.river_mile, site.river_side)
-        sep_name = 'River mile: {0} {1} (Separation)'.format(site.river_mile, site.river_side)
-        reatt_name = 'River mile: {0} {1} (Reattachment)'.format(site.river_mile, site.river_side)
         if plot_sep:
-            ps = True
+            sandbar_record = Sandbar.objects.get(id=plot_sep)
+            sandbar_name = sandbar_record.sandbar_name
             sandbar_disp_name = create_sep_reatt_name(plot_sep)
-        else:
-            ps = False
         col_names = ('calc_date',) # keep track of the columns that are needed query
-        plot_parameters = ('date',)
         # Execute as raw query since  it uses a CONTAINS clause and context grammer.
         
         #cursor = connection.cursor()  # @UndefinedVariable
@@ -100,7 +94,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 col_names += ('chan_int_area',)              
             if 'eddy_chan_sum' in calculation_types:
                 col_names += ('ts_int_area',)
-        elif parameter_type == 'volume':
+        if parameter_type == 'volume':
             if 'eddy' in calculation_types:
                 if sr_exists == 'SR':
                     if plot_sep:
@@ -137,7 +131,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 plot_parameters += (channel_total,)
             if 'eddy_chan_sum' in calculation_types:
                 plot_parameters += (total_site,)
-      #  df_pertinent = df_final[list(plot_parameters)].sort(['date'])
+            #df_pertinent = df_final[list(plot_parameters)].sort(['date'])
         df_rs = create_pandas_dataframe(result_set, columns=(plot_parameters))
         df_pert_records = df_rs.to_dict('records')
         
