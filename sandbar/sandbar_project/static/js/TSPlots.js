@@ -133,12 +133,12 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 							});		
 						}
 						catch (TypeError) {
-							continue;
+							continue; // added to make firefox happy
 						}			
 					}					
 				}
 				catch (TypeError) {
-					continue;
+					continue; // added to make firefox happy
 				}
 			}
 		}
@@ -251,7 +251,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 					});					
 				}
 				catch(TypeError) {
-					continue
+					continue // added to make firefox happy
 				}
 			}			
 		}
