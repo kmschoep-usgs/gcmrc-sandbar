@@ -35,11 +35,6 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         plot_sep = request.GET.get('sr_id', None)
         sr_exists = site.deposit_type
         calculation_types = request.GET.getlist('calc_type', None)       
-        #sr_exists = determine_if_sep_reatt_exists(site.id) # check if separation/reattachment exists
-        #acdb = AlchemDB()
-        #ora = acdb.create_session()
-        
-        #sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         channel_total = 'Channel Total - {0} {1}'.format(site.river_mile, site.river_side)
         eddy_total = 'Eddy Total - {0} {1}'.format(site.river_mile, site.river_side)
         total_site = 'Total Site - {0} {1}'.format(site.river_mile, site.river_side)
@@ -48,36 +43,6 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
             sandbar_name = sandbar_record.sandbar_name
             sandbar_disp_name = create_sep_reatt_name(plot_sep)
         col_names = ('calc_date',) # keep track of the columns that are needed query
-        # Execute as raw query since  it uses a CONTAINS clause and context grammer.
-        
-        #cursor = connection.cursor()  # @UndefinedVariable
-        #cursor.execute(query)
-        #results_list = dictfetchall(cursor)
-        #query_base = ora.query('calc_date', 
-        #                       'eddy_int_area', 
-        #                       'eddy_s_int_area', 
-        #                      'eddy_r_int_area', 
-        #                       'sum_reatt_sep_area', 
-        #                       'eddy_int_volume',
-        #                       'eddy_s_int_volume',
-        #                       'eddy_r_int_volume',
-        #                       'sum_reatt_sep_vol',
-        #                       'eddy_vol_error_low',
-        #                       'eddy_s_vol_error_low',
-        #                       'eddy_r_vol_error_low',
-        #                       'sum_reatt_sep_vel',
-        #                       'eddy_vol_error_high',
-        #                       'eddy_s_vol_error_high',
-        #                       'eddy_r_vol_error_high',
-        #                       'sum_reatt_sep_veh',
-        #                       'chan_int_area',
-        #                       'chan_int_volume',
-        #                       'chan_vol_error_low',
-        #                       'chan_vol_error_high',
-        #                       'ts_int_area',
-        #                       'ts_int_volume',
-        #                       'ts_vol_error_low',
-        #                       'ts_vol_error_high')
         if parameter_type == 'area2d':
             if 'eddy' in calculation_types:
                 if sr_exists == 'SR':
@@ -110,9 +75,7 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 col_names += ('dy_chan_int_vol',)
             if 'eddy_chan_sum' in calculation_types:
                 col_names += ('dy_ts_int_vol',)
-        
-        #results = AreaVolumeOutput.objects.raw("SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date;")
-        
+               
         acdb = AlchemDB()
         ora = acdb.create_session()
         sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date'
@@ -131,7 +94,6 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
                 plot_parameters += (channel_total,)
             if 'eddy_chan_sum' in calculation_types:
                 plot_parameters += (total_site,)
-            #df_pertinent = df_final[list(plot_parameters)].sort(['date'])
         df_rs = create_pandas_dataframe(result_set, columns=(plot_parameters))
         df_pert_records = df_rs.to_dict('records')
         
@@ -155,100 +117,79 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         parent_params = request.GET.getlist('param_type')
         area_2d_calc_types = request.GET.getlist('area2d_calc_type')
         vol_calc_types = request.GET.getlist('volume_calc_type')
-        SandbarParams = namedtuple('SandbarParams', ['parameter', 'db_column', 'unit', 'sub_parameters'])
+        sr_exists = site.deposit_type
+        sr_ids = get_sep_reatt_ids(site.id)
+        SandbarParams = namedtuple('SandbarParams', ['parameter', 'unit', 'sub_parameters'])
         param_list = []
         for parameter in parent_params:
             if parameter == 'area2d':
-                db_column = 'interp_area2d'
                 unit = 'square meter'
                 sub_p = area_2d_calc_types
             elif parameter == 'volume':
-                db_column = 'interp_volume'
                 unit = 'cubic meter'
                 sub_p = vol_calc_types
             else:
-                db_column = None
                 unit = None
                 sub_p = None
-            sbp = SandbarParams(parameter=parameter, db_column=db_column, unit=unit, sub_parameters=sub_p)
+            sbp = SandbarParams(parameter=parameter, unit=unit, sub_parameters=sub_p)
             param_list.append(sbp)
         acdb = AlchemDB()
         ora = acdb.create_session()
         sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
-        eddy_total_str = '{p_name} Eddy Total - {river_mile} {river_side} ({unit})'
+        eddy_total_str = '{p_name} Eddy {sep_reatt} - {river_mile} {river_side} ({unit})'
         total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
         complete_dfs = []
-        sr_exists = determine_if_sep_reatt_exists(site.id)
+        
         display_columns = [] # these are the columns that the user has specified for download
         for p_tuple in param_list:
-            col_names = ('date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
+            col_names = ('calc_date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
             sr_col_names = tuple() # keep track of intermediate columns needed to do math
             p_name = p_tuple.parameter
-            p_column = p_tuple.db_column
             sub_params = p_tuple.sub_parameters
             sandbar_id = 'sandbar_id'
-            query_base = ora.query('calc_date', sandbar_id, p_column)
+            #query_base = ora.query('calc_date', sandbar_id, p_column)
             if p_name == 'area2d':
                 area_display_name = 'Area'
                 area_unit = 'square meter'
                 a_channel_total = channel_total_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                 if 'chan' in sub_params:
+                    col_names += ('chan_int_area',) 
                     display_columns.append(a_channel_total)
-                a_eddy_total = eddy_total_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                 if 'eddy' in sub_params:
-                    display_columns.append(a_eddy_total)
+                    if sr_exists == 'SR':
+                        col_names += ('eddy_s_int_area',)
+                        col_names += ('eddy_r_int_area',)
+                        col_names += ('sum_reatt_sep_area',)
+                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Separation)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Reattachment)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        display_columns.append(a_eddy_s_total)
+                        display_columns.append(a_eddy_r_total)
+                        display_columns.append(a_eddy_sum_total)
+                    else:
+                        col_names += ('eddy_int_area',)
+                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        display_columns.append(a_eddy_total)
                 a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                 if 'eddy_chan_sum' in sub_params:
                     display_columns.append(a_total_site)
-                query_base = ora.query('calc_date', 'sandbar_id', 'interp_area2d')
-                eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
-                chan_result_set = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                e_df0 = create_pandas_dataframe(eddy_result_set, columns=('date', 'sr_id', 'Eddy'), create_psuedo_column=True)
-                e_df0_float = e_df0.applymap(convert_to_float)
-                c_df0 = create_pandas_dataframe(chan_result_set, columns=('date', 'sr_id', 'Channel'), create_psuedo_column=True)
-                c_df0_float = c_df0.applymap(convert_to_float)
-                c_df0_float[a_channel_total] = c_df0_float['Channel']
-                c_df1 = c_df0_float[['date', a_channel_total]]
-                if sr_exists:
-                    sr_ids = get_sep_reatt_ids(site.id)
-                    eddy_df_srs = []
-                    for sr_id in sr_ids:
-                        eddy_df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                        col_name = '{p_name} Eddy {sr_designation} ({unit})'.format(p_name=area_display_name, 
-                                                                                    sr_designation=create_sep_reatt_name(sr_id), unit=area_unit)
-                        col_names += (col_name,)
-                        sr_col_names += (col_name, )
-                        if 'eddy' in sub_params:
-                            display_columns.append(col_name)
-                        eddy_df_sr[col_name] = eddy_df_sr['Eddy']
-                        eddy_df_srs.append(eddy_df_sr)
-                    eddy_df_srs_len = len(eddy_df_srs)
-                    col_names += (a_eddy_total,)
-                    if eddy_df_srs_len == 1:
-                        df_sr = eddy_df_srs[0]
-                        df_sr[a_eddy_total] = df_sr[sr_col_names[0]]
-                    elif eddy_df_srs_len == 2:
-                        df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date')
-                        df_sr[a_eddy_total] = df_sr.apply(sum_two_columns, axis=1, col_x=sr_col_names[0], col_y=sr_col_names[1])
-                    else:
-                        raise Exception('Getting the separation/reattachment data went wrong...')
-                    e_df1 = df_sr[list(col_names)]
-                else:
-                    e_df0_float[a_eddy_total] = e_df0_float['Eddy']
-                    e_df1 = e_df0_float[['date', a_eddy_total]]
-                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date')
-                ec_merge[a_total_site] = ec_merge.apply(sum_two_columns, axis=1, col_x=a_eddy_total, col_y=a_channel_total)
-                df_area = ec_merge.where(pd.notnull(ec_merge), None)
-                complete_dfs.append(df_area.applymap(round_series_values))
-            elif p_name == 'volume':
-                display_name_base = '{param_frag} {error_desc}'
-                error_bar_desc = '(lower error bound; measured value; upper error bound)'
+                    col_names += ('ts_int_area',)
+            if p_name == 'volume':
                 vol_display_name = 'Volume'
                 volume_unit = 'cubic meter'
+                if 'chan' in sub_params:
+                    col_names += ('chan_int_area',) 
+                    display_columns.append(a_channel_total)
                 v_channel_total_frag = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
                 v_channel_total = display_name_base.format(param_frag=v_channel_total_frag, error_desc=error_bar_desc)
+                sr_col_name = '{p_name} Eddy {sr_designation} ({unit}) {error_desc}'.format(
+                                                                                                    p_name=vol_display_name, 
+                                                                                                    sr_designation=create_sep_reatt_name(sr_id), 
+                                                                                                    unit=volume_unit,
+                                                                                                    error_desc=error_bar_desc
+                                                                                                    )
                 if 'chan' in sub_params:
                     display_columns.append(v_channel_total)
                 v_eddy_total_frag = eddy_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
