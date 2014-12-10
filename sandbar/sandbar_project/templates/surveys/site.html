@@ -63,7 +63,7 @@
 	<script id="param_template" type="text/html">
 		<div class="parameter-group">
 			<input id="{{paramName}}-checkbox" type="checkbox" value="{{paramName}}" />
-			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}}</label>
+			<label for="{{paramName}}-checkbox" title="{{description.units}}">{{description.displayName}} for {{description.siteName}}</label>
 			<br />
 			<span class="parameter-dates">{{description.beginPosition}} to {{description.endPosition}}</span>
 		</div>
@@ -120,7 +120,7 @@
 					<div id="no-data-warning" class="alert alert-danger" style="display: none;"></div>
 					<div id="sb-parameter-checkbox-div"></div>
 					
-					<h4 class="param-label">Streamflow and Sediment for {{ site.gdaws_site_display }}:</h4>
+					<h4 class="param-label">Streamflow and Sediment Data:</h4>
 					<div id="parameter-checkbox-div"></div>
 					<button id="update-plots-button" type="button" class="btn btn-primary btn-block">Update Plots</button>
 					<a id="download-data" class="btn btn-primary btn-block">Download Sandbar Data</a>
