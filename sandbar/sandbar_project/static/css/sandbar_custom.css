@@ -74,6 +74,9 @@ label[for=ds-min]:first-of-type, label[for=ds-max]:first-of-type {
 label[for=area2d-checkbox], label[for=volume-checkbox]{
 	display:inline;
 }
+label[for=cumulSandLoad-checkbox], label[for=discharge-checkbox]{
+	display:inline;
+}
 input[type=date] {
 	width: 160px;
 }
