@@ -43,6 +43,7 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 								// Only really want date portion of time strings
 								SB.Config.SITE_PARAMETERS[key].description.beginPosition = data[i].beginPosition.slice(0, 10);
 								SB.Config.SITE_PARAMETERS[key].description.endPosition = data[i].endPosition.slice(0, 10);
+								SB.Config.SITE_PARAMETERS[key].description.siteName = data[i].SiteDisplayName;
 
 								// Create the parameters's checkbox
 								var checkboxData = {
