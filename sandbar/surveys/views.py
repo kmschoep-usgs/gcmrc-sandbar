@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import datetime
 
 from django.conf import settings
 from django.db.models import Min, Max
@@ -13,7 +14,7 @@ from common.utils.view_utils import dictfetchall
 from .models import Site, AreaVolume, AreaVolumeOutput, Sandbar
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
 from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
-from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date,
+from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, convert_to_str,
                            sum_two_columns, create_dygraphs_error_str, convert_to_float, create_sep_reatt_name)
 
 
@@ -135,20 +136,21 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             param_list.append(sbp)
         acdb = AlchemDB()
         ora = acdb.create_session()
-        sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) WHERE calc_type=:calc_type ORDER BY calc_date'
+        sql_base = 'SELECT * FROM TABLE(SB_CALCS.F_GET_AREA_VOL_TF({site_id}, {ds_min}, {ds_max})) ORDER BY calc_date'
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
+        col_names = ('calc_date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
+        display_columns = ['Date',]
         channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
         eddy_total_str = '{p_name} Eddy {sep_reatt} - {river_mile} {river_side} ({unit})'
         total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
-        complete_dfs = []
+        #complete_dfs = []
         
-        display_columns = [] # these are the columns that the user has specified for download
+        #display_columns = [] # these are the columns that the user has specified for download
         for p_tuple in param_list:
-            col_names = ('calc_date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
-            sr_col_names = tuple() # keep track of intermediate columns needed to do math
+            #sr_col_names = tuple() # keep track of intermediate columns needed to do math
             p_name = p_tuple.parameter
             sub_params = p_tuple.sub_parameters
-            sandbar_id = 'sandbar_id'
+            #sandbar_id = 'sandbar_id'
             #query_base = ora.query('calc_date', sandbar_id, p_column)
             if p_name == 'area2d':
                 area_display_name = 'Area'
@@ -159,9 +161,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     display_columns.append(a_channel_total)
                 if 'eddy' in sub_params:
                     if sr_exists == 'SR':
-                        col_names += ('eddy_s_int_area',)
-                        col_names += ('eddy_r_int_area',)
-                        col_names += ('sum_reatt_sep_area',)
+                        col_names += ('eddy_s_int_area', 'eddy_r_int_area', 'sum_reatt_sep_area')
                         a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Separation)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                         a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Reattachment)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                         a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
@@ -172,134 +172,79 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         col_names += ('eddy_int_area',)
                         a_eddy_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                         display_columns.append(a_eddy_total)
-                a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
                 if 'eddy_chan_sum' in sub_params:
-                    display_columns.append(a_total_site)
                     col_names += ('ts_int_area',)
+                    a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                    display_columns.append(a_total_site)
             if p_name == 'volume':
-                vol_display_name = 'Volume'
-                volume_unit = 'cubic meter'
+                vol = 'Volume'
+                vol_unit = 'cubic meter'
+                error_template = '{calc} Volume Error {bound} Bound (cubic meter)'
+                measured_str = '{calc} Volume Measured Value (cubic meter)'
                 if 'chan' in sub_params:
-                    col_names += ('chan_int_area',) 
-                    display_columns.append(a_channel_total)
-                v_channel_total_frag = channel_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
-                v_channel_total = display_name_base.format(param_frag=v_channel_total_frag, error_desc=error_bar_desc)
-                sr_col_name = '{p_name} Eddy {sr_designation} ({unit}) {error_desc}'.format(
-                                                                                                    p_name=vol_display_name, 
-                                                                                                    sr_designation=create_sep_reatt_name(sr_id), 
-                                                                                                    unit=volume_unit,
-                                                                                                    error_desc=error_bar_desc
-                                                                                                    )
-                if 'chan' in sub_params:
-                    display_columns.append(v_channel_total)
-                v_eddy_total_frag = eddy_total_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
-                v_eddy_total = display_name_base.format(param_frag=v_eddy_total_frag, error_desc=error_bar_desc)
+                    calc_name = 'Channel'
+                    col_names += ('chan_vol_error_low', 'chan_int_volume', 'chan_vol_error_high')
+                    chan_vel_name = error_template.format(calc=calc_name, bound='Lower')
+                    chan_vol_name = measured_str.format(calc=calc_name)
+                    chan_veh_name = error_template.format(calc=calc_name, bound='Upper')
+                    display_columns.append(chan_vel_name)
+                    display_columns.append(chan_vol_name)
+                    display_columns.append(chan_veh_name)
                 if 'eddy' in sub_params:
-                    display_columns.append(v_eddy_total)
-                v_total_site_frag = total_site_str.format(p_name=vol_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=volume_unit)
-                v_total_site = display_name_base.format(param_frag=v_total_site_frag, error_desc=error_bar_desc)
-                if 'eddy_chan_sum' in sub_params:
-                    display_columns.append(v_total_site)
-                query_base = ora.query('calc_date', 'sandbar_id', 'vol_error_low', 'interp_volume', 'vol_error_high')
-                eddy_result_set = query_base.from_statement(sql_statement).params(calc_type='eddy').all()
-                chan_result_set = query_base.from_statement(sql_statement).params(calc_type='chan').all()
-                e_df0 = create_pandas_dataframe(eddy_result_set, columns=('date', 'sr_id', 'e_low', 'e_med', 'e_high'), create_psuedo_column=True)
-                e_df0_float = e_df0.applymap(convert_to_float)
-                c_df0 = create_pandas_dataframe(chan_result_set, columns=('date', 'sr_id', 'c_low', 'c_med', 'c_high'), create_psuedo_column=True)
-                c_df0_float = c_df0.applymap(convert_to_float)
-                c_df0_float[v_channel_total] = c_df0_float.apply(create_dygraphs_error_str, axis=1, low='c_low', med='c_med', high='c_high')
-                c_df1 = c_df0_float[['date', 'c_low', 'c_med', 'c_high', v_channel_total]]
-                sr_eddy_low = 'sr_eddy_low'
-                sr_eddy_med = 'sr_eddy_med'
-                sr_eddy_high = 'sr_eddy_high'
-                eddy_col_names = (sr_eddy_low, sr_eddy_med, sr_eddy_high, v_eddy_total)
-                if sr_exists:
-                    sr_ids = get_sep_reatt_ids(site.id)
-                    eddy_df_srs = []
-                    for sr_id in sr_ids:
-                        df_sr = e_df0_float[e_df0_float['sr_id'] == sr_id]
-                        sr_col_name = '{p_name} Eddy {sr_designation} ({unit}) {error_desc}'.format(
-                                                                                                    p_name=vol_display_name, 
-                                                                                                    sr_designation=create_sep_reatt_name(sr_id), 
-                                                                                                    unit=volume_unit,
-                                                                                                    error_desc=error_bar_desc
-                                                                                                    )
-                        col_names += (sr_col_name,)
-                        sr_col_names += (sr_col_name,)
-                        df_sr[sr_col_name] = df_sr.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low='e_low', med='e_med', high='e_high') # the dygraphs error string for one of the separation/reattachment sandbars
-                        eddy_df_srs.append(df_sr)
-                        if 'eddy' in sub_params:
-                            display_columns.append(sr_col_name)
-                    eddy_df_srs_len = len(eddy_df_srs)
-                    col_names += (sr_eddy_low, sr_eddy_med, sr_eddy_high, v_eddy_total)
-                    if eddy_df_srs_len == 1:
-                        df_sr = eddy_df_srs[0]
-                        df_sr[sr_eddy_low] = df_sr['e_low']
-                        df_sr[sr_eddy_med] = df_sr['e_med']
-                        df_sr[sr_eddy_high] = df_sr['e_high']
-                        sep_reatt_col = sr_col_names[0]
-                        df_sr[v_eddy_total] = df_sr[sep_reatt_col] # the dygraphs error string for combined separation/reattachment sandbars
-                    elif eddy_df_srs_len == 2:
-                        df_sr = pd.merge(eddy_df_srs[0], eddy_df_srs[1], how='outer', on='date').applymap(round_series_values) # combined separation/reattachment dataframe
-                        df_sr[sr_eddy_low] = df_sr.apply(sum_two_columns, axis=1, col_x='e_low_x', col_y='e_low_y')
-                        df_sr[sr_eddy_med] = df_sr.apply(sum_two_columns, axis=1, col_x='e_med_x', col_y='e_med_y')
-                        df_sr[sr_eddy_high] = df_sr.apply(sum_two_columns, axis=1, col_x='e_high_x', col_y='e_high_y')
-                        df_sr[v_eddy_total] = df_sr.apply(create_dygraphs_error_str, axis=1, low='sr_eddy_low', med='sr_eddy_med', high='sr_eddy_high') # the dygraphs error string for combined separation/reattachment sandbars
+                    calc_name = 'Eddy'
+                    if sr_exists == 'SR':
+                        reatt = 'Reattachment'
+                        seprt = 'Separation'
+                        total = 'Total'
+                        sr_error_str = 'Eddy Volume ({sr_type}) {bound} Bound (cubic meter)'
+                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value (cubic meter)'
+                        eddy_reattachment_cols = ('eddy_r_vol_error_low', 'eddy_r_int_volume', 'eddy_r_vol_error_high')
+                        eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound='Uower'),
+                                                    sr_measured_str.format(sr_type=reatt),
+                                                    sr_error_str.format(sr_type=reatt, bound='upper')
+                                                    ]
+                        display_columns += eddy_reattachement_names
+                        eddy_separation_cols = ('eddy_s_vol_error_low', 'eddy_s_int_volume', 'eddy_s_vol_error_high')
+                        eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound='Lower'),
+                                                 sr_measured_str.format(sr_type=seprt),
+                                                 sr_error_str.format(sr_type=seprt, bound='Upper')
+                                                 ]
+                        display_columns += eddy_separation_names
+                        eddy_sr_sum_cols = ('sum_reatt_sep_vel', 'sum_reatt_sep_vol', 'sum_reatt_sep_veh')
+                        sr_sum_names = [sr_error_str.format(sr_type=total, bound='Lower'),
+                                        sr_measured_str.format(sr_type=total),
+                                        sr_error_str.format(sr_type=total, bound='Upper')
+                                        ]
+                        display_columns += sr_sum_names
+                        col_names += eddy_reattachment_cols + eddy_separation_cols + eddy_sr_sum_cols
                     else:
-                        raise Exception('Getting the separation/reattachment data went wrong...')
-                    full_col_names = ('date',) + sr_col_names + eddy_col_names
-                    e_df1 = df_sr[list(full_col_names)]
-                else:
-                    e_df0_float[sr_eddy_low] = e_df0_float['e_low']
-                    e_df0_float[sr_eddy_med] = e_df0_float['e_med']
-                    e_df0_float[sr_eddy_high] = e_df0_float['e_high']
-                    e_df0_float[v_eddy_total] = e_df0_float.applymap(round_series_values).apply(create_dygraphs_error_str, axis=1, low=sr_eddy_low, med=sr_eddy_med, high=sr_eddy_high) # the dygraphs error string if separation/reattachment doesn't apply 
-                    full_col_names = ('date', sr_eddy_low, sr_eddy_med, sr_eddy_high, v_eddy_total)
-                    e_df1 = e_df0_float[list(full_col_names)]
-                ec_merge = pd.merge(e_df1, c_df1, how='outer', on='date').applymap(round_series_values)
-                ec_merge['ec_low'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_low, col_y='c_low')
-                ec_merge['ec_med'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_med, col_y='c_med')
-                ec_merge['ec_high'] = ec_merge.apply(sum_two_columns, axis=1, col_x=sr_eddy_high, col_y='c_high')
-                ec_merge[v_total_site] = ec_merge.apply(create_dygraphs_error_str, axis=1, low='ec_low', med='ec_med', high='ec_high') # this is eddy + channel
-                df_raw = ec_merge.where(pd.notnull(ec_merge), None)
-                unneeded_columns = ('ec_low', 'ec_med', 'ec_high', sr_eddy_low, sr_eddy_med, sr_eddy_high, 'c_low', 'c_med', 'c_high')
-                df_raw_columns = df_raw.columns.values
-                needed_columns = tuple()
-                for df_raw_col in df_raw_columns:
-                    if df_raw_col not in unneeded_columns:
-                        needed_columns += (df_raw_col,)
-                df_volume = df_raw[list(needed_columns)]
-                complete_dfs.append(df_volume)
-            if p_name not in ('area2d', 'volume'):   
-                raise Exception('I have no idea what you want me to query...')
-        df_list_len = len(complete_dfs)
-        if df_list_len == 1:
-            df_merge = complete_dfs[0]
-        elif df_list_len == 2:
-            df_merge = pd.merge(complete_dfs[0], complete_dfs[1], how='outer', on='date')
-        elif df_list_len >= 3:
-            df_merge = pd.merge(complete_dfs[0], complete_dfs[1], how='outer', on='date')
-            for df_object in complete_dfs[2:]:
-                df_merge = pd.merge(df_merge, df_object, how='outer', on='date')
-        else:
-            df_merge = pd.DataFrame([])
-        ora.close()
-        try:
-            df_raw = df_merge[pd.notnull(df_merge['date'])]
-        except KeyError: # catch instances where df_merge is an empty dataframe
-            df_raw = df_merge.copy()
-        df_date = df_raw.applymap(datetime_to_date)
-        df_ready = df_date.where(pd.notnull(df_date), None)
-        display_column_list = ['date'] + sorted(display_columns)
-        df_final = df_ready[display_column_list].sort(['date'])
-        try:
-            df_record = df_final.to_dict('records')
-        except AttributeError:
-            df_record = {}
-        site_name = site.site_name.lower().replace(' ', '_')
-        download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name, ds_min=ds_min, ds_max=ds_max)
-        
-        return self.render_to_csv_response(context=df_record, data_keys=display_column_list, download=True, download_name=download_name)      
+                        col_names += ('eddy_vol_error_low', 'eddy_int_volume', 'eddy_vol_error_high')
+                        eddy_vel_name = error_template.format(calc=calc_name, bound='Lower')
+                        eddy_vol_name = measured_str.format(calc=calc_name)
+                        eddy_veh_name = error_template.format(calc=calc_name, bound='Upper')
+                        display_columns.append(eddy_vel_name)
+                        display_columns.append(eddy_vol_name)
+                        display_columns.append(eddy_veh_name)
+                if 'eddy_chan_sum' in sub_params:
+                    volume_total_site_error_str = 'Volume Total Site {bound} (cubic meter)'
+                    col_names += ('ts_vol_error_low', 'ts_int_volume', 'ts_vol_error_high')
+                    volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound'),
+                                          volume_total_site_error_str.format(bound='Measured Value'),
+                                          volume_total_site_error_str.format(bound='Upper Bound')
+                                          ]
+                    display_columns += volume_total_names
+            query_base = ora.query(*col_names)
+            result_set = query_base.from_statement(sql_statement).all()
+            df_rs = create_pandas_dataframe(result_set, columns=display_columns)
+            df_rs_clean = df_rs.applymap(round_series_values).applymap(datetime_to_date).applymap(convert_to_str)
+            df_record = df_rs_clean.to_dict('records')
+            site_name = site.site_name.lower().replace(' ', '_')
+            download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name,
+                                                                           ds_min=ds_min,
+                                                                           ds_max=ds_max
+                                                                           )
+    
+        return self.render_to_csv_response(context=df_record, data_keys=display_columns, download=True, download_name=download_name)      
         
                                       
 class SitesListView(ListView):
