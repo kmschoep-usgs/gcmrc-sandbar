@@ -207,23 +207,23 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                                                     ]
                         display_columns += eddy_reattachement_names
                         eddy_separation_cols = ('eddy_s_vol_error_low', 'eddy_s_int_volume', 'eddy_s_vol_error_high')
-                        eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound=lower, unit=vol_unit),
-                                                 sr_measured_str.format(sr_type=seprt, unit=vol_unit),
-                                                 sr_error_str.format(sr_type=seprt, bound=upper, unit=vol_unit)
+                        eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound=lower),
+                                                 sr_measured_str.format(sr_type=seprt),
+                                                 sr_error_str.format(sr_type=seprt, bound=upper)
                                                  ]
                         display_columns += eddy_separation_names
                         eddy_sr_sum_cols = ('sum_reatt_sep_vel', 'sum_reatt_sep_vol', 'sum_reatt_sep_veh')
-                        sr_sum_names = [sr_error_str.format(sr_type=total, bound=lower, unit=vol_unit),
-                                        sr_measured_str.format(sr_type=total, unit=vol_unit),
-                                        sr_error_str.format(sr_type=total, bound=upper, unit=vol_unit)
+                        sr_sum_names = [sr_error_str.format(sr_type=total, bound=lower),
+                                        sr_measured_str.format(sr_type=total),
+                                        sr_error_str.format(sr_type=total, bound=upper)
                                         ]
                         display_columns += sr_sum_names
                         col_names += eddy_reattachment_cols + eddy_separation_cols + eddy_sr_sum_cols
                     else:
                         col_names += ('eddy_vol_error_low', 'eddy_int_volume', 'eddy_vol_error_high')
-                        eddy_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
-                        eddy_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
-                        eddy_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
+                        eddy_vel_name = error_template.format(calc=calc_name, bound=lower)
+                        eddy_vol_name = measured_str.format(calc=calc_name)
+                        eddy_veh_name = error_template.format(calc=calc_name, bound=upper)
                         display_columns.append(eddy_vel_name)
                         display_columns.append(eddy_vol_name)
                         display_columns.append(eddy_veh_name)
