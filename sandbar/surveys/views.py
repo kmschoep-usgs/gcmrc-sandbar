@@ -1,4 +1,5 @@
 from collections import namedtuple
+from string import Template
 
 from django.conf import settings
 from django.db.models import Min, Max
@@ -108,6 +109,8 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
     def get(self, request, *args, **kwargs):
         
         site = Site.objects.get(pk=request.GET.get('site_id'))
+        river_mile = site.river_mile
+        river_side = site.river_side
         ds_min = float(request.GET.get('ds_min'))
         ds_max = float(request.GET.get('ds_max'))
         parent_params = request.GET.getlist('param_type')
@@ -142,66 +145,65 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             p_name = p_tuple.parameter
             sub_params = p_tuple.sub_parameters
             if p_name == 'area2d':
-                channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
-                eddy_total_str = '{p_name} Eddy ({sr_type}) - {river_mile} {river_side} ({unit})'
-                total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
                 area_display_name = 'Area'
                 area_unit = p_tuple.unit
-                a_channel_total = channel_total_str.format(p_name=area_display_name, river_mile=site.river_mile, 
-                                                           river_side=site.river_side, unit=area_unit)
+                area_sub = {'p_name': area_display_name,
+                            'river_mile': river_mile,
+                            'river_side': river_side,
+                            'unit': area_unit,
+                            }
+                channel_total_str = Template('$p_name Channel Total - $river_mile $river_side ($unit)').safe_substitute(area_sub)
+                eddy_total_str = Template('$p_name Eddy ({sr_type}) - $river_mile $river_side ($unit)').safe_substitute(area_sub)
+                total_site_str = Template('$p_name Total Site - $river_mile $river_side ($unit)').safe_substitute(area_sub)
+                a_channel_total = channel_total_str
                 if 'chan' in sub_params:
                     col_names += ('chan_int_area',) 
                     display_columns.append(a_channel_total)
                 if 'eddy' in sub_params:
                     if sr_exists == 'SR':
                         col_names += ('eddy_s_int_area', 'eddy_r_int_area', 'sum_reatt_sep_area')
-                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sr_type=seprt, 
-                                                               river_mile=site.river_mile, river_side=site.river_side, 
-                                                               unit=area_unit)
-                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sr_type=reatt, 
-                                                               river_mile=site.river_mile, river_side=site.river_side, 
-                                                               unit=area_unit)
-                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
-                                                                 river_mile=site.river_mile, river_side=site.river_side, 
-                                                                 unit=area_unit)
+                        a_eddy_s_total = eddy_total_str.format(sr_type=seprt)
+                        a_eddy_r_total = eddy_total_str.format(sr_type=reatt)
+                        a_eddy_sum_total = eddy_total_str.format(sr_type=total)
                         display_columns.append(a_eddy_s_total)
                         display_columns.append(a_eddy_r_total)
                         display_columns.append(a_eddy_sum_total)
                     else:
                         col_names += ('eddy_int_area',)
-                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
-                                                             river_mile=site.river_mile, river_side=site.river_side, 
-                                                             unit=area_unit)
+                        a_eddy_total = eddy_total_str.format(sr_type=total)
                         display_columns.append(a_eddy_total)
                 if 'eddy_chan_sum' in sub_params:
                     col_names += ('ts_int_area',)
-                    a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, 
-                                                         river_side=site.river_side, unit=area_unit)
+                    a_total_site = total_site_str
                     display_columns.append(a_total_site)
             if p_name == 'volume':
                 lower = 'Lower'
                 upper = 'Upper'
                 vol_unit = p_tuple.unit
-                error_template = '{calc} Volume Error {bound} Bound ({unit})'
-                measured_str = '{calc} Volume Measured Value ({unit})'
+                vol_sub = {'river_mile': river_mile,
+                           'river_side': river_side,
+                           'unit': vol_unit
+                           }
+                error_template = Template('{calc} Volume Error {bound} Bound - $river_mile $river_side ($unit)').safe_substitute(vol_sub)
+                measured_str = Template('{calc} Volume Measured Value - $river_mile $river_side ($unit)').safe_substitute(vol_sub)
                 if 'chan' in sub_params:
                     calc_name = 'Channel'
                     col_names += ('chan_vol_error_low', 'chan_int_volume', 'chan_vol_error_high')
-                    chan_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
-                    chan_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
-                    chan_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
+                    chan_vel_name = error_template.format(calc=calc_name, bound=lower)
+                    chan_vol_name = measured_str.format(calc=calc_name)
+                    chan_veh_name = error_template.format(calc=calc_name, bound=upper)
                     display_columns.append(chan_vel_name)
                     display_columns.append(chan_vol_name)
                     display_columns.append(chan_veh_name)
                 if 'eddy' in sub_params:
                     calc_name = 'Eddy'
                     if sr_exists == 'SR':
-                        sr_error_str = 'Eddy Volume ({sr_type}) {bound} Bound ({unit})'
-                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value ({unit})'
+                        sr_error_str = Template('Eddy Volume ({sr_type}) {bound} Bound - $river_mile $river_side ($unit)').safe_substitute(vol_sub)
+                        sr_measured_str = Template('Eddy Volume ({sr_type}) Measured Value - $river_mile $river_side ($unit)').safe_substitute(vol_sub)
                         eddy_reattachment_cols = ('eddy_r_vol_error_low', 'eddy_r_int_volume', 'eddy_r_vol_error_high')
-                        eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound=lower, unit=vol_unit),
-                                                    sr_measured_str.format(sr_type=reatt, unit=vol_unit),
-                                                    sr_error_str.format(sr_type=reatt, bound=upper, unit=vol_unit)
+                        eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound=lower),
+                                                    sr_measured_str.format(sr_type=reatt),
+                                                    sr_error_str.format(sr_type=reatt, bound=upper)
                                                     ]
                         display_columns += eddy_reattachement_names
                         eddy_separation_cols = ('eddy_s_vol_error_low', 'eddy_s_int_volume', 'eddy_s_vol_error_high')
@@ -226,11 +228,11 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         display_columns.append(eddy_vol_name)
                         display_columns.append(eddy_veh_name)
                 if 'eddy_chan_sum' in sub_params:
-                    volume_total_site_error_str = 'Volume Total Site {bound} ({unit})'
+                    volume_total_site_error_str = Template('Volume Total Site {bound} - $river_mile river_side ($unit)').safe_substitute(vol_sub)
                     col_names += ('ts_vol_error_low', 'ts_int_volume', 'ts_vol_error_high')
-                    volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound', unit=vol_unit),
-                                          volume_total_site_error_str.format(bound='Measured Value', unit=vol_unit),
-                                          volume_total_site_error_str.format(bound='Upper Bound', unit=vol_unit)
+                    volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound'),
+                                          volume_total_site_error_str.format(bound='Measured Value'),
+                                          volume_total_site_error_str.format(bound='Upper Bound')
                                           ]
                     display_columns += volume_total_names
             query_base = ora.query(*col_names)
