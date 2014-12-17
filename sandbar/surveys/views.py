@@ -228,7 +228,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         display_columns.append(eddy_vol_name)
                         display_columns.append(eddy_veh_name)
                 if 'eddy_chan_sum' in sub_params:
-                    volume_total_site_error_str = Template('Volume Total Site {bound} - $river_mile river_side ($unit)').safe_substitute(vol_sub)
+                    volume_total_site_error_str = Template('Volume Total Site {bound} - $river_mile $river_side ($unit)').safe_substitute(vol_sub)
                     col_names += ('ts_vol_error_low', 'ts_int_volume', 'ts_vol_error_high')
                     volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound'),
                                           volume_total_site_error_str.format(bound='Measured Value'),
