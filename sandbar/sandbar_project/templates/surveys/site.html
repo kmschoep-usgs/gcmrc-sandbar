@@ -90,6 +90,15 @@
 {% endblock %}
 
 {% block page_content %}
+	<div id="breadcrumbs">
+		<span>
+			<span><a href="{% url 'home' %}">Home</a></span>
+			<span> &gt; </span>
+			<span><a href="{% url 'surveys-site_list' %}">Site List</a></span>
+		<span> &gt; </span>
+		<span>{{ site.site_name }}</span>
+		</span>
+	</div>
 	<h2>{{ site.site_name }} - {{ site.river_mile }} {{ site.river_side }}</h2>
 	<div id="page-loading-div" class="loading-div">
 		<span>Loading...</span><br /><img src="{{ STATIC_URL }}images/ajax-loader.gif" alt=""/>

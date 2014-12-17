@@ -93,3 +93,6 @@ input[type=date] {
 .param-label {
 	font-weight: bold;
 }
+#breadcrumbs {font-size:small; margin-top:7px;}
+#breadcrumbs a {text-decoration:none;}
+#breadcrumbs a:hover {text-decoration:underline;}
