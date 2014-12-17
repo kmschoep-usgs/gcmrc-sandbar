@@ -134,21 +134,19 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         col_names = ('calc_date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
         display_columns = ['Date',]
-        channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
-        eddy_total_str = '{p_name} Eddy ({sep_reatt}) - {river_mile} {river_side} ({unit})'
-        total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
-        #complete_dfs = []
+        reatt = 'Reattachment'
+        seprt = 'Separation'
+        total = 'Total'
         
-        #display_columns = [] # these are the columns that the user has specified for download
         for p_tuple in param_list:
-            #sr_col_names = tuple() # keep track of intermediate columns needed to do math
             p_name = p_tuple.parameter
             sub_params = p_tuple.sub_parameters
-            #sandbar_id = 'sandbar_id'
-            #query_base = ora.query('calc_date', sandbar_id, p_column)
             if p_name == 'area2d':
+                channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
+                eddy_total_str = '{p_name} Eddy ({sr_type}) - {river_mile} {river_side} ({unit})'
+                total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
                 area_display_name = 'Area'
-                area_unit = 'square meter'
+                area_unit = p_tuple.unit
                 a_channel_total = channel_total_str.format(p_name=area_display_name, river_mile=site.river_mile, 
                                                            river_side=site.river_side, unit=area_unit)
                 if 'chan' in sub_params:
@@ -157,13 +155,13 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                 if 'eddy' in sub_params:
                     if sr_exists == 'SR':
                         col_names += ('eddy_s_int_area', 'eddy_r_int_area', 'sum_reatt_sep_area')
-                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Separation', 
+                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sr_type=seprt, 
                                                                river_mile=site.river_mile, river_side=site.river_side, 
                                                                unit=area_unit)
-                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Reattachment', 
+                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sr_type=reatt, 
                                                                river_mile=site.river_mile, river_side=site.river_side, 
                                                                unit=area_unit)
-                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', 
+                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
                                                                  river_mile=site.river_mile, river_side=site.river_side, 
                                                                  unit=area_unit)
                         display_columns.append(a_eddy_s_total)
@@ -171,7 +169,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                         display_columns.append(a_eddy_sum_total)
                     else:
                         col_names += ('eddy_int_area',)
-                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', 
+                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
                                                              river_mile=site.river_mile, river_side=site.river_side, 
                                                              unit=area_unit)
                         display_columns.append(a_eddy_total)
@@ -183,42 +181,38 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             if p_name == 'volume':
                 lower = 'Lower'
                 upper = 'Upper'
-                vol = 'Volume'
-                vol_unit = 'cubic meter'
-                error_template = '{calc} Volume Error {bound} Bound (cubic meter)'
-                measured_str = '{calc} Volume Measured Value (cubic meter)'
+                vol_unit = p_tuple.unit
+                error_template = '{calc} Volume Error {bound} Bound ({unit})'
+                measured_str = '{calc} Volume Measured Value ({unit})'
                 if 'chan' in sub_params:
                     calc_name = 'Channel'
                     col_names += ('chan_vol_error_low', 'chan_int_volume', 'chan_vol_error_high')
-                    chan_vel_name = error_template.format(calc=calc_name, bound=lower)
-                    chan_vol_name = measured_str.format(calc=calc_name)
-                    chan_veh_name = error_template.format(calc=calc_name, bound=upper)
+                    chan_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
+                    chan_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
+                    chan_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
                     display_columns.append(chan_vel_name)
                     display_columns.append(chan_vol_name)
                     display_columns.append(chan_veh_name)
                 if 'eddy' in sub_params:
                     calc_name = 'Eddy'
                     if sr_exists == 'SR':
-                        reatt = 'Reattachment'
-                        seprt = 'Separation'
-                        total = 'Total'
                         sr_error_str = 'Eddy Volume ({sr_type}) {bound} Bound ({unit})'
-                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value (cubic meter)'
+                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value ({unit})'
                         eddy_reattachment_cols = ('eddy_r_vol_error_low', 'eddy_r_int_volume', 'eddy_r_vol_error_high')
                         eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound=lower, unit=vol_unit),
-                                                    sr_measured_str.format(sr_type=reatt),
+                                                    sr_measured_str.format(sr_type=reatt, unit=vol_unit),
                                                     sr_error_str.format(sr_type=reatt, bound=upper, unit=vol_unit)
                                                     ]
                         display_columns += eddy_reattachement_names
                         eddy_separation_cols = ('eddy_s_vol_error_low', 'eddy_s_int_volume', 'eddy_s_vol_error_high')
                         eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound=lower, unit=vol_unit),
-                                                 sr_measured_str.format(sr_type=seprt),
+                                                 sr_measured_str.format(sr_type=seprt, unit=vol_unit),
                                                  sr_error_str.format(sr_type=seprt, bound=upper, unit=vol_unit)
                                                  ]
                         display_columns += eddy_separation_names
                         eddy_sr_sum_cols = ('sum_reatt_sep_vel', 'sum_reatt_sep_vol', 'sum_reatt_sep_veh')
                         sr_sum_names = [sr_error_str.format(sr_type=total, bound=lower, unit=vol_unit),
-                                        sr_measured_str.format(sr_type=total),
+                                        sr_measured_str.format(sr_type=total, unit=vol_unit),
                                         sr_error_str.format(sr_type=total, bound=upper, unit=vol_unit)
                                         ]
                         display_columns += sr_sum_names
@@ -226,7 +220,7 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
                     else:
                         col_names += ('eddy_vol_error_low', 'eddy_int_volume', 'eddy_vol_error_high')
                         eddy_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
-                        eddy_vol_name = measured_str.format(calc=calc_name)
+                        eddy_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
                         eddy_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
                         display_columns.append(eddy_vel_name)
                         display_columns.append(eddy_vol_name)
