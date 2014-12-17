@@ -1,21 +1,16 @@
 from collections import namedtuple
-from datetime import datetime
 
 from django.conf import settings
 from django.db.models import Min, Max
-from django.db import connection
 from django.views.generic import ListView, DetailView, View
 from numpy import interp
-import pandas as pd 
 
 from common.views import SimpleWebServiceProxyView
 from common.utils.geojson_utils import create_geojson_point, create_geojson_feature, create_geojson_feature_collection
-from common.utils.view_utils import dictfetchall
 from .models import Site, AreaVolume, AreaVolumeOutput, Sandbar
 from .custom_mixins import CSVResponseMixin, JSONResponseMixin
-from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids, determine_if_sep_reatt_exists, determine_site_survey_types
-from .pandas_utils import (create_pandas_dataframe, round_series_values, datetime_to_date, convert_to_str,
-                           sum_two_columns, create_dygraphs_error_str, convert_to_float, create_sep_reatt_name)
+from .db_utilities import convert_datetime_to_str, AlchemDB, get_sep_reatt_ids
+from .pandas_utils import create_pandas_dataframe, round_series_values, datetime_to_date, convert_to_str, create_sep_reatt_name
 
 
 class AreaVolumeCalcsVw(CSVResponseMixin, View):
@@ -119,7 +114,6 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         area_2d_calc_types = request.GET.getlist('area2d_calc_type')
         vol_calc_types = request.GET.getlist('volume_calc_type')
         sr_exists = site.deposit_type
-        sr_ids = get_sep_reatt_ids(site.id)
         SandbarParams = namedtuple('SandbarParams', ['parameter', 'unit', 'sub_parameters'])
         param_list = []
         for parameter in parent_params:
@@ -140,97 +134,103 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         col_names = ('calc_date',) # keep track of the pertinent columns for a parameter (e.g. area or volume)
         display_columns = ['Date',]
-        channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
-        eddy_total_str = '{p_name} Eddy {sep_reatt} - {river_mile} {river_side} ({unit})'
-        total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
-        #complete_dfs = []
+        reatt = 'Reattachment'
+        seprt = 'Separation'
+        total = 'Total'
         
-        #display_columns = [] # these are the columns that the user has specified for download
         for p_tuple in param_list:
-            #sr_col_names = tuple() # keep track of intermediate columns needed to do math
             p_name = p_tuple.parameter
             sub_params = p_tuple.sub_parameters
-            #sandbar_id = 'sandbar_id'
-            #query_base = ora.query('calc_date', sandbar_id, p_column)
             if p_name == 'area2d':
+                channel_total_str = '{p_name} Channel Total - {river_mile} {river_side} ({unit})'
+                eddy_total_str = '{p_name} Eddy ({sr_type}) - {river_mile} {river_side} ({unit})'
+                total_site_str = '{p_name} Total Site - {river_mile} {river_side} ({unit})'
                 area_display_name = 'Area'
-                area_unit = 'square meter'
-                a_channel_total = channel_total_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                area_unit = p_tuple.unit
+                a_channel_total = channel_total_str.format(p_name=area_display_name, river_mile=site.river_mile, 
+                                                           river_side=site.river_side, unit=area_unit)
                 if 'chan' in sub_params:
                     col_names += ('chan_int_area',) 
                     display_columns.append(a_channel_total)
                 if 'eddy' in sub_params:
                     if sr_exists == 'SR':
                         col_names += ('eddy_s_int_area', 'eddy_r_int_area', 'sum_reatt_sep_area')
-                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Separation)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
-                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='(Reattachment)', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
-                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        a_eddy_s_total = eddy_total_str.format(p_name=area_display_name, sr_type=seprt, 
+                                                               river_mile=site.river_mile, river_side=site.river_side, 
+                                                               unit=area_unit)
+                        a_eddy_r_total = eddy_total_str.format(p_name=area_display_name, sr_type=reatt, 
+                                                               river_mile=site.river_mile, river_side=site.river_side, 
+                                                               unit=area_unit)
+                        a_eddy_sum_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
+                                                                 river_mile=site.river_mile, river_side=site.river_side, 
+                                                                 unit=area_unit)
                         display_columns.append(a_eddy_s_total)
                         display_columns.append(a_eddy_r_total)
                         display_columns.append(a_eddy_sum_total)
                     else:
                         col_names += ('eddy_int_area',)
-                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sep_reatt='Total', river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                        a_eddy_total = eddy_total_str.format(p_name=area_display_name, sr_type=total, 
+                                                             river_mile=site.river_mile, river_side=site.river_side, 
+                                                             unit=area_unit)
                         display_columns.append(a_eddy_total)
                 if 'eddy_chan_sum' in sub_params:
                     col_names += ('ts_int_area',)
-                    a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, river_side=site.river_side, unit=area_unit)
+                    a_total_site = total_site_str.format(p_name=area_display_name, river_mile=site.river_mile, 
+                                                         river_side=site.river_side, unit=area_unit)
                     display_columns.append(a_total_site)
             if p_name == 'volume':
-                vol = 'Volume'
-                vol_unit = 'cubic meter'
-                error_template = '{calc} Volume Error {bound} Bound (cubic meter)'
-                measured_str = '{calc} Volume Measured Value (cubic meter)'
+                lower = 'Lower'
+                upper = 'Upper'
+                vol_unit = p_tuple.unit
+                error_template = '{calc} Volume Error {bound} Bound ({unit})'
+                measured_str = '{calc} Volume Measured Value ({unit})'
                 if 'chan' in sub_params:
                     calc_name = 'Channel'
                     col_names += ('chan_vol_error_low', 'chan_int_volume', 'chan_vol_error_high')
-                    chan_vel_name = error_template.format(calc=calc_name, bound='Lower')
-                    chan_vol_name = measured_str.format(calc=calc_name)
-                    chan_veh_name = error_template.format(calc=calc_name, bound='Upper')
+                    chan_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
+                    chan_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
+                    chan_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
                     display_columns.append(chan_vel_name)
                     display_columns.append(chan_vol_name)
                     display_columns.append(chan_veh_name)
                 if 'eddy' in sub_params:
                     calc_name = 'Eddy'
                     if sr_exists == 'SR':
-                        reatt = 'Reattachment'
-                        seprt = 'Separation'
-                        total = 'Total'
-                        sr_error_str = 'Eddy Volume ({sr_type}) {bound} Bound (cubic meter)'
-                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value (cubic meter)'
+                        sr_error_str = 'Eddy Volume ({sr_type}) {bound} Bound ({unit})'
+                        sr_measured_str = 'Eddy Volume ({sr_type}) Measured Value ({unit})'
                         eddy_reattachment_cols = ('eddy_r_vol_error_low', 'eddy_r_int_volume', 'eddy_r_vol_error_high')
-                        eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound='Uower'),
-                                                    sr_measured_str.format(sr_type=reatt),
-                                                    sr_error_str.format(sr_type=reatt, bound='upper')
+                        eddy_reattachement_names = [sr_error_str.format(sr_type=reatt, bound=lower, unit=vol_unit),
+                                                    sr_measured_str.format(sr_type=reatt, unit=vol_unit),
+                                                    sr_error_str.format(sr_type=reatt, bound=upper, unit=vol_unit)
                                                     ]
                         display_columns += eddy_reattachement_names
                         eddy_separation_cols = ('eddy_s_vol_error_low', 'eddy_s_int_volume', 'eddy_s_vol_error_high')
-                        eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound='Lower'),
-                                                 sr_measured_str.format(sr_type=seprt),
-                                                 sr_error_str.format(sr_type=seprt, bound='Upper')
+                        eddy_separation_names = [sr_error_str.format(sr_type=seprt, bound=lower, unit=vol_unit),
+                                                 sr_measured_str.format(sr_type=seprt, unit=vol_unit),
+                                                 sr_error_str.format(sr_type=seprt, bound=upper, unit=vol_unit)
                                                  ]
                         display_columns += eddy_separation_names
                         eddy_sr_sum_cols = ('sum_reatt_sep_vel', 'sum_reatt_sep_vol', 'sum_reatt_sep_veh')
-                        sr_sum_names = [sr_error_str.format(sr_type=total, bound='Lower'),
-                                        sr_measured_str.format(sr_type=total),
-                                        sr_error_str.format(sr_type=total, bound='Upper')
+                        sr_sum_names = [sr_error_str.format(sr_type=total, bound=lower, unit=vol_unit),
+                                        sr_measured_str.format(sr_type=total, unit=vol_unit),
+                                        sr_error_str.format(sr_type=total, bound=upper, unit=vol_unit)
                                         ]
                         display_columns += sr_sum_names
                         col_names += eddy_reattachment_cols + eddy_separation_cols + eddy_sr_sum_cols
                     else:
                         col_names += ('eddy_vol_error_low', 'eddy_int_volume', 'eddy_vol_error_high')
-                        eddy_vel_name = error_template.format(calc=calc_name, bound='Lower')
-                        eddy_vol_name = measured_str.format(calc=calc_name)
-                        eddy_veh_name = error_template.format(calc=calc_name, bound='Upper')
+                        eddy_vel_name = error_template.format(calc=calc_name, bound=lower, unit=vol_unit)
+                        eddy_vol_name = measured_str.format(calc=calc_name, unit=vol_unit)
+                        eddy_veh_name = error_template.format(calc=calc_name, bound=upper, unit=vol_unit)
                         display_columns.append(eddy_vel_name)
                         display_columns.append(eddy_vol_name)
                         display_columns.append(eddy_veh_name)
                 if 'eddy_chan_sum' in sub_params:
-                    volume_total_site_error_str = 'Volume Total Site {bound} (cubic meter)'
+                    volume_total_site_error_str = 'Volume Total Site {bound} ({unit})'
                     col_names += ('ts_vol_error_low', 'ts_int_volume', 'ts_vol_error_high')
-                    volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound'),
-                                          volume_total_site_error_str.format(bound='Measured Value'),
-                                          volume_total_site_error_str.format(bound='Upper Bound')
+                    volume_total_names = [volume_total_site_error_str.format(bound='Lower Bound', unit=vol_unit),
+                                          volume_total_site_error_str.format(bound='Measured Value', unit=vol_unit),
+                                          volume_total_site_error_str.format(bound='Upper Bound', unit=vol_unit)
                                           ]
                     display_columns += volume_total_names
             query_base = ora.query(*col_names)
@@ -241,10 +241,9 @@ class AreaVolumeCalcsDownloadView(CSVResponseMixin, View):
             site_name = site.site_name.lower().replace(' ', '_')
             download_name = '{site_name}_min_{ds_min}_max_{ds_max}'.format(site_name=site_name,
                                                                            ds_min=ds_min,
-                                                                           ds_max=ds_max
-                                                                           )
-    
-        return self.render_to_csv_response(context=df_record, data_keys=display_columns, download=True, download_name=download_name)      
+                                                                           ds_max=ds_max)
+        return self.render_to_csv_response(context=df_record, data_keys=display_columns, 
+                                           download=True, download_name=download_name)      
         
                                       
 class SitesListView(ListView):
