@@ -25,6 +25,13 @@ Lists and maps all sandbar monitoring sites.
 {% endblock %}
 
 {% block page_content %}
+	<div id="breadcrumbs">
+		<span>
+			<span><a href="{% url 'home' %}">Home</a></span>
+			<span> &gt; </span>
+			<span>Site List</span>
+		</span>
+	</div>
 	<h2>Sandbar Monitoring Sites</h2>
 	<div id="sites-map-div" class="well">
 		<div id="sites-map">
