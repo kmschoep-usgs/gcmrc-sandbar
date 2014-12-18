@@ -1,0 +1,98 @@
+#sites-map {
+	height: 400px;
+	width: 100%;
+}
+
+#site-loc-map-div {
+	height:300px;
+	width: 100%;
+	position:relative;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin: 0;
+	padding: 0;
+}
+
+img.photo {
+        /***  Scaling Images with the Browser Window in CSS is pretty simple to implement for both images and video.  ***/
+        /***  You can set the media element’s max-width to 100 percent, and the browser will make    ***/
+        /***  the image shrink and expand depending on its container.    ***/
+        /***  To maintain the right proportions use auto height  ***/
+     	max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+        }
+        
+.caption {
+	font-size:0.8em;
+	margin-top:-15px;
+}
+.parameter-group {
+	margin: 12px;
+}
+
+.sub-param-group {
+	margin-left: 15px;
+}
+#graphs-div {
+	position: relative;
+}
+#panel-title{
+	text-align: center;
+}
+.loading-div {
+	text-align: center;
+	font-size: 1.5em;
+	margin-top: 7px;
+	margin-bottom: 7px;
+}
+.dygraph-legend {
+	text-align: left!important;
+}
+.graph-div {
+	width: 100%!important;
+}
+
+#graphs-loading-div {
+	line-height:1em;
+}
+
+.param-missing {
+	color: red;
+}
+
+label[for=start-date]:first-of-type, label[for=end-date]:first-of-type {
+	width: 3em;
+}
+
+label[for=ds-min]:first-of-type, label[for=ds-max]:first-of-type {
+	cursor:help;
+}
+
+label[for=area2d-checkbox], label[for=volume-checkbox]{
+	display:inline;
+}
+label[for=cumulSandLoad-checkbox], label[for=discharge-checkbox]{
+	display:inline;
+}
+input[type=date] {
+	width: 160px;
+}
+.error {
+	color: red;
+}
+.graph-div {
+	margin-bottom: 1em;
+}
+.parameter-dates {
+	font-style: italic;
+}
+
+.param-label {
+	font-weight: bold;
+}
+#breadcrumbs {font-size:small; margin-top:7px;}
+#breadcrumbs a {text-decoration:none;}
+#breadcrumbs a:hover {text-decoration:underline;}
