@@ -1,4 +1,5 @@
 SB.TSPlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, siteId /* String */) {
+	var xRangePadding = 15;
 	this.graphsDivEl = $('#' + graphsDivId);
 	this._graphs = {}; // Holds current dygraphs
 	this.siteId = siteId;
@@ -99,6 +100,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 											xlabel: "Date",
 											ylabel: yAxisLabel,
 											yAxisLabelWidth: 95,
+											xRangePad: xRangePadding,
 											labelsDivWidth: 300,
 											showRangeSelector: true,
 											legend: 'always',
@@ -217,6 +219,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 									xlabel: "Date",
 									ylabel: yAxisLabel,
 									yAxisLabelWidth: 95,
+									xRangePad: xRangePadding,
 									labelsDivWidth: 300,
 									showRangeSelector: true,
 									legend: 'always',

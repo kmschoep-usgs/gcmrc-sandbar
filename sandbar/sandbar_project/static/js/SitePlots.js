@@ -1,4 +1,5 @@
 SB.SitePlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, gdawsSiteId /* String */, dischargeSite /*String*/) {
+	var xRangePadding = 15;
 	this.graphsDivEl = $('#' + graphsDivId);
 	this._graphs = {}; // Holds current dygraphs
 	this.gdawsSiteId = gdawsSiteId;
@@ -54,6 +55,7 @@ SB.SitePlots = function (graphsDivId /* id of div containing the divs for each p
 							ylabel : thisConfig.description.displayName + ' (' + thisConfig.description.unitsShort + ')',
 							labelsDivWidth: 300,
 							yAxisLabelWidth: 95,
+							xRangePad: xRangePadding,
 							showRangeSelector: true							
 						});
 					}
