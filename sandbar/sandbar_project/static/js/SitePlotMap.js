@@ -7,8 +7,9 @@ SB.SitePlotMap = function(siteLat,siteLng) {
 		attributionControl: false
 	});
 	
-	var baseLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png').addTo(map);
-	var marker = L.marker(latlng).addTo(map);	
+	L.esri.dynamicMapLayer("http://arcweb.wr.usgs.gov/ArcGIS/rest/services/MapServiceImageryMay2009RGB/MapServer", {
+		 opacity: 1
+		 }).addTo(map); 
 	//map.setView(latlng, 7);
 	return map;
 };
