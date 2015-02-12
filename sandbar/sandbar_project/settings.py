@@ -1,6 +1,7 @@
 # Django settings for sandbar project.
 from sys import argv
 import os
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 try:
     from local_settings import DJANGOTEST_PWD
@@ -116,6 +117,15 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.static",
+                               "django.core.context_processors.tz",
+                               "django.contrib.messages.context_processors.messages",
+                               "common.context_processors.project_settings",
+                               )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
