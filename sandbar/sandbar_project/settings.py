@@ -172,13 +172,13 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     #Third party apps
     'djangojs',
-    'south',
+    #'south',
     #CIDA apps
     'surveys',
     'common',
 )
 
-SOUTH_TESTS_MIGRATE = False
+#SOUTH_TESTS_MIGRATE = False
 # SOUTH_DATABASE_ADAPTERS = {'default':'south.db.oracle', 'sandbar':'south.db.oracle'} 
 
 LOG_FILE_DIR = os.getenv('HOME', '') + '/logs/sandbar/'
@@ -265,7 +265,7 @@ if LOCAL_APPS:
     INSTALLED_APPS += LOCAL_APPS
 
 if os.getenv('JENKINS_URL', False):
-    SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
+    #SOUTH_DATABASE_ADAPTERS = {'default':'south.db.postgresql_psycopg2'}
     POSTGIS_VERSION = (2, 1, 1) # Googling suggests that Django has a hard time reading the settings for Postgres 9.3 and PostGIS 2.1
     JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',
                      'django_jenkins.tasks.with_coverage',) # This is where you would add other django_jenkins tasks
