@@ -82,12 +82,15 @@ class Survey(models.Model):
     uncrt_a_8000 = models.IntegerField(max_length=3)
     uncrt_b_8000 = models.IntegerField(max_length=3)
     discharge = models.DecimalField(max_digits=8, decimal_places=2)
+    trip_date = models.DateField(null=True)
+    calc_type = models.CharField(max_length=20, blank=True)
+    sandbar_id = models.IntegerField(null=True)
     
     class Meta:
         db_table = 'surveys'
         
     def __unicode__(self):
-        return str(self.site) + ' on ' + str(self.survey_date)
+        return str(self.site) + '-' + str(self.sandbar_id) + ' on ' + str(self.survey_date) + ' for ' + str(self.calc_type) + ' at ' + str(self.discharge)
     
     
 class Sandbar(models.Model):
@@ -202,3 +205,6 @@ class AreaVolumeOutput(models.Model):
     ts_int_volume = models.FloatField()
     ts_vol_error_low = models.FloatField()
     ts_vol_error_high = models.FloatField()
+    
+    class Meta:
+        managed = False
