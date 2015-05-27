@@ -1,4 +1,4 @@
-Django==1.7.1
+Django==1.7.8
 SQLAlchemy==0.9.7
 argparse==1.2.1
 astroid==1.2.0
