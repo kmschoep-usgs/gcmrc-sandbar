@@ -77,6 +77,7 @@ function TimeSeriesPlot(options) {
 					labelsDivWidth: 300,
 					showRangeSelector: true,
 					legend: 'always',
+					//yRangePad: 20,
 					strokePattern: [5, 5],
 					highlightCircleSize: 4,
 					drawPoints: true,
