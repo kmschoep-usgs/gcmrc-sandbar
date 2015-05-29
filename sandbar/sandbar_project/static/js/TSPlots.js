@@ -1,5 +1,6 @@
 SB.TSPlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, siteId /* String */) {
 	var xRangePadding = 15;
+	var yBuff = 5100;
 	this.graphsDivEl = $('#' + graphsDivId);
 	this._graphs = {}; // Holds current dygraphs
 	this.siteId = siteId;
@@ -101,7 +102,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 											ylabel: yAxisLabel,
 											yAxisLabelWidth: 95,
 											xRangePad: xRangePadding,
-											yRangePad: 50,
 											labelsDivWidth: 300,
 											showRangeSelector: true,
 											legend: 'always',
@@ -112,6 +112,12 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 											customBars: eBars,
 											plotter: plotter
 										});
+										var maxY = graphs[parentParamSR].yAxisRange();
+										var maxYVal = maxY[1];
+										var maxYBuff = maxYVal + yBuff;
+										graphs[parentParamSR].updateOptions(
+												{valueRange: [null, maxYBuff]}
+										);
 										if (columnCount < calc_type.length) {
 											var missingDataArr = [];
 											if (!searchForSubString('Eddy Total', headerArray) && $.inArray('eddy', calc_type) > -1) {
@@ -221,7 +227,6 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 									ylabel: yAxisLabel,
 									yAxisLabelWidth: 95,
 									xRangePad: xRangePadding,
-									yRangePad: 50,
 									labelsDivWidth: 300,
 									showRangeSelector: true,
 									legend: 'always',
@@ -232,6 +237,12 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 									customBars: eBars,
 									plotter: plotter
 								});
+								var maxY = graphs[parentParam].yAxisRange();
+								var maxYVal = maxY[1];
+								var maxYBuff = maxYVal + yBuff;
+								graphs[parentParam].updateOptions(
+										{valueRange: [null, maxYBuff]}
+								);
 								if (columnCount < calc_type.length) {
 									var missingDataArr = [];
 									if (!searchForSubString('Eddy Total', headerArray) && $.inArray('eddy', calc_type) > -1) {
