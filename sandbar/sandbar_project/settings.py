@@ -83,7 +83,7 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-TEST_RUNNER = 'sandbar_project.test_runner.ManagedModelTestRunner'
+#TEST_RUNNER = 'sandbar_project.test_runner.ManagedModelTestRunner'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
