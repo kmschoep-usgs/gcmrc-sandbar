@@ -14,8 +14,6 @@ urlpatterns = patterns('',
         SandbarHome.as_view(),
         name='home'),
     url(r'^surveys/', include('surveys.urls')),
-                       
-    url(r'^djangojs/', include('djangojs.urls')),
  
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

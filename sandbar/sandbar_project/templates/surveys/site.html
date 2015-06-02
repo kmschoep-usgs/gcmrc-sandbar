@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-{% load js %}
 {% load static %}
 
 {% block title %}Sandbar - {{ site.site_name }}{% endblock %}
@@ -8,8 +7,8 @@
 {% block page_description %}Provides data and plotting tools for sandbar {{ site.site_name }} located at river mile {{ site.river_mile }}{% endblock %}
 
 {% block page_style %}
-	{% css "lib/leaflet-0.6.4/leaflet.css" %}
-	{% css "css/sandbar_custom.css" %}
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/leaflet-0.6.4/leaflet.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/sandbar_custom.css' %}" />
 {% endblock %}
 
 {% block page_script %}
@@ -25,27 +24,26 @@
 	<script type="text/javascript">
 		var PAGE_URL = window.location.pathname;
 	</script>
+	<script type="text/javascript" src="{% static 'lib/modernizr.custom.45705.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/webshims-stable/js-webshim/minified/polyfiller.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/dygraph-combined.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/jquery-validation-1.11.1/dist/jquery.validate.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/mustache.js-master/mustache.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/leaflet-0.6.4/leaflet.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/esri-leaflet-v1.0.0-rc.5/esri-leaflet.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/leaflet.ajax.js' %}"></script>
 	
- 	{% js "lib/modernizr.custom.45705.js" %}
-	{% js "lib/webshims-stable/js-webshim/minified/polyfiller.js" %}
-	{% js "lib/dygraph-combined.js" %}
-	{% js "lib/jquery-validation-1.11.1/dist/jquery.validate.min.js" %}
-	{% js "lib/mustache.js-master/mustache.js" %}
-	{% js "lib/leaflet-0.6.4/leaflet.js" %}
-	{% js "lib/esri-leaflet-v1.0.0-rc.5/esri-leaflet.js" %}
-	{% js "lib/leaflet.ajax.js" %}
-	
-	{% js "js/utils.js" %}
-	{% js "js/Config.js" %}
-	{% js "js/DateRange.js" %}
-	{% js "js/GDAWSFormatUtils.js" %}
-	{% js "js/CreateDynamicLink.js" %}
-	{% js "js/DotPlotter.js" %}
-	{% js "js/SitePlots.js" %}
-	{% js "js/TSPlots.js" %}
-	{% js "js/SiteParams.js" %}
-	{% js "js/SitePageOnReady.js" %}
-	{% js "js/SitePlotMap.js" %}
+	<script type="text/javascript" src="{% static 'js/utils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/Config.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/DateRange.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/GDAWSFormatUtils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/CreateDynamicLink.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/DotPlotter.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SitePlots.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/TSPlots.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SiteParams.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SitePageOnReady.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SitePlotMap.js' %}"></script>
 	
 	
 	<script type="text/javascript">
@@ -192,7 +190,5 @@
 	</div>
 	<div>
 	</div>
-	
-	<!-- {% js "js/TimeSeriesPlots.js" %} -->
 	
 {% endblock %}

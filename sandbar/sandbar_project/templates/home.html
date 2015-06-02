@@ -1,25 +1,24 @@
 {% extends "base_home.html" %}
 
-{% load js %}
 {% load static %}
 
 {% block page_style %}
-	{% css "lib/Fixed-Header-Table_1.3/css/defaultTheme.css" %}
-	{% css "lib/leaflet-0.6.4/leaflet.css" %}
-	{% css "css/sandbar_custom.css" %}
-	{% css "css/sandbar_home_custom.css" %}
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/Fixed-Header-Table_1.3/css/defaultTheme.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'lib/leaflet-0.6.4/leaflet.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/sandbar_custom.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/sandbar_home_custom.css' %}" />
 {% endblock page_style %}
 
 {% block page_script %}
-	{% js "lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js" %}
-	{% js "lib/leaflet-0.6.4/leaflet.js" %}
-	{% js "js/SiteMarker.js" %}
-	{% js "lib/leaflet.ajax.js" %}
-	{% js "lib/isotope-2.0.0/isotope.pkgd.min.js" %}
-	{% js "lib/imagesLoaded-3.1.8/imagesloaded.pkgd.min.js" %}
-	{% js "js/utils.js" %}
-	{% js "js/tight-bootstrap.js" %}
-	{% js "js/SandbarHomeMap.js" %}
+	<script type="text/javascript" src="{% static 'lib/Fixed-Header-Table_1.3/jquery.fixedheadertable.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/leaflet-0.6.4/leaflet.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SiteMarker.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/leaflet.ajax.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/isotope-2.0.0/isotope.pkgd.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'lib/imagesLoaded-3.1.8/imagesloaded.pkgd.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/utils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/tight-bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/SandbarHomeMap.js' %}"></script>
 	<script type="text/javascript">
 	</script>
 {% endblock page_script %}

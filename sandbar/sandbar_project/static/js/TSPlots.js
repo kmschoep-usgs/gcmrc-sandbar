@@ -1,6 +1,7 @@
 SB.TSPlots = function (graphsDivId /* id of div containing the divs for each parameter's graph */, siteId /* String */) {
 	var xRangePadding = 15;
-	var yBuff = 5100;
+	var yRangePadding = 15;
+	//var yBuff = 5100;
 	this.graphsDivEl = $('#' + graphsDivId);
 	this._graphs = {}; // Holds current dygraphs
 	this.siteId = siteId;
@@ -102,6 +103,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 											ylabel: yAxisLabel,
 											yAxisLabelWidth: 95,
 											xRangePad: xRangePadding,
+											yRangePad: yRangePadding,
 											labelsDivWidth: 300,
 											showRangeSelector: true,
 											legend: 'always',
@@ -114,6 +116,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 										});
 										var maxY = graphs[parentParamSR].yAxisRange();
 										var maxYVal = maxY[1];
+										var yBuff = maxYVal * .11;
 										var maxYBuff = maxYVal + yBuff;
 										graphs[parentParamSR].updateOptions(
 												{valueRange: [null, maxYBuff]}
@@ -227,6 +230,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 									ylabel: yAxisLabel,
 									yAxisLabelWidth: 95,
 									xRangePad: xRangePadding,
+									yRangePad: yRangePadding,
 									labelsDivWidth: 300,
 									showRangeSelector: true,
 									legend: 'always',
@@ -239,6 +243,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 								});
 								var maxY = graphs[parentParam].yAxisRange();
 								var maxYVal = maxY[1];
+								var yBuff = maxYVal * .11;
 								var maxYBuff = maxYVal + yBuff;
 								graphs[parentParam].updateOptions(
 										{valueRange: [null, maxYBuff]}
