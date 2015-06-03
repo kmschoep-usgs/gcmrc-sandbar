@@ -1,8 +1,6 @@
 
 from django.conf import settings
 from django.conf.urls import patterns, url, include
-
-from jasmine.test_urls import ProjectJasmineView
 from common.views import SandbarHome
 
 # Uncomment the next two lines to enable the admin:
@@ -24,5 +22,3 @@ urlpatterns = patterns('',
 urlpatterns += patterns('django.contrib.flatpages.views',
     url(r'^area_vol_calc/$', 'flatpage', {'url' : '/area_vol_calc/'}, name='area_vol_calc'));
 
-if 'jasmine' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('', url(r'^jasmine/$', ProjectJasmineView.as_view()))
