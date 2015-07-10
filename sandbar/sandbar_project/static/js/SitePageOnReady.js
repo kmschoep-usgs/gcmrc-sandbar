@@ -314,7 +314,6 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 				}
 				errorExists = 1;
 				$('#parameter-errors').append('The stage-discharge relationship for discharge below 5000 cfs is invalid. To plot sandbar area and volume below 5000 cfs, please enter 0 for Discharge for Lower Bound.');
-				//$('#parameter-errors').show();
 			}
 			if ($('#ds-max').val() === '') {
 				if (errorExists === 0) {
@@ -325,7 +324,6 @@ SB.SitePageOnReady = function(gdawsSiteId, dischargeSite, siteId) {
 				}
 				errorExists = 1;
 				$('#parameter-errors').append('Please enter a value for maximum discharge.');
-				//$('#parameter-errors').show();
 			}
 			if (errorExists === 0 && clickTrigger != "download-data") {
 				$('#parameter-errors').html('');

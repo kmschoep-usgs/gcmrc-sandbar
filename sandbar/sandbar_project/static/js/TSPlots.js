@@ -250,17 +250,22 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 								);
 								if (columnCount < calc_type.length) {
 									var missingDataArr = [];
-									if (!searchForSubString('Eddy Total', headerArray) && $.inArray('eddy', calc_type) > -1) {
-										missingDataArr.push('Eddy'); 
+									if (searchForSubString('date', headerArray)) {
+										if (!searchForSubString('Eddy Total', headerArray) && $.inArray('eddy', calc_type) > -1) {
+											missingDataArr.push('Eddy'); 
+										}
+										if (!searchForSubString('Channel Total', headerArray) && $.inArray('chan', calc_type) > -1) {
+											missingDataArr.push('Channel'); 
+										}
+										if (!searchForSubString('Total Site', headerArray) && $.inArray('eddy_chan_sum', calc_type) > -1) {
+											missingDataArr.push('Total Site'); 
+										}
+										var missingDataStr = missingDataArr.join(', ');
+										var errorDisplay = '<p class="param-missing"> The following ' + displayName + ' parameters are unavailable for this site: ' + missingDataStr + '.</p>';
+										}
+									else {
+										var errorDisplay = '<p class="param-missing"> Data below the 8,000 cfs stage are not available for this site.</p>';
 									}
-									if (!searchForSubString('Channel Total', headerArray) && $.inArray('chan', calc_type) > -1) {
-										missingDataArr.push('Channel'); 
-									}
-									if (!searchForSubString('Total Site', headerArray) && $.inArray('eddy_chan_sum', calc_type) > -1) {
-										missingDataArr.push('Total Site'); 
-									}
-									var missingDataStr = missingDataArr.join(', ');
-									var errorDisplay = '<p class="param-missing"> The following ' + displayName + ' parameters are unavailable for this site: ' + missingDataStr + '.</p>';
 									graphDivEl(parentParam).append(errorDisplay);
 									$('<br/>').insertAfter(graphDivEl(parentParam));
 								}
