@@ -79,18 +79,22 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
         sql_statement = sql_base.format(site_id=site.id, ds_min=ds_min, ds_max=ds_max)
         query_base = ora.query(*col_names)
         result_set = query_base.from_statement(sql_statement).all()
+        result_len = len(result_set)
         
-        plot_parameters = ('date',)
-        # get the pertinent columns from the dataframe
-        if plot_sep:
-            plot_parameters += (sandbar_disp_name,)
-        else:
-            if 'eddy' in calculation_types:
-                plot_parameters += (eddy_total,)
-            if 'chan' in calculation_types:
-                plot_parameters += (channel_total,)
-            if 'eddy_chan_sum' in calculation_types:
-                plot_parameters += (total_site,)
+        plot_parameters = ()
+        if result_len != 0:
+            plot_parameters = ('date',)
+            # get the pertinent columns from the dataframe
+            if plot_sep:
+                plot_parameters += (sandbar_disp_name,)
+            else:
+                if 'eddy' in calculation_types:
+                    plot_parameters += (eddy_total,)
+                    if 'chan' in calculation_types:
+                        plot_parameters += (channel_total,)
+                        if 'eddy_chan_sum' in calculation_types:
+                            plot_parameters += (total_site,)
+                        
         df_rs = create_pandas_dataframe(result_set, columns=(plot_parameters))
         df_pert_records = df_rs.to_dict('records')
         
