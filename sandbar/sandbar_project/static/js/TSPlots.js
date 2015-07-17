@@ -20,6 +20,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 		var currentGraphs = [];
 		var srIDs;
 		var plotSR = srParams.srPlot;
+		$('#download-data').attr('disabled', false);
 		if (plotSR) {
 			srIDs = srParams.srIDs;
 			var srKeyArray = ['sep', 'reatt', 'sep', 'reatt']
@@ -265,6 +266,7 @@ SB.TSPlots = function (graphsDivId /* id of div containing the divs for each par
 										}
 									else {
 										var errorDisplay = '<p class="param-missing"> Data below the 8,000 cfs stage are not available for this site.</p>';
+										$('#download-data').attr('disabled', true);
 									}
 									graphDivEl(parentParam).append(errorDisplay);
 									$('<br/>').insertAfter(graphDivEl(parentParam));
