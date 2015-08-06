@@ -90,10 +90,10 @@ class AreaVolumeCalcsVw(CSVResponseMixin, View):
             else:
                 if 'eddy' in calculation_types:
                     plot_parameters += (eddy_total,)
-                    if 'chan' in calculation_types:
-                        plot_parameters += (channel_total,)
-                        if 'eddy_chan_sum' in calculation_types:
-                            plot_parameters += (total_site,)
+                if 'chan' in calculation_types:
+                    plot_parameters += (channel_total,)
+                if 'eddy_chan_sum' in calculation_types:
+                    plot_parameters += (total_site,)
                         
         df_rs = create_pandas_dataframe(result_set, columns=(plot_parameters))
         df_pert_records = df_rs.to_dict('records')
