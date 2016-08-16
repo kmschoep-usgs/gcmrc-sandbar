@@ -12,7 +12,7 @@ Databases:
 * qadw.er.usgs.gov
 * dbdw.er.usgs.gov
 
-Schema owner is SANDBAR, appliation connects as SANDBAR_USER.
+Schema owner is SANDBAR, application connects as SANDBAR_USER.
 
 The application uses South, a django database management tool to create/maintain tables.
 
@@ -34,6 +34,6 @@ Public QA URL:
 
 http://cida-test.er.usgs.gov/gcmrc/sandbar/surveys/sites/
 
-As of August 2014, not deployed to production, but URL will be:
+Production URL:
 
-http://cida.usgs.gov/gcmrc/sandbar/surveys/sites/
+http://www.gcmrc.gov/sandbar/

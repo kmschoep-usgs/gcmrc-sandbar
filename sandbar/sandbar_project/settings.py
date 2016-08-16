@@ -159,7 +159,7 @@ TEMPLATES = [
                 'common.context_processors.project_settings',
             ],
             'debug': [
-                      'DEBUG',
+                      DEBUG,
             ],
         },
     },
@@ -189,8 +189,8 @@ WSGI_APPLICATION = 'sandbar_project.wsgi.application'
 #)
 
 INSTALLED_APPS = (
-#    'django.contrib.auth',
-#    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
 #    'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.flatpages',
