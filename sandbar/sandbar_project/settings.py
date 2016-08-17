@@ -240,7 +240,7 @@ LOGGING = {
         'file': {
            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_FILE_DIR + 'server_logs/sandbar.log',
+            'filename': LOG_FILE_DIR + 'sandbar.log',
             'maxBytes': 1024000,
             'backupCount': 10,
             'formatter': 'standard'                 
