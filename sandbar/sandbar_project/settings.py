@@ -240,7 +240,7 @@ LOGGING = {
         'file': {
            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_FILE_DIR + 'server_logs',
+            'filename': LOG_FILE_DIR + 'server_logs/sandbar.log',
             'maxBytes': 1024000,
             'backupCount': 10,
             'formatter': 'standard'                 
@@ -253,7 +253,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins','file'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -261,13 +261,13 @@ LOGGING = {
             'handlers': ['file'],
             'level' : 'DEBUG',
             'propagate' : True,
-            'filters' : ['require_debug_true']
+            'filters' : ['require_debug_false']
         },
         'surveys': {
             'handlers': ['file'],
             'level' : 'DEBUG',
             'propagate' : True,
-            'filters' : ['require_debug_true']
+            'filters' : ['require_debug_false']
         },                
 
     }
