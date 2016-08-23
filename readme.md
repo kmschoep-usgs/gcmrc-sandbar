@@ -37,3 +37,13 @@ http://cida-test.er.usgs.gov/gcmrc/sandbar/surveys/sites/
 Production URL:
 
 http://www.gcmrc.gov/sandbar/
+
+Deployment directory structure:
+
+```
+webapps
+|-- sandbar
+|
+wsgi
+|-- sandbar
+```

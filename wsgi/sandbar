@@ -1,0 +1,46 @@
+import sys
+import os
+
+sys.stdout = sys.stderr
+
+#
+# Please adjust __MyDjangoSiteDir.
+#
+
+__MyDjangoSiteDir='/opt/django/webapps/sandbar'
+
+
+# Proceed with
+
+os.chdir(__MyDjangoSiteDir)
+
+# The next three lines add your virutalenv's site packages, site root directory
+# and site project's directory to the python path. If using Django 1.4 or greater, 
+# please adjust to use your
+# project directory name.
+
+sys.path.insert(0, __MyDjangoSiteDir+"/env/lib/python2.7/site-packages")
+sys.path.insert(0, __MyDjangoSiteDir)
+sys.path.insert(0, __MyDjangoSiteDir+"/sandbar_project")
+
+# Adjust this environment variable to your project's settings module
+os.environ["DJANGO_SETTINGS_MODULE"] = "sandbar_project.settings"
+
+import django
+django.setup()
+import settings
+
+import django.core.management
+utility = django.core.management.ManagementUtility()
+command = utility.fetch_command('runserver')
+
+command.check()
+
+import django.conf
+import django.utils
+
+django.utils.translation.activate(django.conf.settings.LANGUAGE_CODE)
+
+from django.core.wsgi import get_wsgi_application
+
+application = get_wsgi_application()
