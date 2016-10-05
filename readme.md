@@ -1,5 +1,65 @@
 Sandbar Django Webapp Readme
 
+## To get running locally:
+
+In order to create a local development environment, you must have python 2.7 and virtualenv installed. The instructions below assume you are using Eclipse as your IDE. If you are using Eclipse, it's best if the PyDev plugin is installed as this allows you to use the PyDev perspective and declare the project as a Django project. I will try to point out Eclipse specific instructions. Also note, that it is easier to use a Linux system, but Windows is possible. You will need to modify the instructions which require command line interaction to there Windows equivalent. I'll try to note these changes.
+
+### Step 1
+
+Checkout the code from githup. If you are using Eclipse,  do the following:
+
+1. Set up a python interpreter using your default python interpreter. This can be done from the Preferences  dialog under PyDev -> Interpreter - Python.
+2. under PyDev, File -> import -> Git Projects from Git -> select project you want
+
+
+### Step 2
+
+Create your virtualenv. This should be in the sandbar directory. By convention, call it env. On linux systems you can use the following command from the command line after you have changed directories to sandbar:
+
+```
+% cd /where you but your workspace/sandbar
+% virtualenv --python=python2.7 --no-site-packages env
+```
+
+* Note: You may get an error that "The executable python2.7 (from --python=python2.7) does not exist".  If this happens, delete the --python=python2.7 part and retry.
+
+### Step 3
+
+Install the project python requirements using pip. On linux you can do the following using the pip in the virtualenv. Alternatively, you can activate your environment and just use pip.
+
+```
+% env/bin/pip --timeout=120 install -r requirements.txt
+```
+* Note: In Windows, the command is env\scripts\pip --timeout=120 install -r requirements.txt
+
+### Step 4
+
+Set up your IDE to use the virtualenv you have just created. If you are using Eclipse, do the following.
+
+1. Highlight the sandbar project, right click, and Refresh. You should see env directory appear
+2. Go to Preferences and set up a new python interpretor using the one in the virtualenv that you just created. 3. On Macs/linux you may also need to set up a couple of environment variables (TNS_ADMIN and DYLD_LIBRARY_PATH)
+4. Highlight the sandbar project, right click, and select Properties. Change the interpreter to use the one you just set up.
+5. Highlight the sandbar project, right click, and select PyDev and Change to Django project.
+6. Highlight the sandbar project, right click, and select Properties.In PyDev - Django, set manage.py to manage.py and Django settings module to sandbar_project.settings
+
+### Step 5
+
+Create a local_settings.py file in sandbar/sandbar_project (an example is there now).The local_settings.py is used for information such as passwords and the secret_key that shouldn't be committed to source control (there are no passwords in the example local_settings file, but once there are, it should not be committed to source control). You can set the secret_key to whatever is in the secret key on dev or really just anything for local development. The file can also be used for server specific settings. 
+
+### Step 6
+
+Test your installation by running the development server. In Eclipse do the following:
+
+1. Highlight sandbar, right click, Run As --> PyDev Django. You should see no errors in the Console
+2. In a browser, go to localhost:8000/home/ and you should see the home page.
+
+
+*Note:* The first time you commit, you will want to add svn:ignore to local_settings.py, env, and any IDE specific dotfiles that were created. In Eclipse, these can be done from Team Synchronizing perspective.
+
+
+
+## How the application is deployed at OWI, may not be applicable to your environment:
+
 VMs:
 
 * cida-eros-sbdjdev.er.usgs.gov
@@ -48,7 +108,7 @@ wsgi
 |-- sandbar
 ```
 
-Build process:
+Build process (probably total overkill for your environment.  This basically zips up the directories and puts them into our nexus repository so that the deploy process can pull the zip file back down, copy it to the approprate application server and unzip it.  This can be done manually if necessary.):
 
 ```
 source /etc/profile.d/oracle.sh;
